@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "../serializer/frozen.h"
 
 /*
  Information about device and firmware
@@ -14,6 +15,7 @@
    "version": "1.0.15"
  */
 char * devInfoMessage(const char *appName, const char *ver, const char *location, const char *name) {
+
     return NULL;
 }
 
@@ -40,8 +42,9 @@ char * powerFeedbackMessage(const char *status) {
   “power": 23.3
 }
  */
-char *powerConsumeMessage(const char *timestring, float value) {
-    return NULL;
+void powerConsumeMessage(char *buffer, size_t len, const char *timestring, float value) {
+    struct json_out out = JSON_OUT_BUF(buffer, len);
+    json_printf(&out, "{ %Q: %Q, %Q: %f }", "timestamp", timestring, "power", value);
 }
 
 /*

@@ -1,9 +1,11 @@
 #include "mgos.h"
 #include "mgos_timers.h"
 #include "mgos_config.h"
+#include <time.h>
 
 #include "version.h"
 #include "network/topics.h"
+#include "utils/datetime.h"
 #include "network/messages.h"
 #include "network/mqtt.h"
 #include "config/settings.h"
@@ -24,7 +26,9 @@ void power_read_timed(void *) {
     float powerValue = powerSensor->readValue();
     LOG(LL_DEBUG, ("Timed func %f", powerValue));
     if(mqttManager != NULL) {
-        mqttManager->publish(pubSensPowerTopic, "TEST", strlen("TEST"));
+        char powerMessage[100];
+        powerConsumeMessage(powerMessage, sizeof(powerMessage), now().c_str(), powerValue);
+        mqttManager->publish(pubSensPowerTopic, (const char*)powerMessage, strlen(powerMessage));
     }
 }
 
@@ -39,11 +43,13 @@ enum mgos_app_init_result mgos_app_init(void) {
     mqttManager = new MQTTManager();
     mqttManager->setEventCallback(MQTTManager::Connected, []() {
         LOG(LL_DEBUG, ("S6 Fresnel:: MQTT Connected"));
+        // Start periodic power publishing on MQTT topic
+        mgos_set_timer(settings.s6fresnel().updateInterval(), true, power_read_timed, NULL);
     });
     // **
 
     adcReader = new ESP32ADCReader();
     powerSensor = new PowerSensor(adcReader);
-    mgos_set_timer(settings.s6fresnel().updateInterval(), true, power_read_timed, NULL);
+
     return MGOS_APP_INIT_SUCCESS;
 }
