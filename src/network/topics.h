@@ -22,6 +22,10 @@ char pubSensInfoTopic[MAX_TOPIC_LEN];
 char pubSensPowerTopic[MAX_TOPIC_LEN];
 char pubEventPowerTopic[MAX_TOPIC_LEN];
 
+char subSwitchDevTopic[MAX_TOPIC_LEN];
+char subSwitchRoomTopic[MAX_TOPIC_LEN];
+
+
 void makeDeviceTopic(char *topic, int topicLen, const char *topicPattern, const char *room, const char *deviceId) {
     memset (topic, 0, topicLen);
     snprintf(topic, topicLen, topicPattern, room, deviceId);
