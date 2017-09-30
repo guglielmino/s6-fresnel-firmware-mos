@@ -4,7 +4,17 @@
 
 #pragma once
 
+#include "../libs/rapidjson/document.h"
+#include "../libs/rapidjson/prettywriter.h" // for stringify JSON
+
 #include "../serializer/frozen.h"
+
+#include "mgos.h"
+
+using namespace rapidjson;
+using namespace std;
+
+//static Document document;
 
 /*
  Information about device and firmware
@@ -12,11 +22,24 @@
  example:
 {
    "appName": "S6 Fresnel Module",
-   "version": "1.0.15"
+   "version": "1.0.15",
+   "location": "room1",
+   "name": "lamp1"
+}
  */
-char * devInfoMessage(const char *appName, const char *ver, const char *location, const char *name) {
+void devInfoMessage(char* infoMessage, const char *appName, const char *ver, const char *location, const char *name) {
+   /*
+    document["appName"].SetString(appName, static_cast<SizeType>(strlen(appName)), document.GetAllocator());
+    document["version"].SetString(ver, static_cast<SizeType>(strlen(ver)), document.GetAllocator());
+    document["location"].SetString(location, static_cast<SizeType>(strlen(location)), document.GetAllocator());
+    document["name"].SetString(name, static_cast<SizeType>(strlen(name)), document.GetAllocator());
+*/
+    //StringBuffer sb;
+    //PrettyWriter<StringBuffer> writer(sb);
+   // document.Accept(writer);    // Accept() traverses the DOM and generates Handler events.
+    //LOG(LL_DEBUG, ("%s", sb.GetString()));
+   // strcpy(infoMessage, "TEST");
 
-    return NULL;
 }
 
 

@@ -3,7 +3,7 @@
 #include "mgos_config.h"
 #include <time.h>
 
-#include "version.h"
+#include "consts.h"
 #include "network/topics.h"
 #include "utils/datetime.h"
 #include "network/messages.h"
@@ -11,7 +11,7 @@
 #include "config/settings.h"
 #include "hardware/io/ESP32ADCReader.h"
 #include "hardware/PowerSensor.h"
-#include "hardware/gpio/OutputDevice.h";
+//#include "hardware/gpio/OutputDevice.h"
 
 using namespace S6MqttModule;
 
@@ -24,11 +24,12 @@ MQTTManager *mqttManager = NULL;
 OutputDevice rele1(32);
 
 auto powerSwitchSubscription = [](const char *topic, size_t topic_len, const char *msg, size_t msg_len) {
-    char localTopic[MAX_TOPIC_LEN] = "";;
-    char localMsg[MAX_MSG_LEN] = "";;
+    char localTopic[MAX_TOPIC_LEN] = "";
+    char localMsg[MAX_MSG_LEN] = "";
     memcpy(localTopic, topic, MIN(topic_len, MAX_TOPIC_LEN));
     memcpy(localMsg, msg, MIN(msg_len, MAX_MSG_LEN));
     LOG(LL_DEBUG, ("hander => PowerSwitch %s -> %s", localTopic, localMsg));
+    //rele1.toggle();
     rele1.turn((strcmp(localMsg, "on") == 0) ? OutputDevice::ON : OutputDevice::OFF);
 };
 
@@ -37,12 +38,23 @@ auto powerSwitchSubscription = [](const char *topic, size_t topic_len, const cha
  */
 void power_read_timed(void *) {
     float powerValue = powerSensor->readValue();
+
     if (mqttManager != NULL) {
         char powerMessage[100];
         powerConsumeMessage(powerMessage, sizeof(powerMessage), now().c_str(), powerValue);
         mqttManager->publish(pubSensPowerTopic, (const char *) powerMessage, strlen(powerMessage));
     }
 }
+
+void publishInfoMessage() {
+     char infoMessage[100] = "";
+     devInfoMessage(infoMessage, FIRMWARE_APP_NAME, FIRMWARE_APP_VERSION,
+                   settings.s6fresnel().location(),
+                   settings.s6fresnel().name());
+    mqttManager->publish(pubInfoTopic, infoMessage, strlen(infoMessage));
+}
+
+
 
 enum mgos_app_init_result mgos_app_init(void) {
     cs_log_set_level(LL_DEBUG);
@@ -55,6 +67,9 @@ enum mgos_app_init_result mgos_app_init(void) {
                     settings.deviceId());
     makeRoomTopic(subSwitchRoomTopic, MAX_TOPIC_LEN, SUB_SWITCH_ROOM, settings.s6fresnel().location());
 
+    makeDeviceTopic(pubInfoTopic, MAX_TOPIC_LEN, PUB_SENS_INFO_TOPIC, settings.s6fresnel().location(),
+                    settings.deviceId());
+
     mqttManager = new MQTTManager();
 
     mqttManager->setEventCallback(MQTTManager::Connected, []() {
@@ -63,6 +78,8 @@ enum mgos_app_init_result mgos_app_init(void) {
         // Subscribe topics
         mqttManager->subcribe(subSwitchDevTopic, powerSwitchSubscription);
         mqttManager->subcribe(subSwitchRoomTopic, powerSwitchSubscription);
+
+        publishInfoMessage();
 
         // Start periodic power publishing on MQTT topic
         mgos_set_timer(settings.s6fresnel().updateInterval(), true, power_read_timed, NULL);

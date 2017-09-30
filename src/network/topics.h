@@ -21,6 +21,7 @@
 char pubSensInfoTopic[MAX_TOPIC_LEN];
 char pubSensPowerTopic[MAX_TOPIC_LEN];
 char pubEventPowerTopic[MAX_TOPIC_LEN];
+char pubInfoTopic[MAX_TOPIC_LEN];
 
 char subSwitchDevTopic[MAX_TOPIC_LEN];
 char subSwitchRoomTopic[MAX_TOPIC_LEN];
