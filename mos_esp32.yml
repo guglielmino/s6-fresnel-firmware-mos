@@ -1,0 +1,6 @@
+config_schema:
+  - ["eth.enable", true]
+
+libs:
+  - origin: https://github.com/mongoose-os-libs/ethernet
+

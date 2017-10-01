@@ -3,7 +3,7 @@
 #include "../IADCReader.h"
 #include "../IScalarSensor.h"
 
-class PowerSensor : public IScalarSensor<float> {
+class S6FPowerSensor : public IScalarSensor<float> {
     private:    
       float Vref = 0.165f;            // Output voltage with no current: ~ 0,165V
       float adcMaxVoltage;            // Max voltage supported by ADC
@@ -12,7 +12,7 @@ class PowerSensor : public IScalarSensor<float> {
 
       IADCReader *_adcReader;
     public:
-      PowerSensor(IADCReader *adcReader) {
+    S6FPowerSensor(IADCReader *adcReader) {
         _adcReader = adcReader;
 
         this->voltageDivider = 1;   // Voltage divider in hardware 
@@ -28,8 +28,10 @@ class PowerSensor : public IScalarSensor<float> {
        */
       float readValue() {
         int rawAdcValue = _adcReader->analogRead();
-       
-        return ((rawAdcValue * this->adcRatio) * this->voltageDivider) - this->Vref;
+
+          //return rawAdcValue * this->_adcReader->maxVoltage() / _adcReader->resolution();
+          return rawAdcValue;
+        //return ((rawAdcValue * this->adcRatio) * this->voltageDivider) - this->Vref;
       }
 };
 

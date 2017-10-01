@@ -4,15 +4,15 @@
 
 #pragma once
 
-#include "../libs/rapidjson/document.h"
-#include "../libs/rapidjson/prettywriter.h" // for stringify JSON
+//#include "../libs/rapidjson/document.h"
+//#include "../libs/rapidjson/prettywriter.h" // for stringify JSON
 
-#include "../serializer/frozen.h"
+#include "../libs/frozen.h"
 
 #include "mgos.h"
 
-using namespace rapidjson;
-using namespace std;
+//using namespace rapidjson;
+//using namespace std;
 
 //static Document document;
 
@@ -28,6 +28,12 @@ using namespace std;
 }
  */
 void devInfoMessage(char* infoMessage, const char *appName, const char *ver, const char *location, const char *name) {
+    (void)appName;
+    (void)infoMessage;
+    (void)ver;
+    (void)location;
+    (void)name;
+
    /*
     document["appName"].SetString(appName, static_cast<SizeType>(strlen(appName)), document.GetAllocator());
     document["version"].SetString(ver, static_cast<SizeType>(strlen(ver)), document.GetAllocator());
@@ -53,11 +59,12 @@ example:
  */
 
 char * powerFeedbackMessage(const char *status) {
+    (void)status;
     return NULL;
 }
 
 /*
- Immediate power consume message
+ Immediate power consume message (W)
 
  example:
 {
@@ -71,6 +78,20 @@ void powerConsumeMessage(char *buffer, size_t len, const char *timestring, float
 }
 
 /*
+ Accumulated daily consume (Kw/h)
+
+ example:
+{
+  "timestamp": "2017-07-08T12:47:36",
+  “consume": 23.3
+}
+ */
+void dailyConsumeMessage(char *buffer, size_t len, const char *timestring, float value) {
+    struct json_out out = JSON_OUT_BUF(buffer, len);
+    json_printf(&out, "{ %Q: %Q, %Q: %f }", "timestamp", timestring, "consume", value);
+}
+
+/*
  Last Willing Message (as supported by MQTT protocol)
 
  example:
@@ -79,6 +100,8 @@ void powerConsumeMessage(char *buffer, size_t len, const char *timestring, float
 }
  */
 char *lwtMessage(const char *timestring, bool online) {
+    (void)timestring;
+    (void)online;
     return NULL;
 }
 

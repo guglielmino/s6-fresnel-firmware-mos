@@ -18,12 +18,10 @@ sources:
 filesystem:
   - fs
 
-# Custom configuration entries, settable via "device configuration"
-# Below is a custom firmware configuration example.
-# Uncomment and modify according to your needs:
+platforms: [  esp32, esp8266 ]
 
 config_schema:
-  - ["eth.enable", true]
+  #- ["eth.enable", true]
   - ["mqtt.enable", true]
   - ["mqtt.server", "s", "192.168.0.6:1883", {title: "MQTT server"}]
   - ["wifi.sta.enable", true]
@@ -42,11 +40,11 @@ libs:
   - origin: https://github.com/mongoose-os-libs/rpc-service-fs
   - origin: https://github.com/mongoose-os-libs/rpc-uart
   - origin: https://github.com/mongoose-os-libs/rpc-mqtt
- # - origin: https://github.com/mongoose-os-libs/rpc-service-ota
-  - origin: https://github.com/mongoose-os-libs/ethernet
+  - origin: https://github.com/mongoose-os-libs/rpc-service-ota
+  #- origin: https://github.com/mongoose-os-libs/ethernet
   - origin: https://github.com/mongoose-os-libs/mqtt
   - origin: https://github.com/mongoose-os-libs/wifi
-  #- origin: https://github.com/mongoose-os-libs/adc
+  - origin: https://github.com/mongoose-os-libs/adc
 
 
 # Used by the mos tool to catch mos binaries incompatible with this file format

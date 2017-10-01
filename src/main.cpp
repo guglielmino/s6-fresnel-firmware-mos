@@ -5,22 +5,23 @@
 
 #include "consts.h"
 #include "network/topics.h"
-#include "utils/datetime.h"
+#include "utils/dateutils.h"
 #include "network/messages.h"
 #include "network/mqtt.h"
 #include "config/settings.h"
-#include "hardware/io/ESP32ADCReader.h"
-#include "hardware/PowerSensor.h"
-//#include "hardware/gpio/OutputDevice.h"
+#include "hardware/S6FPowerSensor.h"
+#include "hardware/gpio/OutputDevice.h"
+#include "factories/sensorsFactories.h"
 
 using namespace S6MqttModule;
 
 #define MAX_MSG_LEN 128
 
 Settings settings;
-ESP32ADCReader *adcReader;
-PowerSensor *powerSensor;
-MQTTManager *mqttManager = NULL;
+
+IScalarSensor<float> *powerSensor = nullptr;
+IScalarSensor<unsigned long> *dailyKwh = nullptr;
+MQTTManager *mqttManager = nullptr;
 OutputDevice rele1(32);
 
 auto powerSwitchSubscription = [](const char *topic, size_t topic_len, const char *msg, size_t msg_len) {
@@ -38,11 +39,16 @@ auto powerSwitchSubscription = [](const char *topic, size_t topic_len, const cha
  */
 void power_read_timed(void *) {
     float powerValue = powerSensor->readValue();
+    unsigned long dailyConsume = dailyKwh->readValue();
 
-    if (mqttManager != NULL) {
-        char powerMessage[100];
-        powerConsumeMessage(powerMessage, sizeof(powerMessage), now().c_str(), powerValue);
-        mqttManager->publish(pubSensPowerTopic, (const char *) powerMessage, strlen(powerMessage));
+    if (mqttManager != nullptr) {
+        char messageBuffer[100];
+        powerConsumeMessage(messageBuffer, sizeof(messageBuffer), now().c_str(), powerValue);
+        mqttManager->publish(pubSensPowerTopic, (const char *) messageBuffer, strlen(messageBuffer));
+
+        memset(messageBuffer, 0, 100);
+        dailyConsumeMessage(messageBuffer, sizeof(messageBuffer), now().c_str(), dailyConsume);
+        mqttManager->publish(pubSensDailyKwhTopic, (const char *) messageBuffer, strlen(messageBuffer));
     }
 }
 
@@ -70,6 +76,9 @@ enum mgos_app_init_result mgos_app_init(void) {
     makeDeviceTopic(pubInfoTopic, MAX_TOPIC_LEN, PUB_SENS_INFO_TOPIC, settings.s6fresnel().location(),
                     settings.deviceId());
 
+    makeDeviceTopic(pubSensDailyKwhTopic, MAX_TOPIC_LEN, PUB_SENS_DAILYKWH_TOPIC, settings.s6fresnel().location(),
+                    settings.deviceId());
+
     mqttManager = new MQTTManager();
 
     mqttManager->setEventCallback(MQTTManager::Connected, []() {
@@ -94,11 +103,8 @@ enum mgos_app_init_result mgos_app_init(void) {
         LOG(LL_DEBUG, ("S6 Fresnel:: MQTT Subscribe"));
     });
 
-
-    // **
-
-    adcReader = new ESP32ADCReader();
-    powerSensor = new PowerSensor(adcReader);
+    powerSensor = getPowerSensor();
+    dailyKwh = getDailyKwhSensor();
 
     return MGOS_APP_INIT_SUCCESS;
 }

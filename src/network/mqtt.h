@@ -94,6 +94,7 @@ namespace S6MqttModule {
         static void mqtt_msg_handler(struct mg_connection *nc, const char *topic,
                                      int topic_len, const char *msg, int msg_len,
                                      void *ud) {
+            (void)nc;
             SubscribeUserData *userData = (SubscribeUserData *) ud;
             userData->cb(topic, topic_len, msg, msg_len);
         }

@@ -8,9 +8,9 @@ set(SOURCE_FILES
         src/main.cpp
         src/IADCReader.h
         src/IScalarSensor.h
-        src/hardware/PowerSensor.h
+        src/hardware/S6FPowerSensor.h
         src/hardware/io/ESP32ADCReader.h
         mos.yml
-        README.md src/network/mqtt-manager.h src/config/settings.h src/consts.h src/network/messages.h src/network/mqtt.h src/network/topics.h src/serializer/frozen.c src/serializer/frozen.h src/utils/datetime.h src/hardware/gpio/OutputDevice.h)
+        README.md src/network/mqtt-manager.h src/config/settings.h src/consts.h src/network/messages.h src/network/mqtt.h src/network/topics.h src/libs/frozen.c src/libs/frozen.h src/utils/dateutils.h src/hardware/gpio/OutputDevice.h src/hardware/io/ESP8266ADCReader.h src/hardware/SONOFFPowerSensor.h src/hardware/devices/xsns_hlw8012.h src/hardware/SONOFFDailyKwh.h src/hardware/S6DailyKwh.h)
 
 add_executable(s6_fresnel_firmware_mos ${SOURCE_FILES})
