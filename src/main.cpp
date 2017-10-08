@@ -11,6 +11,7 @@
 #include "config/settings.h"
 #include "hardware/S6FPowerSensor.h"
 #include "hardware/gpio/OutputDevice.h"
+#include "hardware/gpio/InputDevice.h"
 #include "factories/sensorsFactories.h"
 
 using namespace S6MqttModule;
@@ -22,16 +23,25 @@ Settings settings;
 IScalarSensor<float> *powerSensor = nullptr;
 IScalarSensor<unsigned long> *dailyKwh = nullptr;
 MQTTManager *mqttManager = nullptr;
-OutputDevice rele1(32);
+OutputDevice *rele1 = nullptr;
+OutputDevice *statusLed = nullptr;
+
+InputDevice button(BUTTON_PIN, [] (bool newPinSate) {
+    LOG(LL_DEBUG, ("Button pressed %d", (int)newPinSate));
+});
 
 auto powerSwitchSubscription = [](const char *topic, size_t topic_len, const char *msg, size_t msg_len) {
     char localTopic[MAX_TOPIC_LEN] = "";
     char localMsg[MAX_MSG_LEN] = "";
     memcpy(localTopic, topic, MIN(topic_len, MAX_TOPIC_LEN));
     memcpy(localMsg, msg, MIN(msg_len, MAX_MSG_LEN));
-    LOG(LL_DEBUG, ("hander => PowerSwitch %s -> %s", localTopic, localMsg));
-    //rele1.toggle();
-    rele1.turn((strcmp(localMsg, "on") == 0) ? OutputDevice::ON : OutputDevice::OFF);
+    LOG(LL_DEBUG, ("hander => PowerSwitch %s -> %s (REL PIN %d)", localTopic, localMsg, REL_PIN));
+
+    OutputDevice::SwitchMode state = (strcmp(localMsg, "on") == 0 ? OutputDevice::ON : OutputDevice::OFF);
+    LOG(LL_DEBUG, ("STATE =>  %d", (int)state));
+
+    rele1->turn(state);
+    statusLed->turn(state);
 };
 
 /**
@@ -54,7 +64,7 @@ void power_read_timed(void *) {
 
 void publishInfoMessage() {
      char infoMessage[100] = "";
-     devInfoMessage(infoMessage, FIRMWARE_APP_NAME, FIRMWARE_APP_VERSION,
+     devInfoMessage(infoMessage, sizeof(infoMessage), FIRMWARE_APP_NAME, FIRMWARE_APP_VERSION,
                    settings.s6fresnel().location(),
                    settings.s6fresnel().name());
     mqttManager->publish(pubInfoTopic, infoMessage, strlen(infoMessage));
@@ -65,6 +75,18 @@ void publishInfoMessage() {
 enum mgos_app_init_result mgos_app_init(void) {
     cs_log_set_level(LL_DEBUG);
     LOG(LL_DEBUG, ("Device ID %s", settings.deviceId()));
+
+    // On board devices
+    rele1 = new OutputDevice(REL_PIN);
+    statusLed = new OutputDevice(STATUS_LED_PIN);
+
+    rele1->setSwitchCb([](OutputDevice::SwitchMode newState) {
+        char powerMessage[MQTT_MESSAGE_SIZE];
+
+        powerFeedbackMessage(powerMessage, sizeof(powerMessage), newState);
+        mqttManager->publish(pubPowerFeedbackTopic, powerMessage, strlen(powerMessage));
+        LOG(LL_DEBUG, ("RELE new state after switch %d", (int)newState));
+    });
 
     // ** MQTT
     makeDeviceTopic(pubSensPowerTopic, MAX_TOPIC_LEN, PUB_SENS_POWER_TOPIC, settings.s6fresnel().location(),
@@ -77,6 +99,9 @@ enum mgos_app_init_result mgos_app_init(void) {
                     settings.deviceId());
 
     makeDeviceTopic(pubSensDailyKwhTopic, MAX_TOPIC_LEN, PUB_SENS_DAILYKWH_TOPIC, settings.s6fresnel().location(),
+                    settings.deviceId());
+
+    makeDeviceTopic(pubPowerFeedbackTopic, MAX_TOPIC_LEN, PUB_EVENT_POWERFEEDBACK_TOPIC, settings.s6fresnel().location(),
                     settings.deviceId());
 
     mqttManager = new MQTTManager();
@@ -93,6 +118,8 @@ enum mgos_app_init_result mgos_app_init(void) {
         // Start periodic power publishing on MQTT topic
         mgos_set_timer(settings.s6fresnel().updateInterval(), true, power_read_timed, NULL);
     });
+
+
 
     mqttManager->setEventCallback(MQTTManager::Disconnected, []() {
         LOG(LL_DEBUG, ("S6 Fresnel:: MQTT Disconnected"));

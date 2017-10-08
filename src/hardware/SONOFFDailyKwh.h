@@ -15,6 +15,9 @@ public:
     }
 
     unsigned long readValue() {
-        return sysCfg.hlw_kWhtoday;
+        float ped, pi, pc;
+        uint16_t pe, pw, pu;
+        hlw_readEnergy(1, ped, pe, pw, pu, pi, pc);
+        return (unsigned long)ped;
     }
 };

@@ -21,17 +21,21 @@ filesystem:
 platforms: [  esp32, esp8266 ]
 
 config_schema:
-  #- ["eth.enable", true]
   - ["mqtt.enable", true]
-  - ["mqtt.server", "s", "192.168.0.6:1883", {title: "MQTT server"}]
+  - ["mqtt.server", "s", "192.168.0.13:1883", {title: "MQTT server"}]
   - ["wifi.sta.enable", true]
   - ["wifi.sta.ssid", "gug"]
   - ["wifi.sta.pass", "marric13"]
   - ["wifi.ap.enable", false]
   - ["s6fresnel", "o", {title: "S6 Fresnel custom settings"}]
-  - ["s6fresnel.update_interval", "i", 5000, {title: "Power reads will be sent every update_interval (ms)"}]
+  - ["s6fresnel.update_interval", "i", 2000, {title: "Power reads will be sent every update_interval (ms)"}]
   - ["s6fresnel.location", "s", "room1", {title: "Device location, used in MQTT topic path (ie. building/room1/...)"}]
   - ["s6fresnel.name", "s", "noname", {title: "Device name (ie. lamp1)"}]
+  # Following setting enable remote debug with mos console --port ws://DEV_IP_ADDR/rpc
+  - ["debug.udp_log_addr",  "192.168.0.13:1993"]
+  - ["debug.level",  4]
+  - ["rpc.ws.enable", true]
+
 
 # List of libraries used by this app, in order of initialisation
 libs:
@@ -41,7 +45,6 @@ libs:
   - origin: https://github.com/mongoose-os-libs/rpc-uart
   - origin: https://github.com/mongoose-os-libs/rpc-mqtt
   - origin: https://github.com/mongoose-os-libs/rpc-service-ota
-  #- origin: https://github.com/mongoose-os-libs/ethernet
   - origin: https://github.com/mongoose-os-libs/mqtt
   - origin: https://github.com/mongoose-os-libs/wifi
   - origin: https://github.com/mongoose-os-libs/adc

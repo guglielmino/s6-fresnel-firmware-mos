@@ -5,10 +5,10 @@
 #pragma once
 
 /* --- MQTT publish topics -- */
-#define PUB_SENS_INFO_TOPIC     "building/%s/sensors/%s/info"        // Device publish info message on this topic
-#define PUB_SENS_POWER_TOPIC    "building/%s/sensors/%s/power"       // Device publish power consume on this topic
-#define PUB_SENS_DAILYKWH_TOPIC "building/%s/sensors/%s/dailyKwh"    // Device publish daily Kw/h accumulated consume on this topic
-#define PUB_EVENT_POWER_TOPIC   "building/%s/events/%s/power"        // Device publish power switch feedback consume on this topic
+#define PUB_SENS_INFO_TOPIC         "building/%s/sensors/%s/info"        // Device publish info message on this topic
+#define PUB_SENS_POWER_TOPIC        "building/%s/sensors/%s/power"       // Device publish power consume on this topic
+#define PUB_SENS_DAILYKWH_TOPIC     "building/%s/sensors/%s/dailyKwh"    // Device publish daily Kw/h accumulated consume on this topic
+#define PUB_EVENT_POWERFEEDBACK_TOPIC   "building/%s/events/%s/power"        // Device publish power switch feedback consume on this topic
 
 
 /* --- MQTT subsribe topics ---*/
@@ -25,6 +25,7 @@ char pubSensPowerTopic[MAX_TOPIC_LEN];
 char pubSensDailyKwhTopic[MAX_TOPIC_LEN];
 char pubEventPowerTopic[MAX_TOPIC_LEN];
 char pubInfoTopic[MAX_TOPIC_LEN];
+char pubPowerFeedbackTopic[MAX_TOPIC_LEN];
 
 char subSwitchDevTopic[MAX_TOPIC_LEN];
 char subSwitchRoomTopic[MAX_TOPIC_LEN];
