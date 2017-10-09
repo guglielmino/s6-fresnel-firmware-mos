@@ -12,13 +12,13 @@
 class SONOFFPowerSensor : public IScalarSensor<float> {
 public:
     SONOFFPowerSensor() {
-
+        hlw_init();
     }
 
     float readValue() {
         float ped, pi, pc;
         uint16_t pe, pw, pu;
-        hlw_readEnergy(1, ped, pe, pw, pu, pi, pc);
+        hlw_readEnergy(0, ped, pe, pw, pu, pi, pc);
         return pw;
     }
 

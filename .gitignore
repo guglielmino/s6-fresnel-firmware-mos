@@ -72,3 +72,5 @@ cmake-build-debug/
 
 ## File-based project format:
 *.iws
+
+deps/

@@ -42,6 +42,11 @@ auto powerSwitchSubscription = [](const char *topic, size_t topic_len, const cha
 
     rele1->turn(state);
     statusLed->turn(state);
+
+    char powerMessage[MQTT_MESSAGE_SIZE];
+
+    powerFeedbackMessage(powerMessage, sizeof(powerMessage), (state == OutputDevice::ON ));
+    mqttManager->publish(pubPowerFeedbackTopic, powerMessage, strlen(powerMessage));
 };
 
 /**
@@ -79,14 +84,6 @@ enum mgos_app_init_result mgos_app_init(void) {
     // On board devices
     rele1 = new OutputDevice(REL_PIN);
     statusLed = new OutputDevice(STATUS_LED_PIN);
-
-    rele1->setSwitchCb([](OutputDevice::SwitchMode newState) {
-        char powerMessage[MQTT_MESSAGE_SIZE];
-
-        powerFeedbackMessage(powerMessage, sizeof(powerMessage), newState);
-        mqttManager->publish(pubPowerFeedbackTopic, powerMessage, strlen(powerMessage));
-        LOG(LL_DEBUG, ("RELE new state after switch %d", (int)newState));
-    });
 
     // ** MQTT
     makeDeviceTopic(pubSensPowerTopic, MAX_TOPIC_LEN, PUB_SENS_POWER_TOPIC, settings.s6fresnel().location(),

@@ -8,7 +8,15 @@ std::string now() {
     time(&now);
     char buf[sizeof "2011-10-08T07:07:09Z"];
     strftime(buf, sizeof buf, "%FT%TZ", gmtime(&now));
-    // this will work too, if your compiler doesn't support %F or %T:
-    //strftime(buf, sizeof buf, "%Y-%m-%dT%H:%M:%SZ", gmtime(&now));
     return std::string(buf);
+}
+
+time_t utc_now() {
+    time_t now;
+    time(&now);
+    return now;
+}
+
+time_t utc_midnight() {
+    return utc_now() / 86400 * 86400;
 }

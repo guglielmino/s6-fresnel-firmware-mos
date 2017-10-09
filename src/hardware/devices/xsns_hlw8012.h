@@ -6,6 +6,8 @@
 
 #include "mgos_gpio.h"
 #include "mgos_timers.h"
+#include "../../utils/dateutils.h"
+
 
 /*********************************************************************************************\
  * HLW8012 - Energy
@@ -34,12 +36,12 @@
 /////  REFACTORING MOCKUP
 
 
-int rtc_loctime() {
-    return 0;
+time_t rtc_loctime() {
+    return utc_now();
 }
 
-int rtc_midnight() {
-    return 0;
+time_t rtc_midnight() {
+    return utc_midnight();
 }
 
 struct SYSCFG {
@@ -83,12 +85,14 @@ int8_t hlw_SELflag, hlw_cf_timer, hlw_cf1_timer, hlw_fifth_second, hlw_startup;
 unsigned long hlw_cf_plen, hlw_cf_last;
 unsigned long hlw_cf1_plen, hlw_cf1_last, hlw_cf1_ptot, hlw_cf1_pcnt, hlw_cf1u_plen, hlw_cf1i_plen;
 unsigned long hlw_Ecntr, hlw_EDcntr, hlw_kWhtoday;
-uint32_t hlw_lasttime;
+time_t hlw_lasttime;
 
 unsigned long hlw_cf1u_pcntmax, hlw_cf1i_pcntmax;
 
 #if WS2812_PIN != 3
+
 void hlw_cf_interrupt(int pin, void *arg) ICACHE_RAM_ATTR;
+
 void hlw_cf1_interrupt(int pin, void *arg) ICACHE_RAM_ATTR;
 #endif
 
@@ -238,9 +242,27 @@ uint8_t hlw_readEnergy(uint8_t option, float &ed, uint16_t &e, uint16_t &w, uint
     return true;
 }
 
+static bool initialized = false;
+
+void hlw_margin_chk() {
+    float ped, pi, pc;
+    uint16_t pe, pw, pu;
+
+    hlw_readEnergy(0, ped, pe, pw, pu, pi, pc);
+}
+
+void every_second(void *) {
+    hlw_margin_chk();
+}
+
 void hlw_init() {
     mgos_uptime_init();
-    mgos_gpio_init();
+
+
+    if (initialized) return;
+    initialized = true;
+
+    mgos_set_timer(100, true, every_second, NULL);
 
     if (!sysCfg.hlw_pcal || (sysCfg.hlw_pcal == 4975)) {
         sysCfg.hlw_pcal = HLW_PREF_PULSE;

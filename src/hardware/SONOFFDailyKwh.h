@@ -17,7 +17,7 @@ public:
     unsigned long readValue() {
         float ped, pi, pc;
         uint16_t pe, pw, pu;
-        hlw_readEnergy(1, ped, pe, pw, pu, pi, pc);
+        hlw_readEnergy(0, ped, pe, pw, pu, pi, pc);
         return (unsigned long)ped;
     }
 };
