@@ -13,3 +13,10 @@ apps from scratch.
 <p align="center">
   <img src="https://mongoose-os.com/images/app1.gif" width="75%">
 </p>
+
+
+## References
+
+Mongoose OS repo    : https://github.com/cesanta/mongoose-os
+Libs                : https://github.com/mongoose-os-libs
+Example apps        : https://github.com/mongoose-os-apps

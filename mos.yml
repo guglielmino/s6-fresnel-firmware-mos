@@ -33,8 +33,9 @@ config_schema:
   - ["s6fresnel.name", "s", "noname", {title: "Device name (ie. lamp1)"}]
   # Following setting enable remote debug with mos console --port ws://DEV_IP_ADDR/rpc
   - ["debug.udp_log_addr",  "192.168.0.13:1993"]
-  - ["debug.level",  4]
+  - ["debug.level", 4]
   - ["rpc.ws.enable", true]
+  - ["spi.enable", true]
 
 
 # List of libraries used by this app, in order of initialisation
@@ -48,6 +49,8 @@ libs:
   - origin: https://github.com/mongoose-os-libs/mqtt
   - origin: https://github.com/mongoose-os-libs/wifi
   - origin: https://github.com/mongoose-os-libs/adc
+  - origin: https://github.com/mongoose-os-libs/spi
+
 
 
 # Used by the mos tool to catch mos binaries incompatible with this file format

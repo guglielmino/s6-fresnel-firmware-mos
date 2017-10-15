@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "../IADCReader.h"
-#include "../IScalarSensor.h"
+#include "../interfaces/IADCReader.h"
+#include "../interfaces/IScalarSensor.h"
 #include "../hardware/devices/xsns_hlw8012.h"
 
 class SONOFFDailyKwh : public IScalarSensor<unsigned long> {

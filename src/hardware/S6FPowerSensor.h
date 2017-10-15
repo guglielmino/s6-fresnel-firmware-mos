@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../IADCReader.h"
-#include "../IScalarSensor.h"
+#include "../interfaces/IADCReader.h"
+#include "../interfaces/IScalarSensor.h"
 
 class S6FPowerSensor : public IScalarSensor<float> {
 private:

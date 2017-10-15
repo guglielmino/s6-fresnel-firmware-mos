@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../IADCReader.h"
+#include "../../interfaces/IADCReader.h"
 //#include <driver/adc.h>
 
 #include "mgos_adc.h"

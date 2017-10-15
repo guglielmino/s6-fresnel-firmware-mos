@@ -14,15 +14,15 @@ private:
 
     public:
         int updateInterval() {
-            return get_cfg()->s6fresnel.update_interval;
+            return mgos_sys_config_get_s6fresnel_update_interval();
         }
 
         const char *location() {
-            return get_cfg()->s6fresnel.location;
+            return mgos_sys_config_get_s6fresnel_location();
         }
 
         const char *name() {
-            return get_cfg()->s6fresnel.name;
+            return mgos_sys_config_get_s6fresnel_name();
         }
     };
 
@@ -34,7 +34,7 @@ public:
     }
 
     const char *deviceId() {
-        return get_cfg()->device.id;
+        return mgos_sys_config_get_device_id();
     }
 
     S6Fresnel s6fresnel() {

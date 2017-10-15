@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../IScalarSensor.h"
-#include "../IADCReader.h"
+#include "../interfaces/IScalarSensor.h"
+#include "../interfaces/IADCReader.h"
 
 #if CS_PLATFORM == CS_P_ESP8266
 #include "../hardware/SONOFFPowerSensor.h"
@@ -15,8 +15,10 @@
 
 IScalarSensor<float> *getPowerSensor() {
 #if CS_PLATFORM == CS_P_ESP8266
+    LOG(LL_DEBUG, ("SONOFF PowerSensor"));
     return new SONOFFPowerSensor();
 #elif CS_PLATFORM == CS_P_ESP32
+    LOG(LL_DEBUG, ("S6 Fresnel PowerSensor"));
     IADCReader *adcReader = new ESP32ADCReader(ADC_PIN);
     return new S6FPowerSensor(adcReader);
 #endif

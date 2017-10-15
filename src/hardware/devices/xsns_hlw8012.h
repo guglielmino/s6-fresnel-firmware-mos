@@ -25,9 +25,6 @@
 #define HLW_UREF             2200    // 220.0V
 #define HLW_IREF             4545    // 4.545A
 
-#define WS2812_PIN           14           // GPIO 14 option
-#define WS2812_LEDS          30           // [Pixels] Number of LEDs
-
 #define HLW_SEL              5            // GPIO 05 = HLW8012 Sel output (Sonoff Pow)
 #define HLW_CF1              13           // GPIO 13 = HLW8012 CF1 voltage / current (Sonoff Pow)
 #define HLW_CF               14           // GPIO 14 = HLW8012 CF power (Sonoff Pow)
@@ -52,10 +49,9 @@ struct SYSCFG {
     unsigned long hlw_ucal;
     unsigned long hlw_ical;
     uint16_t tele_period;
-
+    uint8_t power;
 } sysCfg;
 
-uint8_t power;                        // Current copy of sysCfg.power
 
 struct TIME_T {
     uint8_t Second;
@@ -89,12 +85,8 @@ time_t hlw_lasttime;
 
 unsigned long hlw_cf1u_pcntmax, hlw_cf1i_pcntmax;
 
-#if WS2812_PIN != 3
-
 void hlw_cf_interrupt(int pin, void *arg) ICACHE_RAM_ATTR;
-
 void hlw_cf1_interrupt(int pin, void *arg) ICACHE_RAM_ATTR;
-#endif
 
 void hlw_cf_interrupt(int pin, void *arg)  // Service Power
 {
@@ -125,6 +117,7 @@ void hlw_cf1_interrupt(int pin, void *arg)  // Service Voltage and Current
 void hlw_200mS(void *param) {
     (void) param;
     unsigned long hlw_len, hlw_temp;
+
 
     hlw_fifth_second++;
     if (hlw_fifth_second == 5) {
@@ -183,9 +176,7 @@ uint8_t hlw_readEnergy(uint8_t option, float &ed, uint16_t &e, uint16_t &w, uint
     unsigned long hlw_len, hlw_temp, hlw_w = 0, hlw_u = 0, hlw_i = 0;
     int hlw_period, hlw_interval;
 
-//char log[LOGSZ];
-//snprintf_P(log, sizeof(log), PSTR("HLW: CF %d, CF1U %d (%d), CF1I %d (%d)"), hlw_cf_plen, hlw_cf1u_plen, hlw_cf1u_pcntmax, hlw_cf1i_plen, hlw_cf1i_pcntmax);
-//addLog(LOG_LEVEL_DEBUG, log);
+    //LOG(LL_DEBUG, ("HLW: CF %lu, CF1U %lu (%lu), CF1I %lu (%lu)", hlw_cf_plen, hlw_cf1u_plen, hlw_cf1u_pcntmax, hlw_cf1i_plen, hlw_cf1i_pcntmax));
 
     if (hlw_kWhtoday) {
         ed = (float) hlw_kWhtoday / 100000000;
@@ -217,7 +208,7 @@ uint8_t hlw_readEnergy(uint8_t option, float &ed, uint16_t &e, uint16_t &w, uint
     } else {
         w = 0;
     }
-    if (hlw_cf1u_plen && (w || (power & 1))) {
+    if (hlw_cf1u_plen && (w || (sysCfg.power & 1))) {
         hlw_u = (HLW_UREF * sysCfg.hlw_ucal) / hlw_cf1u_plen;
         u = hlw_u / 10;
     } else {
@@ -258,7 +249,6 @@ void every_second(void *) {
 void hlw_init() {
     mgos_uptime_init();
 
-
     if (initialized) return;
     initialized = true;
 
@@ -285,14 +275,20 @@ void hlw_init() {
 
     hlw_SELflag = 0;  // Voltage;
 
+
     mgos_gpio_set_mode(HLW_SEL, MGOS_GPIO_MODE_OUTPUT);
     mgos_gpio_write(HLW_SEL, (hlw_SELflag == 1));
+
+    mgos_gpio_enable_int(HLW_CF);
+    mgos_gpio_enable_int(HLW_CF1);
+
     mgos_gpio_set_mode(HLW_CF1, MGOS_GPIO_MODE_INPUT);
     mgos_gpio_set_pull(HLW_CF1, MGOS_GPIO_PULL_UP);
-    mgos_gpio_set_int_handler_isr(HLW_CF1, MGOS_GPIO_INT_EDGE_NEG, hlw_cf1_interrupt, NULL);
+    mgos_gpio_set_int_handler(HLW_CF1, MGOS_GPIO_INT_EDGE_NEG, hlw_cf1_interrupt, NULL);
+
     mgos_gpio_set_mode(HLW_CF, MGOS_GPIO_MODE_INPUT);
     mgos_gpio_set_pull(HLW_CF, MGOS_GPIO_PULL_UP);
-    mgos_gpio_set_int_handler_isr(HLW_CF, MGOS_GPIO_INT_EDGE_NEG, hlw_cf_interrupt, NULL);
+    mgos_gpio_set_int_handler(HLW_CF, MGOS_GPIO_INT_EDGE_NEG, hlw_cf_interrupt, NULL);
 
     hlw_startup = 1;
     hlw_lasttime = 0;

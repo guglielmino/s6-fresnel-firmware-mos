@@ -6,8 +6,8 @@
 
 #pragma once
 
-#include "../IADCReader.h"
-#include "../IScalarSensor.h"
+#include "../interfaces/IADCReader.h"
+#include "../interfaces/IScalarSensor.h"
 
 
 class S6DailyKwh : public IScalarSensor<unsigned long> {

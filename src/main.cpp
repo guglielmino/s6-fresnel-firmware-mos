@@ -10,9 +10,15 @@
 #include "network/mqtt.h"
 #include "config/settings.h"
 #include "hardware/S6FPowerSensor.h"
+#include "hardware/S6ExtPowerSensor.h"
 #include "hardware/gpio/OutputDevice.h"
 #include "hardware/gpio/InputDevice.h"
 #include "factories/sensorsFactories.h"
+
+#include "hardware/serials/SPIManager.h"
+
+#include "globals.h"
+#include "devfunctions.h"
 
 using namespace S6MqttModule;
 
@@ -22,31 +28,25 @@ Settings settings;
 
 IScalarSensor<float> *powerSensor = nullptr;
 IScalarSensor<unsigned long> *dailyKwh = nullptr;
+
 MQTTManager *mqttManager = nullptr;
 OutputDevice *rele1 = nullptr;
 OutputDevice *statusLed = nullptr;
 
-InputDevice button(BUTTON_PIN, [] (bool newPinSate) {
-    LOG(LL_DEBUG, ("Button pressed %d", (int)newPinSate));
-});
+InputDevice *button = nullptr;
+
+
+OutputDevice::SwitchMode relayState =  OutputDevice::OFF;
 
 auto powerSwitchSubscription = [](const char *topic, size_t topic_len, const char *msg, size_t msg_len) {
-    char localTopic[MAX_TOPIC_LEN] = "";
     char localMsg[MAX_MSG_LEN] = "";
-    memcpy(localTopic, topic, MIN(topic_len, MAX_TOPIC_LEN));
     memcpy(localMsg, msg, MIN(msg_len, MAX_MSG_LEN));
-    LOG(LL_DEBUG, ("hander => PowerSwitch %s -> %s (REL PIN %d)", localTopic, localMsg, REL_PIN));
+    (void)topic;
+    (void)topic_len;
 
-    OutputDevice::SwitchMode state = (strcmp(localMsg, "on") == 0 ? OutputDevice::ON : OutputDevice::OFF);
-    LOG(LL_DEBUG, ("STATE =>  %d", (int)state));
+    relayState = (strcmp(localMsg, "on") == 0 ? OutputDevice::ON : OutputDevice::OFF);
 
-    rele1->turn(state);
-    statusLed->turn(state);
-
-    char powerMessage[MQTT_MESSAGE_SIZE];
-
-    powerFeedbackMessage(powerMessage, sizeof(powerMessage), (state == OutputDevice::ON ));
-    mqttManager->publish(pubPowerFeedbackTopic, powerMessage, strlen(powerMessage));
+    turnRelay(relayState);
 };
 
 /**
@@ -129,6 +129,12 @@ enum mgos_app_init_result mgos_app_init(void) {
 
     powerSensor = getPowerSensor();
     dailyKwh = getDailyKwhSensor();
+
+    button = new InputDevice(BUTTON_PIN, [] (bool newPinSate) {
+        (void) newPinSate;
+        relayState = (relayState == OutputDevice::ON ? OutputDevice::OFF : OutputDevice::ON);
+        turnRelay(relayState);
+    });
 
     return MGOS_APP_INIT_SUCCESS;
 }
