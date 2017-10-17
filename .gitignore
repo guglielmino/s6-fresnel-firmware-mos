@@ -45,7 +45,6 @@ CTestTestfile.cmake
 
 build
 
-
 # User-specific stuff:
 .idea/**/workspace.xml
 .idea/**/tasks.xml
