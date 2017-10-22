@@ -1,9 +1,5 @@
-#define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
-
 #include <ctime>
-
 #include "../catch.hpp"
-
 #include "../../src/scheduler/Schedule.hpp"
 
 SCENARIO( "Schedule tell if time match running specification", "[Schedule]" ) {

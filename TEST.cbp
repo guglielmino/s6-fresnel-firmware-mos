@@ -94,7 +94,16 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/Users/fabrizio/Sources/my/s6-fresnel-firmware-mos/src/hardware/io/UARTInterface.hpp">
+			<Option target="s6test"/>
+		</Unit>
 		<Unit filename="/Users/fabrizio/Sources/my/s6-fresnel-firmware-mos/test/scheduler/schedule_spec.cpp">
+			<Option target="s6test"/>
+		</Unit>
+		<Unit filename="/Users/fabrizio/Sources/my/s6-fresnel-firmware-mos/test/scheduler/scheduler_spec.cpp">
+			<Option target="s6test"/>
+		</Unit>
+		<Unit filename="/Users/fabrizio/Sources/my/s6-fresnel-firmware-mos/test/test_base.cpp">
 			<Option target="s6test"/>
 		</Unit>
 		<Unit filename="/Users/fabrizio/Sources/my/s6-fresnel-firmware-mos/CMakeLists.txt">

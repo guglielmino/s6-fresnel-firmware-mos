@@ -15,7 +15,7 @@
 #include "hardware/gpio/InputDevice.h"
 #include "factories/sensorsFactories.h"
 
-#include "hardware/serials/SPIManager.h"
+#include "hardware/io/UARTInterface.hpp"
 
 #include "globals.h"
 #include "devfunctions.h"

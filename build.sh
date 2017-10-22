@@ -11,7 +11,9 @@ then
   rm -rf build/
 fi
 
-mos build --platform=$PLATFORM
+#mos build --platform=$PLATFORM
+mos build --local --platform=$PLATFORM
+
 
 if [ $? -eq 0 ]
 then
