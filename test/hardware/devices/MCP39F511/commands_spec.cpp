@@ -170,6 +170,7 @@ SCENARIO( "Set Address Pointer and Register Read composed command", "[MCP39F511C
                 REQUIRE(res[4] == 0x06);
                 REQUIRE(res[5] == 0x4E);
                 REQUIRE(res[6] == 0x20);
+                REQUIRE(res[7] == 0x62);
                 REQUIRE(res.size() == 8);
             }
         }

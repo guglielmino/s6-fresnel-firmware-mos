@@ -88,7 +88,7 @@ std::vector<uint8_t> makeFrame(std::vector<MCP39F511Command *> commands) {
     // Add commands
     frame.insert(frame.end(), commandsbuffer.begin(), commandsbuffer.end());
     // Checksum
-    uint8_t chksum = checksum(frame.data(), frame.size() + 1);
+    uint8_t chksum = checksum(frame.data(), frame.size());
     frame.push_back(chksum);
 
     return frame;

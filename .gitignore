@@ -75,3 +75,5 @@ cmake-build-debug/
 deps/
 *.cbp
 /test/s6test
+
+.DS_Store
