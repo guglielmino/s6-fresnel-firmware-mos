@@ -20,7 +20,7 @@
 #define CMD_ERASE_EEPROM 0x4F
 #define CMD_AUTO_CALIBRATE_GAIN 0x5A
 #define CMD_AUTO_CALIBRATE_Q_GAIN 0x7A
-#define MCMD_AUTO_CALIBRATE_F 0x76
+#define CMD_AUTO_CALIBRATE_F 0x76
 
 // Registers
 #define MCP_REG_INST_POINTER    0x0000 // Instruction Pointer 6.2 R u16 Address pointer for read or write commands
