@@ -94,7 +94,19 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/Users/fabrizio/Sources/my/s6-fresnel-firmware-mos/src/hardware/MCP39F511Utils.hpp">
+			<Option target="s6test"/>
+		</Unit>
 		<Unit filename="/Users/fabrizio/Sources/my/s6-fresnel-firmware-mos/src/hardware/io/UARTInterface.hpp">
+			<Option target="s6test"/>
+		</Unit>
+		<Unit filename="/Users/fabrizio/Sources/my/s6-fresnel-firmware-mos/src/interfaces/IUART.h">
+			<Option target="s6test"/>
+		</Unit>
+		<Unit filename="/Users/fabrizio/Sources/my/s6-fresnel-firmware-mos/test/hardware/MCP39F511_spec.cpp">
+			<Option target="s6test"/>
+		</Unit>
+		<Unit filename="/Users/fabrizio/Sources/my/s6-fresnel-firmware-mos/test/hardware/MCP39F511_spec.hpp">
 			<Option target="s6test"/>
 		</Unit>
 		<Unit filename="/Users/fabrizio/Sources/my/s6-fresnel-firmware-mos/test/scheduler/schedule_spec.cpp">

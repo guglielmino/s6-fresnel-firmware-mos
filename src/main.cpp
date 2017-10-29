@@ -10,7 +10,7 @@
 #include "network/mqtt.h"
 #include "config/settings.h"
 #include "hardware/S6FPowerSensor.h"
-#include "hardware/S6ExtPowerSensor.h"
+#include "hardware/S6MCP39F511PowerSensor.h"
 #include "hardware/gpio/OutputDevice.h"
 #include "hardware/gpio/InputDevice.h"
 #include "factories/sensorsFactories.h"

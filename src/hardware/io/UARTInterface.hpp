@@ -5,9 +5,10 @@
 #pragma once
 
 #include "common/platform.h"
-
 #include "mgos.h"
 #include "mgos_uart.h"
+
+#include "../../interfaces/IUART.h"
 
 enum UARTParity {
     UART_PARITY_NONE = 0,
@@ -22,7 +23,7 @@ enum UARTStopBits {
 };
 
 struct UARTConfig {
-    uint8_t baud_rate;
+    uint32_t baud_rate;
     uint8_t num_data_bits;
     enum UARTParity parity;
     enum UARTStopBits stop_bits;
@@ -60,7 +61,7 @@ enum mgos_uart_stop_bits toMosStopBits(enum UARTStopBits stopbits) {
     return ret;
 }
 
-class UARTInterface {
+class UARTInterface : public IUART {
 public:
     typedef void (*read_async_callback_t)(char *buffer, size_t len);
 
@@ -86,7 +87,7 @@ private:
 
 public:
 
-    UARTInterface(int uartNum, UARTConfig config, uint8_t txgpio, uint8_t rxgpio) : _uartNum(uartNum) {
+    UARTInterface(int uartNum, UARTConfig &config, uint8_t txgpio, uint8_t rxgpio) : _uartNum(uartNum) {
         struct mgos_uart_config cfg;
         mgos_uart_config_set_defaults(_uartNum, &cfg);
 

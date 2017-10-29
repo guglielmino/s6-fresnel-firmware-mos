@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(TEST)
+project(s6fresnel)
 
 set(CMAKE_CXX_STANDARD 11)
 
