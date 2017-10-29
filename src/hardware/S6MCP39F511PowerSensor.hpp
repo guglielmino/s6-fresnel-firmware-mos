@@ -12,10 +12,10 @@
 
 class S6MCP39F511PowerSensor : public IScalarSensor<float> {
 private:
-    const IUART &_uart;
+    IUART *_uart;
 
 public:
-    S6MCP39F511PowerSensor(const IUART &uart)  : _uart(uart) {
+    S6MCP39F511PowerSensor(IUART *uart)  : _uart(uart) {
 
     }
 
