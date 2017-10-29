@@ -1,14 +1,12 @@
 //
-// Created by Fabrizio Guglielmino on 21/10/17.
+// Created by Fabrizio Guglielmino on 25/10/17.
 //
 
 #pragma once
 
-#include "common/platform.h"
 #include "mgos.h"
 #include "mgos_uart.h"
 
-#include "../../interfaces/IUART.h"
 
 enum UARTParity {
     UART_PARITY_NONE = 0,
@@ -61,28 +59,18 @@ enum mgos_uart_stop_bits toMosStopBits(enum UARTStopBits stopbits) {
     return ret;
 }
 
-class UARTInterface : public IUART {
+class UARTInterface {
 public:
-    typedef void (*read_async_callback_t)(char *buffer, size_t len);
+    typedef void (*async_data_available_callback_t)();
 
 private:
     uint8_t _uartNum;
-    read_async_callback_t _read_async_callback;
+    async_data_available_callback_t _read_async_callback;
 
-    static void _internal_read_async_callback(int uart_no, void *arg) {
-        UARTInterface *me = (UARTInterface *)arg;
-
-        size_t rx_av = mgos_uart_read_avail(uart_no);
-        if (rx_av > 0) {
-            struct mbuf rxb;
-            mbuf_init(&rxb, 0);
-            mgos_uart_read_mbuf(uart_no, &rxb, rx_av);
-            if (rxb.len > 0) {
-                LOG(LL_DEBUG, ("DBG: DISPATCH READ %.*s", (int) rxb.len, rxb.buf));
-                me->_read_async_callback(rxb.buf, rxb.len);
-            }
-            mbuf_free(&rxb);
-        }
+    static void _internal_async_data_avail(int uart_no, void *arg) {
+        (void) uart_no;
+        UARTInterface *me = (UARTInterface *) arg;
+        me->_read_async_callback();
     }
 
 public:
@@ -95,8 +83,13 @@ public:
         cfg.num_data_bits = config.num_data_bits;
         cfg.parity = toMosParity(config.parity);
         cfg.stop_bits = toMosStopBits(config.stop_bits);
+#if CS_PLATFORM == CS_P_ESP32
         cfg.dev.tx_gpio = rxgpio; // 4
         cfg.dev.rx_gpio = txgpio; // 36
+#else
+        (void)txgpio;
+        (void)rxgpio;
+#endif
 
         mgos_uart_configure(_uartNum, &cfg);
 
@@ -104,17 +97,21 @@ public:
     }
 
 
-    size_t write(const void* buffer, size_t len) {
+    size_t write(const void *buffer, size_t len) {
         return mgos_uart_write(_uartNum, buffer, len);
+    }
+
+    void flush() {
+        mgos_uart_flush(_uartNum);
     }
 
     size_t read(void *buf, size_t len) {
         return mgos_uart_read(_uartNum, buf, len);
     }
 
-    void readAsync(read_async_callback_t cb) {
+    void readAsync(async_data_available_callback_t cb) {
         _read_async_callback = cb;
-        mgos_uart_set_dispatcher(_uartNum, _internal_read_async_callback, this);
+        mgos_uart_set_dispatcher(_uartNum, _internal_async_data_avail, this);
     }
 
     size_t readAvail() {
@@ -124,5 +121,4 @@ public:
     size_t writeAvail() {
         return mgos_uart_write_avail(_uartNum);
     }
-
 };
