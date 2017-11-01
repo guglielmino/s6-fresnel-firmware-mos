@@ -12,7 +12,6 @@
 #include "../interfaces/IScalarSensor.h"
 #include "../interfaces/IUART.h"
 
-#define MAX_MCP39F511_BUFF_SIZE 35
 #define VOLTAGE_RESP_BUFFER_SIZE 5
 
 class S6MCP39F511VoltageSensor : public IScalarSensor<float>, MCP39F511Utils {
@@ -26,26 +25,11 @@ public:
 
     float readValue() {
         float ret = 0.0;
-        AddressPointerCmd setPointer(0x00, 0x06);
-        RegisterReadCmd readRegister(0x02);
+        char buffer[VOLTAGE_RESP_BUFFER_SIZE];
+        bool success = readRegister(_uart, MCP_REG_VOLTS, 2, buffer, VOLTAGE_RESP_BUFFER_SIZE);
 
-        std::vector<MCP39F511Command *> commands;
-        commands.push_back(&setPointer);
-        commands.push_back(&readRegister);
-        std::vector<uint8_t> frame = makeFrame(commands);
-        int frameSize = frame.size();
-
-        for (unsigned int i = 0; i < frameSize; ++i) {
-            _uart->write(&frame[i], 1);
-            _uart->flush();
-            mgos_usleep(1000);
-        }
-        mgos_usleep(5000);
-
-        char buff[VOLTAGE_RESP_BUFFER_SIZE];
-        size_t read = _uart->read(buff, VOLTAGE_RESP_BUFFER_SIZE);
-        if(read > 0 && checkResp(buff)) {
-            uint16_t Vrms = readInt(buff, 0);
+        if(success) {
+            uint16_t Vrms = u16(buffer, 0);
             ret = (Vrms / 10.0);
         }
 

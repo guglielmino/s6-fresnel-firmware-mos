@@ -28,24 +28,16 @@
 #define MCP_REG_SYSTEM_VERSION  0x0004 // System Version 6.4 R u16 System version date code information for MCP39F511N, set at the Microchip factory; format YMDD
 #define MCP_REG_VOLTS           0x0006 // Voltage RMS 5.4 R u16 RMS Voltage output
 #define MCP_REG_FREQUENCY       0x0008 // Line Frequency 5.1.1 R u16 Line Frequency output
-#define MCP_REG_PF1             0x000A // Power Factor1 5.8 R s16 Power Factor output from channel 1
-#define MCP_REG_PF2             0x000C // Power Factor2 5.8 R s16 Power Factor output from channel 2
-#define MCP_REG_AMPS1           0x000E // Current RMS1 5.4 R u32 RMS Current output from channel 1
-#define MCP_REG_AMPS2           0x0012 // Current RMS2 5.4 R u32 RMS Current output from channel 2
-#define MCP_REG_WATTS1          0x0016 // Active Power1 5.7 R u32 Active Power output from channel 1
-#define MCP_REG_WATTS2          0x001A // Active Power2 5.7 R u32 Active Power output from channel 2
-#define MCP_REG_VARS1           0x001E // Reactive Power1 5.9 R u32 Reactive Power output from channel 1
-#define MCP_REG_VARS2           0x0022 // Reactive Power2 5.9 R u32 Reactive Power output from channel 2
-#define MCP_REG_VA1             0x0026 // Apparent Power1 5.4 R u32 Apparent Power output from channel 1
-#define MCP_REG_VA2             0x002A // Apparent Power2 5.4 R u32 Apparent Power output from channel 2
-#define MCP_REG_IMPORT_WH1      0x002E // Import Energy Active Counter 1 5.6 R u64 Accumulator for Active Energy, Import, channel 1
-#define MCP_REG_IMPORT_WH2      0x0036 // Import Energy Active Counter 2 5.6 R u64 Accumulator for Active Energy, Import, channel 2
-#define MCP_REG_EXPORT_WH1      0x003E // Export Energy Active Counter 1 5.6 R u64 Accumulator for Active Energy, Export, channel 1
-#define MCP_REG_EXPORT_WH2      0x0046 // Export Energy Active Counter 2 5.6 R u64 Accumulator for Active Energy, Export, channel 2
-#define MCP_REG_IMPORT_VAR1     0x004E // Import Energy Reactive Counter 1 5.6 R u64 Accumulator for Reactive Energy, Import,channel 1
-#define MCP_REG_IMPORT_VAR2     0x0056 // Import Energy Reactive Counter 2 5.6 R u64 Accumulator for Reactive Energy, Import,channel 2
-#define MCP_REG_EXPORT_VAR1     0x005E // Export Energy Reactive Counter 1 5.6 R u64 Accumulator for Reactive Energy, Export,channel 1
-#define MCP_REG_EXPORT_VAR2     0x0066 // Export Energy Reactive Counter 2 5.6 R u64 Accumulator for Reactive Energy, Export,channel 2
+#define MCP_REG_ANALINPUT_V     0x000A // Analog input vltage
+#define MCP_REG_POWER_FACTOR    0x000C // Power factor
+#define MCP_REG_CURRENT_RMS     0x000E // Current RMS
+#define MCP_REG_ACTIVE_POWER    0x0012 // Active power
+#define MCP_REG_REACTIVE_POWER  0x0016 // Reactive power
+#define MCP_REG_APPARENT_POWER  0x001A // Apparent power
+#define MCP_REG_IMP_ACTIVE_CNT  0x001E // Import Active Energy Counter
+#define MCP_REG_EXP_ACTIVE_CNT  0x0026 // Export Active Energy Counter
+#define MCP_REG_IMP_REACT_CNT   0x002E // Import Reactive Energy Counter
+#define MCP_REG_EXP_REACT_CNT   0x0036 // Export Reactive Energy Counter
 
 
 uint8_t checksum(const uint8_t *buffer, size_t len) {

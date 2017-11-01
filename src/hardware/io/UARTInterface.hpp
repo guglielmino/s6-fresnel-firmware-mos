@@ -6,7 +6,7 @@
 
 #include "mgos.h"
 #include "mgos_uart.h"
-
+#include "../../interfaces/IUART.h"
 
 enum UARTParity {
     UART_PARITY_NONE = 0,
@@ -59,18 +59,15 @@ enum mgos_uart_stop_bits toMosStopBits(enum UARTStopBits stopbits) {
     return ret;
 }
 
-class UARTInterface {
-public:
-    typedef void (*async_data_available_callback_t)();
-
+class UARTInterface : public IUART {
 private:
     uint8_t _uartNum;
-    async_data_available_callback_t _read_async_callback;
+    async_data_available_callback_t _async__data_avail_callback;
 
     static void _internal_async_data_avail(int uart_no, void *arg) {
-        (void) uart_no;
+        (void)uart_no;
         UARTInterface *me = (UARTInterface *) arg;
-        me->_read_async_callback();
+        me->_async__data_avail_callback();
     }
 
 public:
@@ -109,8 +106,8 @@ public:
         return mgos_uart_read(_uartNum, buf, len);
     }
 
-    void readAsync(async_data_available_callback_t cb) {
-        _read_async_callback = cb;
+    void readAsync(async_data_available_callback_t cb)  {
+        _async__data_avail_callback = cb;
         mgos_uart_set_dispatcher(_uartNum, _internal_async_data_avail, this);
     }
 

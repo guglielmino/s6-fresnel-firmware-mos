@@ -4,7 +4,7 @@
 
 #pragma once
 
-#define USE_OLD_CFG
+//#define USE_OLD_CFG
 
 #include "mgos.h"
 

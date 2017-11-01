@@ -4,13 +4,15 @@
 
 #pragma once
 
+#include "../hardware/devices/MCP39F511/MCP39F511Utils.hpp"
+
 #include "../interfaces/IScalarSensor.h"
 #include "../interfaces/IUART.h"
 
-#define MAX_MCP39F511_BUFF_SIZE 35
 
+#define POWER_RESP_BUFFER_SIZE 7
 
-class S6MCP39F511PowerSensor : public IScalarSensor<float> {
+class S6MCP39F511PowerSensor : public IScalarSensor<float>, MCP39F511Utils {
 private:
     IUART *_uart;
 
@@ -20,19 +22,16 @@ public:
     }
 
     float readValue() {
+        float ret = 0.0;
+        char buffer[POWER_RESP_BUFFER_SIZE];
+        bool success = readRegister(_uart, MCP_REG_ACTIVE_POWER, 4, buffer, POWER_RESP_BUFFER_SIZE);
 
-        /*
+        if(success) {
+            uint32_t power = u32(buffer, 0);
+            ret = (power / 100.0);
+        }
 
-         NOTE: WRITE BYTE BY BYTE WIth 1ms delay
-        for (unsigned int i = 0; i < sizeof(cmd); ++i) {
-            uart->write(&cmd[i], 1);
-            uart->flush();
-            mgos_usleep(1000);
-         }
-    }
-         */
-
-        return 0;
+        return ret;
     }
 };
 
