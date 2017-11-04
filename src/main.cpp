@@ -131,7 +131,7 @@ enum mgos_app_init_result mgos_app_init(void) {
         (void) newPinSate;
         relayState = (relayState == OutputDevice::ON ? OutputDevice::OFF : OutputDevice::ON);
         turnRelay(relayState);
-    });
+    }, true);
 
     return MGOS_APP_INIT_SUCCESS;
 }

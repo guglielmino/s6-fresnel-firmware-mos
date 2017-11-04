@@ -11,11 +11,17 @@ public:
 
     typedef void (*event_callback_t)(bool newPinState);
 
-    InputDevice(int pin, InputDevice::event_callback_t cb) : _pin(pin) {
+    InputDevice(int pin, InputDevice::event_callback_t cb, bool isButton = false) : _pin(pin) {
         _inputCallback = cb;
 
         mgos_gpio_set_mode(pin, MGOS_GPIO_MODE_INPUT);
-        mgos_gpio_set_int_handler(pin, MGOS_GPIO_INT_EDGE_NEG, int_handler, this);
+        if(!isButton) {
+            mgos_gpio_set_int_handler(pin, MGOS_GPIO_INT_EDGE_NEG, int_handler, this);
+        } else {
+            mgos_gpio_set_button_handler(pin, MGOS_GPIO_PULL_UP,
+                                         MGOS_GPIO_INT_EDGE_NEG, 80, int_handler, this);
+        }
+
         mgos_gpio_enable_int(pin);
     }
 
