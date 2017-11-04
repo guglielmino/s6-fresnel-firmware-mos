@@ -1,7 +1,10 @@
+#include <string>
+#include <time.h>
+
 #include "mgos.h"
 #include "mgos_timers.h"
 #include "mgos_config.h"
-#include <time.h>
+
 
 #include "consts.h"
 #include "network/topics.h"
@@ -54,28 +57,24 @@ void power_read_timed(void *) {
     unsigned long dailyConsume = dailyKwh->readValue();
 
     if (mqttManager != nullptr) {
-        char messageBuffer[100];
-        powerConsumeMessage(messageBuffer, sizeof(messageBuffer), now().c_str(), powerValue);
-        mqttManager->publish(pubSensPowerTopic, (const char *) messageBuffer, strlen(messageBuffer));
+        std::string powerConsumeMsg = powerConsumeMessage(now().c_str(), powerValue);
+        mqttManager->publish(pubSensPowerTopic, (const char *) powerConsumeMsg.c_str(), powerConsumeMsg.size());
 
-        memset(messageBuffer, 0, 100);
-        dailyConsumeMessage(messageBuffer, sizeof(messageBuffer), now().c_str(), dailyConsume);
-        mqttManager->publish(pubSensDailyKwhTopic, (const char *) messageBuffer, strlen(messageBuffer));
+        std::string dailyConsumeMsg = dailyConsumeMessage(now().c_str(), dailyConsume);
+        mqttManager->publish(pubSensDailyKwhTopic, (const char *) dailyConsumeMsg.c_str(), dailyConsumeMsg.size());
     }
 }
 
 void publishInfoMessage() {
-     char infoMessage[100] = "";
-     devInfoMessage(infoMessage, sizeof(infoMessage), FIRMWARE_APP_NAME, FIRMWARE_APP_VERSION,
+     std::string infoMessage = devInfoMessage(FIRMWARE_APP_NAME, FIRMWARE_APP_VERSION,
                    settings.s6fresnel().location(),
                    settings.s6fresnel().name());
-    mqttManager->publish(pubInfoTopic, infoMessage, strlen(infoMessage));
+    mqttManager->publish(pubInfoTopic, infoMessage.c_str(), infoMessage.size());
 }
 
 void publishLWTOnlineMessage(bool online) {
-    char message[100] = "";
-    lwtMessage(message, 100, online);
-    mqttManager->publish(pubLWTTopic, message, strlen(message));
+    std::string message = lwtMessage(online);
+    mqttManager->publish(pubLWTTopic, message.c_str(), message.size());
 }
 
 
@@ -104,8 +103,7 @@ enum mgos_app_init_result mgos_app_init(void) {
                     settings.deviceId());
 
 
-    char message[100] = "";
-    lwtMessage(message, 100, false);
+    std::string message = lwtMessage(false);
     settings.mqtt().lwtMessage(message);
     settings.mqtt().lwtTopic(pubLWTTopic);
 

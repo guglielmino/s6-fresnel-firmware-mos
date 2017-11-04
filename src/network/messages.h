@@ -4,17 +4,11 @@
 
 #pragma once
 
-//#include "../libs/rapidjson/document.h"
-//#include "../libs/rapidjson/prettywriter.h" // for stringify JSON
-
 #include "../libs/frozen.h"
 
 #include "mgos.h"
 
-//using namespace rapidjson;
-//using namespace std;
-
-//static Document document;
+#define MESSAGE_BUFFER_LEN 100
 
 /*
  Information about device and firmware
@@ -27,10 +21,12 @@
    "name": "lamp1"
 }
  */
-void devInfoMessage(char *buffer, size_t len, const char *appName, const char *ver, const char *location, const char *name) {
-    struct json_out out = JSON_OUT_BUF(buffer, len);
+std::string devInfoMessage(const char *appName, const char *ver, const char *location, const char *name) {
+    char buffer[MESSAGE_BUFFER_LEN] = "";
+    struct json_out out = JSON_OUT_BUF(buffer, MESSAGE_BUFFER_LEN);
     json_printf(&out, "{ %Q: %Q, %Q: %Q, %Q: %Q, %Q: %Q }", "appName", appName, "version", ver,
                 "location", location, "name", name);
+    return std::string(buffer);
 }
 
 
@@ -44,9 +40,11 @@ void devInfoMessage(char *buffer, size_t len, const char *appName, const char *v
   “power": 23.3
 }
  */
-void powerConsumeMessage(char *buffer, size_t len, const char *timestring, float value) {
-    struct json_out out = JSON_OUT_BUF(buffer, len);
+std::string powerConsumeMessage(const char *timestring, float value) {
+    char buffer[MESSAGE_BUFFER_LEN] = "";
+    struct json_out out = JSON_OUT_BUF(buffer, MESSAGE_BUFFER_LEN);
     json_printf(&out, "{ %Q: %Q, %Q: %f }", "timestamp", timestring, "power", value);
+    return std::string(buffer);
 }
 
 /*
@@ -58,9 +56,11 @@ void powerConsumeMessage(char *buffer, size_t len, const char *timestring, float
   “consume": 23.3
 }
  */
-void dailyConsumeMessage(char *buffer, size_t len, const char *timestring, float value) {
-    struct json_out out = JSON_OUT_BUF(buffer, len);
+std::string dailyConsumeMessage(const char *timestring, float value) {
+    char buffer[MESSAGE_BUFFER_LEN] = "";
+    struct json_out out = JSON_OUT_BUF(buffer, MESSAGE_BUFFER_LEN);
     json_printf(&out, "{ %Q: %Q, %Q: %f }", "timestamp", timestring, "consume", value);
+    return std::string(buffer);
 }
 
 /*
@@ -70,11 +70,12 @@ void dailyConsumeMessage(char *buffer, size_t len, const char *timestring, float
     "status": "on" // "on" | "off"
 }
 
-
  */
-void powerFeedbackMessage(char *buffer, size_t len, bool on) {
-    struct json_out out = JSON_OUT_BUF(buffer, len);
+std::string powerFeedbackMessage(bool on) {
+    char buffer[MESSAGE_BUFFER_LEN] = "";
+    struct json_out out = JSON_OUT_BUF(buffer, MESSAGE_BUFFER_LEN);
     json_printf(&out, "{ %Q: %Q }", "status", (on ? "on" : "off"));
+    return std::string(buffer);
 }
 
 /*
@@ -87,9 +88,11 @@ void powerFeedbackMessage(char *buffer, size_t len, bool on) {
 }
 
  */
-void lwtMessage(char *buffer, size_t len, bool online) {
-    struct json_out out = JSON_OUT_BUF(buffer, len);
+std::string lwtMessage(bool online) {
+    char buffer[MESSAGE_BUFFER_LEN] = "";
+    struct json_out out = JSON_OUT_BUF(buffer, MESSAGE_BUFFER_LEN);
     json_printf(&out, "{ %Q: %Q }", "status", (online ? "Online" : "Offline"));
+    return std::string(buffer);
 }
 
 
