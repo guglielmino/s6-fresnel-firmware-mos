@@ -122,32 +122,25 @@ namespace S6MqttModule {
             callbacks[event] = cb;
         }
 
-        void publish(const char *topic, const char *payload, int len, int qos = 0, bool retain = false) {
+        void publish(std::string topic, std::string payload, int qos = 0, bool retain = false) {
             if (isConnected) {
-                mgos_mqtt_pub(topic, (const void *) payload, len, qos, retain);
+                mgos_mqtt_pub(topic.c_str(),
+                              reinterpret_cast<const void *>(payload.c_str()), payload.size(), qos, retain);
             } else {
-                LOG(LL_DEBUG, ("Trying yo publish on %s with MQTT not connected", topic));
+                LOG(LL_DEBUG, ("Trying yo publish on %s with MQTT not connected", topic.c_str()));
             }
         }
 
-        void publish(const char *topic, std::string payload, int qos = 0, bool retain = false) {
-            if (isConnected) {
-                mgos_mqtt_pub(topic, reinterpret_cast<const void *>(payload.c_str()), payload.size(), qos, retain);
-            } else {
-                LOG(LL_DEBUG, ("Trying yo publish on %s with MQTT not connected", topic));
-            }
-        }
-
-        void subcribe(const char *topic, message_callback_t cb) {
+        void subcribe(std::string topic, message_callback_t cb) {
             if (isConnected) {
                 SubscribeUserData *ud = new SubscribeUserData();
                 ud->cb = cb;
                 ud->obj = this;
-                mgos_mqtt_sub(topic, mqtt_msg_handler, (void *) ud);
+                mgos_mqtt_sub(topic.c_str(), mqtt_msg_handler, (void *) ud);
 
-                LOG(LL_DEBUG, ("Subscribe to %s ", topic));
+                LOG(LL_DEBUG, ("Subscribe to %s ", topic.c_str()));
             } else {
-                LOG(LL_DEBUG, ("Trying yo subscribe on %s with MQTT not connected", topic));
+                LOG(LL_DEBUG, ("Trying yo subscribe on %s with MQTT not connected", topic.c_str()));
             }
         }
     };
