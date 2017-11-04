@@ -58,10 +58,10 @@ void power_read_timed(void *) {
 
     if (mqttManager != nullptr) {
         std::string powerConsumeMsg = powerConsumeMessage(now().c_str(), powerValue);
-        mqttManager->publish(pubSensPowerTopic, (const char *) powerConsumeMsg.c_str(), powerConsumeMsg.size());
+        mqttManager->publish(pubSensPowerTopic, powerConsumeMsg);
 
         std::string dailyConsumeMsg = dailyConsumeMessage(now().c_str(), dailyConsume);
-        mqttManager->publish(pubSensDailyKwhTopic, (const char *) dailyConsumeMsg.c_str(), dailyConsumeMsg.size());
+        mqttManager->publish(pubSensDailyKwhTopic, dailyConsumeMsg);
     }
 }
 
@@ -69,12 +69,12 @@ void publishInfoMessage() {
      std::string infoMessage = devInfoMessage(FIRMWARE_APP_NAME, FIRMWARE_APP_VERSION,
                    settings.s6fresnel().location(),
                    settings.s6fresnel().name());
-    mqttManager->publish(pubInfoTopic, infoMessage.c_str(), infoMessage.size());
+    mqttManager->publish(pubInfoTopic, infoMessage);
 }
 
 void publishLWTOnlineMessage(bool online) {
     std::string message = lwtMessage(online);
-    mqttManager->publish(pubLWTTopic, message.c_str(), message.size());
+    mqttManager->publish(pubLWTTopic, message);
 }
 
 

@@ -16,5 +16,5 @@ void turnRelay(OutputDevice::SwitchMode mode) {
     statusLed->turn(mode);
 
     std::string powerMessage = powerFeedbackMessage((mode == OutputDevice::ON ));
-    mqttManager->publish(pubPowerFeedbackTopic, powerMessage.c_str(), powerMessage.size());
+    mqttManager->publish(pubPowerFeedbackTopic, powerMessage);
 }

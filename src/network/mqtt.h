@@ -130,6 +130,14 @@ namespace S6MqttModule {
             }
         }
 
+        void publish(const char *topic, std::string payload, int qos = 0, bool retain = false) {
+            if (isConnected) {
+                mgos_mqtt_pub(topic, reinterpret_cast<const void *>(payload.c_str()), payload.size(), qos, retain);
+            } else {
+                LOG(LL_DEBUG, ("Trying yo publish on %s with MQTT not connected", topic));
+            }
+        }
+
         void subcribe(const char *topic, message_callback_t cb) {
             if (isConnected) {
                 SubscribeUserData *ud = new SubscribeUserData();
