@@ -82,13 +82,14 @@ void powerFeedbackMessage(char *buffer, size_t len, bool on) {
 
  example:
 {
-  "status": "Offline"  // Online
+  "timestamp": "2017-07-08T12:47:36",
+  "status": "Offline" // “Online”
 }
+
  */
-char *lwtMessage(const char *timestring, bool online) {
-    (void)timestring;
-    (void)online;
-    return NULL;
+void lwtMessage(char *buffer, size_t len, bool online) {
+    struct json_out out = JSON_OUT_BUF(buffer, len);
+    json_printf(&out, "{ %Q: %Q }", "status", (online ? "Online" : "Offline"));
 }
 
 

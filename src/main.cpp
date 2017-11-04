@@ -72,15 +72,17 @@ void publishInfoMessage() {
     mqttManager->publish(pubInfoTopic, infoMessage, strlen(infoMessage));
 }
 
+void publishLWTOnlineMessage(bool online) {
+    char message[100] = "";
+    lwtMessage(message, 100, online);
+    mqttManager->publish(pubLWTTopic, message, strlen(message));
+}
+
 
 
 enum mgos_app_init_result mgos_app_init(void) {
     cs_log_set_level(LL_DEBUG);
     LOG(LL_DEBUG, ("Device ID %s", settings.deviceId()));
-
-    // On board devices
-    rele1 = new OutputDevice(REL_PIN);
-    statusLed = new OutputDevice(STATUS_LED_PIN);
 
     // ** MQTT
     makeDeviceTopic(pubSensPowerTopic, MAX_TOPIC_LEN, PUB_SENS_POWER_TOPIC, settings.s6fresnel().location(),
@@ -98,6 +100,16 @@ enum mgos_app_init_result mgos_app_init(void) {
     makeDeviceTopic(pubPowerFeedbackTopic, MAX_TOPIC_LEN, PUB_EVENT_POWERFEEDBACK_TOPIC, settings.s6fresnel().location(),
                     settings.deviceId());
 
+    makeDeviceTopic(pubLWTTopic, MAX_TOPIC_LEN, PUB_EVENT_LWT_TOPIC, settings.s6fresnel().location(),
+                    settings.deviceId());
+
+
+    char message[100] = "";
+    lwtMessage(message, 100, false);
+    settings.mqtt().lwtMessage(message);
+    settings.mqtt().lwtTopic(pubLWTTopic);
+
+
     mqttManager = new MQTTManager();
 
     mqttManager->setEventCallback(MQTTManager::Connected, []() {
@@ -108,6 +120,7 @@ enum mgos_app_init_result mgos_app_init(void) {
         mqttManager->subcribe(subSwitchRoomTopic, powerSwitchSubscription);
 
         publishInfoMessage();
+        publishLWTOnlineMessage(true);
 
         // Start periodic power publishing on MQTT topic
         mgos_set_timer(settings.s6fresnel().updateInterval(), true, power_read_timed, NULL);
@@ -124,9 +137,11 @@ enum mgos_app_init_result mgos_app_init(void) {
         LOG(LL_DEBUG, ("S6 Fresnel:: MQTT Subscribe"));
     });
 
+    // On board devices
+    rele1 = new OutputDevice(REL_PIN);
+    statusLed = new OutputDevice(STATUS_LED_PIN);
     powerSensor = getPowerSensor();
     dailyKwh = getDailyKwhSensor();
-
     button = new InputDevice(BUTTON_PIN, [] (bool newPinSate) {
         (void) newPinSate;
         relayState = (relayState == OutputDevice::ON ? OutputDevice::OFF : OutputDevice::ON);

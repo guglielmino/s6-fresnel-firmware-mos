@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <string>
+
 //#define USE_OLD_CFG
 
 #include "mgos.h"
@@ -42,6 +44,24 @@ private:
 
     S6Fresnel s6Fresnel;
 
+    class MQTTSettings {
+    public:
+        void server(std::string serverAddress) {
+            mgos_sys_config_set_mqtt_server(serverAddress.c_str());
+        }
+
+        void lwtTopic(std::string lwtTopic) {
+            mgos_sys_config_set_mqtt_will_topic(lwtTopic.c_str());
+        }
+
+        void lwtMessage(std::string lwtMessage) {
+            mgos_sys_config_set_mqtt_will_message(lwtMessage.c_str());
+        }
+
+    };
+
+    MQTTSettings mqttSettings;
+
 public:
     Settings() {
 
@@ -55,8 +75,13 @@ public:
 #endif
     }
 
+    // Sub config objects
     S6Fresnel s6fresnel() {
         return s6Fresnel;
+    }
+
+    MQTTSettings mqtt() {
+        return mqttSettings;
     }
 
 

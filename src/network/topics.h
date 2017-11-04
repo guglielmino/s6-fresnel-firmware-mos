@@ -8,8 +8,8 @@
 #define PUB_SENS_INFO_TOPIC         "building/%s/sensors/%s/info"        // Device publish info message on this topic
 #define PUB_SENS_POWER_TOPIC        "building/%s/sensors/%s/power"       // Device publish power consume on this topic
 #define PUB_SENS_DAILYKWH_TOPIC     "building/%s/sensors/%s/dailyKwh"    // Device publish daily Kw/h accumulated consume on this topic
-#define PUB_EVENT_POWERFEEDBACK_TOPIC   "building/%s/events/%s/power"        // Device publish power switch feedback consume on this topic
-
+#define PUB_EVENT_POWERFEEDBACK_TOPIC   "building/%s/events/%s/power"    // Device publish power switch feedback consume on this topic
+#define PUB_EVENT_LWT_TOPIC         "building/%s/events/%s/lwt"          // Device publis Last Willing Message on this topic
 
 /* --- MQTT subsribe topics ---*/
 #define SUB_SWITCH_DEV         "building/%s/devices/%s/power"    // Device subscribe to this topic to handle power switch command (by device)
@@ -26,6 +26,7 @@ char pubSensDailyKwhTopic[MAX_TOPIC_LEN];
 char pubEventPowerTopic[MAX_TOPIC_LEN];
 char pubInfoTopic[MAX_TOPIC_LEN];
 char pubPowerFeedbackTopic[MAX_TOPIC_LEN];
+char pubLWTTopic[MAX_TOPIC_LEN];
 
 char subSwitchDevTopic[MAX_TOPIC_LEN];
 char subSwitchRoomTopic[MAX_TOPIC_LEN];
