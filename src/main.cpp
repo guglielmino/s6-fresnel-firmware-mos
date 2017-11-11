@@ -27,6 +27,7 @@ using namespace S6MqttModule;
 Settings settings;
 
 IScalarSensor<float> *activePower = nullptr;
+IScalarSensor<float> *reactivePower = nullptr;
 IScalarSensor<float> *dailyKwh = nullptr;
 IScalarSensor<float> *current = nullptr;
 IScalarSensor<float> *frequency = nullptr;
@@ -60,6 +61,10 @@ void power_read_timed(void *) {
         float powerValue = activePower->readValue();
         std::string powerConsumeMsg = makeSensorValueMessage(now().c_str(), powerValue, "W");
         mqttManager->publish(pubSensPowerTopic, powerConsumeMsg);
+
+        float reactiveValue = reactivePower->readValue();
+        std::string reactiveMsg = makeSensorValueMessage(now().c_str(), reactiveValue, "VA");
+        mqttManager->publish(pubSensReactivePowerTopic, reactiveMsg);
 
         float dailyConsume = dailyKwh->readValue();
         std::string dailyConsumeMsg = makeSensorValueMessage(now().c_str(), dailyConsume, "KWh");
@@ -118,6 +123,9 @@ enum mgos_app_init_result mgos_app_init(void) {
     makeDeviceTopic(pubSensFreqTopic, MAX_TOPIC_LEN, PUB_SENS_FREQUENCY_TOPIC, settings.s6fresnel().location(),
                     settings.deviceId());
 
+    makeDeviceTopic(pubSensReactivePowerTopic, MAX_TOPIC_LEN, PUB_SENS_RPOWER_TOPIC, settings.s6fresnel().location(),
+                    settings.deviceId());
+
     std::string message = lwtMessage(false);
     settings.mqtt().lwtMessage(message);
     settings.mqtt().lwtTopic(pubLWTTopic);
@@ -152,6 +160,7 @@ enum mgos_app_init_result mgos_app_init(void) {
     rele1 = new OutputDevice(REL_PIN);
     statusLed = new OutputDevice(STATUS_LED_PIN);
     activePower = getActivePowerSensor();
+    reactivePower = getReactivePowerSensor();
     dailyKwh = getDailyKwhSensor();
     current = getCurrentSensor();
     frequency = getLineFrequencySensor();
