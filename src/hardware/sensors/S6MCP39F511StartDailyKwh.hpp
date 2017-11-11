@@ -24,7 +24,7 @@ public:
 
     }
 
-    bool exec() {
-        return writeRegister(_uart, MCP_REG_RST_ENERGY_CNT, { 0x80 });
+    void exec() {
+        writeRegister(_uart, MCP_REG_RST_ENERGY_CNT, { 0x80 });
     }
 };

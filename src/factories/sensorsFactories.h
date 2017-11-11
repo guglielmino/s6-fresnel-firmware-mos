@@ -36,6 +36,7 @@
     #include "../hardware/sensors/S6MCP39F511DailyKwh.hpp"
     #include "../hardware/sensors/S6MCP39F511StartDailyKwh.hpp"
     #include "../hardware/sensors/S6MCP39F511ResetDailyKwh.hpp"
+    #include "../hardware/sensors/S6MCP39F511Current.hpp"
 
     IUART *_uart = nullptr;
 
@@ -66,6 +67,12 @@
     IScalarSensor<float> *getDailyKwhSensor() {
         IUART *uart = setupUART();
         return new S6MCP39F511DailyKwh(uart);
+    }
+
+    IScalarSensor<float> *getCurrentSensor() {
+        IUART *uart = setupUART();
+        return new S6MCP39F511Current(uart);
+
     }
 
     ISensorCommand *getStartDailyKkhCommand() {

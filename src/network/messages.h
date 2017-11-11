@@ -37,13 +37,14 @@ std::string devInfoMessage(const char *appName, const char *ver, const char *loc
  example:
 {
   "timestamp": "2017-07-08T12:47:36",
-  “power": 23.3
+  “value": 23.3,
+  "unit": "W"
 }
  */
 std::string powerConsumeMessage(const char *timestring, float value) {
     char buffer[MESSAGE_BUFFER_LEN] = "";
     struct json_out out = JSON_OUT_BUF(buffer, MESSAGE_BUFFER_LEN);
-    json_printf(&out, "{ %Q: %Q, %Q: %f }", "timestamp", timestring, "power", value);
+    json_printf(&out, "{ %Q: %Q, %Q: %.6f, %Q: %Q  }", "timestamp", timestring, "value", value,  "unit", "W");
     return std::string(buffer);
 }
 
@@ -53,15 +54,15 @@ std::string powerConsumeMessage(const char *timestring, float value) {
  example:
 {
   "timestamp": "2017-07-08T12:47:36",
-  “consume": 23.3
+  “value": 23.3,
+  "unit": "KWh"
 }
  */
 std::string dailyConsumeMessage(const char *timestring, float value) {
 
-    LOG(LL_DEBUG, ("*** DAILY CONSUME %.6f", value));
     char buffer[MESSAGE_BUFFER_LEN] = "";
     struct json_out out = JSON_OUT_BUF(buffer, MESSAGE_BUFFER_LEN);
-    json_printf(&out, "{ %Q: %Q, %Q: %.6f }", "timestamp", timestring, "consume", value);
+    json_printf(&out, "{ %Q: %Q, %Q: %.6f, %Q: %Q }", "timestamp", timestring, "value", value, "unit", "KWh");
     return std::string(buffer);
 }
 
@@ -98,3 +99,21 @@ std::string lwtMessage(bool online) {
 }
 
 
+/*
+ current RMS (A)
+
+ example:
+{
+  "timestamp": "2017-07-08T12:47:36",
+  “value": 23.3,
+  "unit": "A"
+}
+ */
+std::string currentRMSMessage(const char *timestring, float value) {
+
+    LOG(LL_DEBUG, ("*** CURRENT  %.6f", value));
+    char buffer[MESSAGE_BUFFER_LEN] = "";
+    struct json_out out = JSON_OUT_BUF(buffer, MESSAGE_BUFFER_LEN);
+    json_printf(&out, "{ %Q: %Q, %Q: %.6f, %Q: %Q }", "timestamp", timestring, "value", value, "unit", "A");
+    return std::string(buffer);
+}

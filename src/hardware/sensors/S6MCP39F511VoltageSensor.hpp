@@ -31,6 +31,8 @@ public:
         if(success) {
             uint16_t Vrms = u16(buffer, 0);
             ret = (Vrms / 10.0);
+        } else {
+            LOG(LL_DEBUG, ("*** READ VOLTS FAILED!!!"));
         }
 
        return ret;

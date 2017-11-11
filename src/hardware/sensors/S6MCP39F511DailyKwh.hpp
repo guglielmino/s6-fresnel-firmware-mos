@@ -28,6 +28,8 @@ public:
         if (success) {
             uint64_t Kwh = u64(buffer, 0);
             ret = (Kwh / 1000000.0);
+        } else {
+            LOG(LL_DEBUG, ("*** READ KWH FAILED!!!"));
         }
 
         return ret;

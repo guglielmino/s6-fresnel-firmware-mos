@@ -28,6 +28,7 @@ Settings settings;
 
 IScalarSensor<float> *powerSensor = nullptr;
 IScalarSensor<float> *dailyKwh = nullptr;
+IScalarSensor<float> *current = nullptr;
 
 MQTTManager *mqttManager = nullptr;
 OutputDevice *rele1 = nullptr;
@@ -53,15 +54,19 @@ auto powerSwitchSubscription = [](const char *topic, size_t topic_len, const cha
  * Read power callback, called on every update_interval milliseconds (setting)
  */
 void power_read_timed(void *) {
-    float powerValue = powerSensor->readValue();
-    float dailyConsume = dailyKwh->readValue();
 
     if (mqttManager != nullptr) {
+        float powerValue = powerSensor->readValue();
         std::string powerConsumeMsg = powerConsumeMessage(now().c_str(), powerValue);
         mqttManager->publish(pubSensPowerTopic, powerConsumeMsg);
 
+        float dailyConsume = dailyKwh->readValue();
         std::string dailyConsumeMsg = dailyConsumeMessage(now().c_str(), dailyConsume);
         mqttManager->publish(pubSensDailyKwhTopic, dailyConsumeMsg);
+
+        float currentValue = current->readValue();
+        std::string currentMsg = currentRMSMessage(now().c_str(), currentValue);
+        mqttManager->publish(pubSensCurrentTopic, currentMsg);
     }
 }
 
@@ -102,6 +107,9 @@ enum mgos_app_init_result mgos_app_init(void) {
     makeDeviceTopic(pubLWTTopic, MAX_TOPIC_LEN, PUB_EVENT_LWT_TOPIC, settings.s6fresnel().location(),
                     settings.deviceId());
 
+    makeDeviceTopic(pubSensCurrentTopic, MAX_TOPIC_LEN, PUB_SENS_CURRENT_TOPIC, settings.s6fresnel().location(),
+                    settings.deviceId());
+
 
     std::string message = lwtMessage(false);
     settings.mqtt().lwtMessage(message);
@@ -137,11 +145,11 @@ enum mgos_app_init_result mgos_app_init(void) {
     rele1 = new OutputDevice(REL_PIN);
     statusLed = new OutputDevice(STATUS_LED_PIN);
     powerSensor = getPowerSensor();
+    dailyKwh = getDailyKwhSensor();
+    current = getCurrentSensor();
 
     ISensorCommand *startDailyKwhCounter = getStartDailyKkhCommand();
     startDailyKwhCounter->exec();
-
-    dailyKwh = getDailyKwhSensor();
 
     button = new InputDevice(BUTTON_PIN, [] (bool newPinSate) {
         (void) newPinSate;

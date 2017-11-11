@@ -29,6 +29,8 @@ public:
         if(success) {
             uint32_t power = u32(buffer, 0);
             ret = (power / 100.0);
+        }else {
+            LOG(LL_DEBUG, ("*** READ POWER FAILED!!!"));
         }
 
         return ret;

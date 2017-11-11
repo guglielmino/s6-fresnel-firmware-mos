@@ -10,6 +10,9 @@
 #include "RegisterReadCmd.hpp"
 #include "RegisterWriteCmd.hpp"
 
+
+#define READ_AVAIL_TIMEOUT_MS 700 // Timeout for checking read availability (ms)
+
 class MCP39F511Utils {
 protected:
     int16_t u16(char *msg_buffer, uint8_t addr){
@@ -85,13 +88,19 @@ protected:
 
         writeFrame(uart, frame);
 
-        mgos_usleep(5000);
+        uint32_t start = millis();
+        size_t avail = 0;
+        while (avail == 0 && (millis() - start) < READ_AVAIL_TIMEOUT_MS) {
+            avail = uart->readAvail();
+        }
 
-        size_t read = uart->read(buffer, len);
+        uint32_t buffsize = 2 + size + 1; // ACK + Num bytes + bytes + checksum
+        size_t read = uart->read(buffer, buffsize);
+
         return (read > 0 && checkResp(buffer));
     }
 
-    bool writeRegister(IUART *uart, uint16_t regAddress, std::vector<uint8_t> data) {
+    void writeRegister(IUART *uart, uint16_t regAddress, std::vector<uint8_t> data) {
         AddressPointerCmd setPointer((regAddress & 0xff00) >> 8, regAddress & 0x00ff);
         RegisterWriteCmd writeRegister(data);
 
@@ -102,17 +111,13 @@ protected:
         std::vector<uint8_t> frame = makeFrame(commands);
 
         writeFrame(uart, frame);
-
-        mgos_usleep(5000);
-
-        char buffer[MCP_MAX_BUF_LEN];
-
-        size_t read = uart->read(buffer, MCP_MAX_BUF_LEN);
-
-        return (read > 0 && checkResp(buffer));
     }
 
 private:
+    unsigned long millis(void) {
+        return mgos_uptime() * 1000;
+    }
+
 
     void writeFrame(IUART *uart, std::vector<uint8_t> frame) {
         int frameSize = frame.size()  ;
