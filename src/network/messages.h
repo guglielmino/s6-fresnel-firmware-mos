@@ -29,43 +29,6 @@ std::string devInfoMessage(const char *appName, const char *ver, const char *loc
     return std::string(buffer);
 }
 
-
-
-/*
- Immediate power consume message (W)
-
- example:
-{
-  "timestamp": "2017-07-08T12:47:36",
-  “value": 23.3,
-  "unit": "W"
-}
- */
-std::string powerConsumeMessage(const char *timestring, float value) {
-    char buffer[MESSAGE_BUFFER_LEN] = "";
-    struct json_out out = JSON_OUT_BUF(buffer, MESSAGE_BUFFER_LEN);
-    json_printf(&out, "{ %Q: %Q, %Q: %.6f, %Q: %Q  }", "timestamp", timestring, "value", value,  "unit", "W");
-    return std::string(buffer);
-}
-
-/*
- Accumulated daily consume (Kw/h)
-
- example:
-{
-  "timestamp": "2017-07-08T12:47:36",
-  “value": 23.3,
-  "unit": "KWh"
-}
- */
-std::string dailyConsumeMessage(const char *timestring, float value) {
-
-    char buffer[MESSAGE_BUFFER_LEN] = "";
-    struct json_out out = JSON_OUT_BUF(buffer, MESSAGE_BUFFER_LEN);
-    json_printf(&out, "{ %Q: %Q, %Q: %.6f, %Q: %Q }", "timestamp", timestring, "value", value, "unit", "KWh");
-    return std::string(buffer);
-}
-
 /*
  Feedback message after Relay switch
 
@@ -98,22 +61,18 @@ std::string lwtMessage(bool online) {
     return std::string(buffer);
 }
 
-
 /*
- current RMS (A)
 
  example:
 {
   "timestamp": "2017-07-08T12:47:36",
-  “value": 23.3,
-  "unit": "A"
+  “value": 50.3,
+  "unit": "Hz"
 }
  */
-std::string currentRMSMessage(const char *timestring, float value) {
-
-    LOG(LL_DEBUG, ("*** CURRENT  %.6f", value));
+std::string  makeSensorValueMessage(const char *timestring, float value, const char * unit) {
     char buffer[MESSAGE_BUFFER_LEN] = "";
     struct json_out out = JSON_OUT_BUF(buffer, MESSAGE_BUFFER_LEN);
-    json_printf(&out, "{ %Q: %Q, %Q: %.6f, %Q: %Q }", "timestamp", timestring, "value", value, "unit", "A");
+    json_printf(&out, "{ %Q: %Q, %Q: %.6f, %Q: %Q }", "timestamp", timestring, "value", value, "unit", unit);
     return std::string(buffer);
 }

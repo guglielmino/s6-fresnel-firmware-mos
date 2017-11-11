@@ -12,11 +12,10 @@
 #include "interfaces/IScalarSensor.h"
 #include "interfaces/IUART.h"
 
-#define VOLTAGE_RESP_BUFFER_SIZE 5
-
 class S6MCP39F511VoltageSensor : public IScalarSensor<float>, MCP39F511Utils {
 private:
     IUART *_uart;
+    static const int BUFFER_SIZE = 5;
 
 public:
     S6MCP39F511VoltageSensor(IUART *uart)  : _uart(uart) {
@@ -25,8 +24,8 @@ public:
 
     float readValue() {
         float ret = 0.0;
-        char buffer[VOLTAGE_RESP_BUFFER_SIZE];
-        bool success = readRegister(_uart, MCP_REG_VOLTS, 2, buffer, VOLTAGE_RESP_BUFFER_SIZE);
+        char buffer[S6MCP39F511VoltageSensor::BUFFER_SIZE];
+        bool success = readRegister(_uart, MCP_REG_VOLTS, 2, buffer, S6MCP39F511VoltageSensor::BUFFER_SIZE);
 
         if(success) {
             uint16_t Vrms = u16(buffer, 0);

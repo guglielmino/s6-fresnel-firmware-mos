@@ -9,26 +9,21 @@
 #include "interfaces/IADCReader.h"
 #include "interfaces/IScalarSensor.h"
 
-#define CURRENT_RESP_BUFFER_SIZE 7
-
 class S6MCP39F511Current : public IScalarSensor<float>, MCP39F511Utils {
 private:
     IUART *_uart;
+    static const int BUFFER_SIZE = 7;
 
 public:
     S6MCP39F511Current(IUART *uart) : _uart(uart) {
 
     }
 
-    /**
-     * Aggiungere gestione con readAvail e eventualmente millis di attesa fincheè minore di 0 per ogni commando
-     * @return
-     */
     float readValue() {
         float ret = 0;
-        char buffer[CURRENT_RESP_BUFFER_SIZE];
+        char buffer[S6MCP39F511Current::BUFFER_SIZE];
 
-        bool success = readRegister(_uart, MCP_REG_CURRENT_RMS, 4, buffer, CURRENT_RESP_BUFFER_SIZE);
+        bool success = readRegister(_uart, MCP_REG_CURRENT_RMS, 4, buffer, S6MCP39F511Current::BUFFER_SIZE);
 
         if (success) {
             uint32_t Current = u32(buffer, 0);

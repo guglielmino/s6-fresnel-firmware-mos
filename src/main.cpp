@@ -26,9 +26,10 @@ using namespace S6MqttModule;
 
 Settings settings;
 
-IScalarSensor<float> *powerSensor = nullptr;
+IScalarSensor<float> *activePower = nullptr;
 IScalarSensor<float> *dailyKwh = nullptr;
 IScalarSensor<float> *current = nullptr;
+IScalarSensor<float> *frequency = nullptr;
 
 MQTTManager *mqttManager = nullptr;
 OutputDevice *rele1 = nullptr;
@@ -56,17 +57,21 @@ auto powerSwitchSubscription = [](const char *topic, size_t topic_len, const cha
 void power_read_timed(void *) {
 
     if (mqttManager != nullptr) {
-        float powerValue = powerSensor->readValue();
-        std::string powerConsumeMsg = powerConsumeMessage(now().c_str(), powerValue);
+        float powerValue = activePower->readValue();
+        std::string powerConsumeMsg = makeSensorValueMessage(now().c_str(), powerValue, "W");
         mqttManager->publish(pubSensPowerTopic, powerConsumeMsg);
 
         float dailyConsume = dailyKwh->readValue();
-        std::string dailyConsumeMsg = dailyConsumeMessage(now().c_str(), dailyConsume);
+        std::string dailyConsumeMsg = makeSensorValueMessage(now().c_str(), dailyConsume, "KWh");
         mqttManager->publish(pubSensDailyKwhTopic, dailyConsumeMsg);
 
         float currentValue = current->readValue();
-        std::string currentMsg = currentRMSMessage(now().c_str(), currentValue);
+        std::string currentMsg = makeSensorValueMessage(now().c_str(), currentValue, "A");
         mqttManager->publish(pubSensCurrentTopic, currentMsg);
+
+        float freqValue = frequency->readValue();
+        std::string freqMsg = makeSensorValueMessage(now().c_str(), freqValue, "Hz");
+        mqttManager->publish(pubSensFreqTopic, freqMsg);
     }
 }
 
@@ -110,6 +115,8 @@ enum mgos_app_init_result mgos_app_init(void) {
     makeDeviceTopic(pubSensCurrentTopic, MAX_TOPIC_LEN, PUB_SENS_CURRENT_TOPIC, settings.s6fresnel().location(),
                     settings.deviceId());
 
+    makeDeviceTopic(pubSensFreqTopic, MAX_TOPIC_LEN, PUB_SENS_FREQUENCY_TOPIC, settings.s6fresnel().location(),
+                    settings.deviceId());
 
     std::string message = lwtMessage(false);
     settings.mqtt().lwtMessage(message);
@@ -144,9 +151,10 @@ enum mgos_app_init_result mgos_app_init(void) {
     // SETUP: On board devices
     rele1 = new OutputDevice(REL_PIN);
     statusLed = new OutputDevice(STATUS_LED_PIN);
-    powerSensor = getPowerSensor();
+    activePower = getActivePowerSensor();
     dailyKwh = getDailyKwhSensor();
     current = getCurrentSensor();
+    frequency = getLineFrequencySensor();
 
     ISensorCommand *startDailyKwhCounter = getStartDailyKkhCommand();
     startDailyKwhCounter->exec();

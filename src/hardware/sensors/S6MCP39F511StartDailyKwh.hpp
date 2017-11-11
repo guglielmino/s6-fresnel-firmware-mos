@@ -9,9 +9,6 @@
 #include "interfaces/ISensorCommand.hpp"
 #include "interfaces/IUART.h"
 
-
-#define POWER_RESP_BUFFER_SIZE 7
-
 /**
  * Start Energy accumulation
  */
