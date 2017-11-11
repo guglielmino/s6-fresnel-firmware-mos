@@ -5,9 +5,9 @@
 #pragma once
 
 
-#include "../interfaces/IADCReader.h"
-#include "../interfaces/IScalarSensor.h"
-#include "../hardware/devices/xsns_hlw8012.h"
+#include "interfaces/IADCReader.h"
+#include "interfaces/IScalarSensor.h"
+#include "hardware/devices/xsns_hlw8012.h"
 
 class SONOFFPowerSensor : public IScalarSensor<float> {
 public:

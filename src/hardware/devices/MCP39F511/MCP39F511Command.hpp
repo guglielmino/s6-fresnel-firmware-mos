@@ -8,6 +8,8 @@
 #define NACK 0x15
 #define CSFAIL 0x51
 
+#define MCP_MAX_BUF_LEN 40
+
 #define COMMAND_HEADER_BYTE 0xA5
 
 // Commands
@@ -38,6 +40,7 @@
 #define MCP_REG_EXP_ACTIVE_CNT  0x0026 // Export Active Energy Counter
 #define MCP_REG_IMP_REACT_CNT   0x002E // Import Reactive Energy Counter
 #define MCP_REG_EXP_REACT_CNT   0x0036 // Export Reactive Energy Counter
+#define MCP_REG_RST_ENERGY_CNT  0x00DC // reset/start Energy accumulation
 
 
 uint8_t checksum(const uint8_t *buffer, size_t len) {

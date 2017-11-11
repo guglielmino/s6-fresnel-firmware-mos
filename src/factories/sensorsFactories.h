@@ -4,8 +4,8 @@
 #include "../interfaces/IADCReader.h"
 
 #if CS_PLATFORM == CS_P_ESP8266
-    #include "../hardware/SONOFFPowerSensor.h"
-    #include "../hardware/SONOFFDailyKwh.h"
+    #include "../hardware/sensors/SONOFFPowerSensor.h"
+    #include "../hardware/sensors/SONOFFDailyKwh.h"
 
     IScalarSensor<float> *getPowerSensor() {
         return new SONOFFPowerSensor();
@@ -15,15 +15,27 @@
         #error "No Voltage Sensor Implemented for SONOFF device";
     }
 
-    IScalarSensor<uint64_t> *getDailyKwhSensor() {
+    IScalarSensor<float> *getDailyKwhSensor() {
         return new SONOFFDailyKwh();
     }
+
+    ISensorCommand *getStartDailyKkhCommand() {
+        #error "Not implemented in SONOFF device";
+    }
+
+    ISensorCommand *getResetDailyKkhCommand() {
+        #error "Not implemented in SONOFF device";
+    }
+
 #elif CS_PLATFORM == CS_P_ESP32
     #include "../interfaces/IUART.h"
+    #include "../interfaces/ISensorCommand.hpp"
     #include "../hardware/io/UARTInterface.hpp"
-    #include "../hardware/S6MCP39F511PowerSensor.hpp"
-    #include "../hardware/S6MCP39F511VoltageSensor.hpp"
-    #include "../hardware/S6MCP39F511DailyKwh.hpp"
+    #include "../hardware/sensors/S6MCP39F511PowerSensor.hpp"
+    #include "../hardware/sensors/S6MCP39F511VoltageSensor.hpp"
+    #include "../hardware/sensors/S6MCP39F511DailyKwh.hpp"
+    #include "../hardware/sensors/S6MCP39F511StartDailyKwh.hpp"
+    #include "../hardware/sensors/S6MCP39F511ResetDailyKwh.hpp"
 
     IUART *_uart = nullptr;
 
@@ -51,9 +63,19 @@
         return new S6MCP39F511VoltageSensor(uart);
     }
 
-    IScalarSensor<unsigned long> *getDailyKwhSensor() {
+    IScalarSensor<float> *getDailyKwhSensor() {
         IUART *uart = setupUART();
         return new S6MCP39F511DailyKwh(uart);
+    }
+
+    ISensorCommand *getStartDailyKkhCommand() {
+        IUART *uart = setupUART();
+        return new S6MCP39F51StartDailyKwh(uart);
+    }
+
+    ISensorCommand *getResetDailyKkhCommand() {
+        IUART *uart = setupUART();
+        return new S6MCP39F511ResetDailyKwh(uart);
     }
 
 #endif

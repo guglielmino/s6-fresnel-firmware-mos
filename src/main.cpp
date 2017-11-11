@@ -27,7 +27,7 @@ using namespace S6MqttModule;
 Settings settings;
 
 IScalarSensor<float> *powerSensor = nullptr;
-IScalarSensor<unsigned long> *dailyKwh = nullptr;
+IScalarSensor<float> *dailyKwh = nullptr;
 
 MQTTManager *mqttManager = nullptr;
 OutputDevice *rele1 = nullptr;
@@ -54,7 +54,7 @@ auto powerSwitchSubscription = [](const char *topic, size_t topic_len, const cha
  */
 void power_read_timed(void *) {
     float powerValue = powerSensor->readValue();
-    unsigned long dailyConsume = dailyKwh->readValue();
+    float dailyConsume = dailyKwh->readValue();
 
     if (mqttManager != nullptr) {
         std::string powerConsumeMsg = powerConsumeMessage(now().c_str(), powerValue);
@@ -124,8 +124,6 @@ enum mgos_app_init_result mgos_app_init(void) {
         mgos_set_timer(settings.s6fresnel().updateInterval(), true, power_read_timed, NULL);
     });
 
-
-
     mqttManager->setEventCallback(MQTTManager::Disconnected, []() {
         LOG(LL_DEBUG, ("S6 Fresnel:: MQTT Disconnected"));
     });
@@ -135,11 +133,16 @@ enum mgos_app_init_result mgos_app_init(void) {
         LOG(LL_DEBUG, ("S6 Fresnel:: MQTT Subscribe"));
     });
 
-    // On board devices
+    // SETUP: On board devices
     rele1 = new OutputDevice(REL_PIN);
     statusLed = new OutputDevice(STATUS_LED_PIN);
     powerSensor = getPowerSensor();
+
+    ISensorCommand *startDailyKwhCounter = getStartDailyKkhCommand();
+    startDailyKwhCounter->exec();
+
     dailyKwh = getDailyKwhSensor();
+
     button = new InputDevice(BUTTON_PIN, [] (bool newPinSate) {
         (void) newPinSate;
         relayState = (relayState == OutputDevice::ON ? OutputDevice::OFF : OutputDevice::ON);

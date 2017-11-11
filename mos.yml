@@ -22,7 +22,7 @@ platforms: [  esp32, esp8266 ]
 
 config_schema:
   - ["mqtt.enable", true]
-  - ["mqtt.server", "s", "192.168.0.2:1883", {title: "MQTT server"}]
+  - ["mqtt.server", "s", "192.168.0.9:1883", {title: "MQTT server"}]
   - ["wifi.sta.enable", true]
   - ["wifi.sta.ssid", "gug"]
   - ["wifi.sta.pass", "marric13"]

@@ -4,10 +4,10 @@
 
 #pragma once
 
-#include "../hardware/devices/MCP39F511/MCP39F511Utils.hpp"
+#include "hardware/devices/MCP39F511/MCP39F511Utils.hpp"
 
-#include "../interfaces/IScalarSensor.h"
-#include "../interfaces/IUART.h"
+#include "interfaces/IScalarSensor.h"
+#include "interfaces/IUART.h"
 
 
 #define POWER_RESP_BUFFER_SIZE 7

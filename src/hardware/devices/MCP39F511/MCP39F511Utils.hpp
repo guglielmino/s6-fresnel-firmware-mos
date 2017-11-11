@@ -8,6 +8,7 @@
 #include "MCP39F511Command.hpp"
 #include "AddressPointerCmd.hpp"
 #include "RegisterReadCmd.hpp"
+#include "RegisterWriteCmd.hpp"
 
 class MCP39F511Utils {
 protected:
@@ -37,36 +38,42 @@ protected:
         uint64_t tmp = 0;
         uint64_t ret = 0;
         uint16_t offset = 2;
-        for (uint8_t i = sizeof(uint64_t) / 8; i > 0; --i) {
-            tmp += msg_buffer[addr + i + offset];
-            tmp = tmp << (i * 8);
+        tmp += msg_buffer[addr + 7 + offset];
+        tmp = tmp << (7  * 8);
+        for (uint8_t i = 6; i > 0; --i) {
+
+            tmp = msg_buffer[addr + i + offset];
+            tmp = tmp << (i  * 8);
             ret += tmp;
         }
 
         ret += msg_buffer[addr+0 + offset];
+
         return ret;
     }
 
     bool checkResp(char *readbuf) {
         bool ret = false;
         if (readbuf[0] == 0x06) {
-            LOG(LL_DEBUG, ("Values Packet - Passed"));
+            LOG(LL_DEBUG, ("*** Values Packet - Passed"));
             ret = true;
         }
 
         else if (readbuf[0] == 0x15) {
-            LOG(LL_DEBUG, ("Values Packet - Failed"));
+            LOG(LL_DEBUG, ("*** Values Packet - Failed"));
         }
 
         else if (readbuf[0] == 0x51) {
-            LOG(LL_DEBUG, ("Packet - CRC Failed"));
+            LOG(LL_DEBUG, ("*** Packet - CRC Failed"));
+        }
+        else {
+            LOG(LL_DEBUG, ("*** Packet - UNKNOW 0x%x", readbuf[0]));
         }
 
         return ret;
     }
 
     bool readRegister(IUART *uart, uint16_t regAddress, uint8_t size, char *buffer, size_t len) {
-        float ret = 0.0;
         AddressPointerCmd setPointer((regAddress & 0xff00) >> 8, regAddress & 0x00ff);
         RegisterReadCmd readRegister(size);
 
@@ -75,6 +82,39 @@ protected:
         commands.push_back(&readRegister);
 
         std::vector<uint8_t> frame = makeFrame(commands);
+
+        writeFrame(uart, frame);
+
+        mgos_usleep(5000);
+
+        size_t read = uart->read(buffer, len);
+        return (read > 0 && checkResp(buffer));
+    }
+
+    bool writeRegister(IUART *uart, uint16_t regAddress, std::vector<uint8_t> data) {
+        AddressPointerCmd setPointer((regAddress & 0xff00) >> 8, regAddress & 0x00ff);
+        RegisterWriteCmd writeRegister(data);
+
+        std::vector<MCP39F511Command *> commands;
+        commands.push_back(&setPointer);
+        commands.push_back(&writeRegister);
+
+        std::vector<uint8_t> frame = makeFrame(commands);
+
+        writeFrame(uart, frame);
+
+        mgos_usleep(5000);
+
+        char buffer[MCP_MAX_BUF_LEN];
+
+        size_t read = uart->read(buffer, MCP_MAX_BUF_LEN);
+
+        return (read > 0 && checkResp(buffer));
+    }
+
+private:
+
+    void writeFrame(IUART *uart, std::vector<uint8_t> frame) {
         int frameSize = frame.size()  ;
 
         for (unsigned int i = 0; i < frameSize; ++i) {
@@ -82,9 +122,7 @@ protected:
             uart->flush();
             mgos_usleep(1000);
         }
-        mgos_usleep(5000);
-
-        size_t read = uart->read(buffer, len);
-        return (read > 0 && checkResp(buffer));
     }
+
+
 };

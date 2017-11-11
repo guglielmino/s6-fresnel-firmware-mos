@@ -57,9 +57,11 @@ std::string powerConsumeMessage(const char *timestring, float value) {
 }
  */
 std::string dailyConsumeMessage(const char *timestring, float value) {
+
+    LOG(LL_DEBUG, ("*** DAILY CONSUME %.6f", value));
     char buffer[MESSAGE_BUFFER_LEN] = "";
     struct json_out out = JSON_OUT_BUF(buffer, MESSAGE_BUFFER_LEN);
-    json_printf(&out, "{ %Q: %Q, %Q: %f }", "timestamp", timestring, "consume", value);
+    json_printf(&out, "{ %Q: %Q, %Q: %.6f }", "timestamp", timestring, "consume", value);
     return std::string(buffer);
 }
 
