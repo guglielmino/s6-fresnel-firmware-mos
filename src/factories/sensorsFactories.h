@@ -35,6 +35,10 @@
         #error "Not implemented in SONOFF device";
     }
 
+    IScalarSensor<float> *getPowerFactorSensor() {
+        #error "Not implemented in SONOFF device";
+    }
+
 #elif CS_PLATFORM == CS_P_ESP32
     #include "../interfaces/IUART.h"
     #include "../interfaces/ISensorCommand.hpp"
@@ -46,6 +50,7 @@
     #include "../hardware/sensors/S6MCP39F511ResetDailyKwh.hpp"
     #include "../hardware/sensors/S6MCP39F511Current.hpp"
     #include "../hardware/sensors/S6MCP39F511LineFreq.hpp"
+    #include "../hardware/sensors/S6MCP39F511PowerFactorSensor.hpp"
 
     IUART *_uart = nullptr;
 
@@ -93,6 +98,10 @@
         return new S6MCP39F511LineFreq(uart);
     }
 
+    IScalarSensor<float> *getPowerFactorSensor() {
+        IUART *uart = setupUART();
+        return new S6MCP39F511PowerFactorSensor(uart);
+    }
 
     ISensorCommand *getStartDailyKkhCommand() {
         IUART *uart = setupUART();
@@ -103,6 +112,8 @@
         IUART *uart = setupUART();
         return new S6MCP39F511ResetDailyKwh(uart);
     }
+
+
 
 #endif
 

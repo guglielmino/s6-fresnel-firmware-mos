@@ -31,6 +31,7 @@ IScalarSensor<float> *reactivePower = nullptr;
 IScalarSensor<float> *dailyKwh = nullptr;
 IScalarSensor<float> *current = nullptr;
 IScalarSensor<float> *frequency = nullptr;
+IScalarSensor<float> *powerFactor = nullptr;
 
 MQTTManager *mqttManager = nullptr;
 OutputDevice *rele1 = nullptr;
@@ -77,6 +78,10 @@ void power_read_timed(void *) {
         float freqValue = frequency->readValue();
         std::string freqMsg = makeSensorValueMessage(now().c_str(), freqValue, "Hz");
         mqttManager->publish(pubSensFreqTopic, freqMsg);
+
+        float powerFactorValue = powerFactor->readValue();
+        std::string powerFactorMsg = makeSensorValueMessage(now().c_str(), powerFactorValue, "");
+        mqttManager->publish(pubSensPowerFactorTopic, powerFactorMsg);
     }
 }
 
@@ -98,7 +103,7 @@ enum mgos_app_init_result mgos_app_init(void) {
     cs_log_set_level(LL_DEBUG);
     LOG(LL_DEBUG, ("Device ID %s", settings.deviceId()));
 
-    // ** MQTT
+    // ** MQTT Topic (TODO: Move to std::string and optimize topic string creation)
     makeDeviceTopic(pubSensPowerTopic, MAX_TOPIC_LEN, PUB_SENS_POWER_TOPIC, settings.s6fresnel().location(),
                     settings.deviceId());
     makeDeviceTopic(subSwitchDevTopic, MAX_TOPIC_LEN, SUB_SWITCH_DEV, settings.s6fresnel().location(),
@@ -124,6 +129,9 @@ enum mgos_app_init_result mgos_app_init(void) {
                     settings.deviceId());
 
     makeDeviceTopic(pubSensReactivePowerTopic, MAX_TOPIC_LEN, PUB_SENS_RPOWER_TOPIC, settings.s6fresnel().location(),
+                    settings.deviceId());
+
+    makeDeviceTopic(pubSensPowerFactorTopic, MAX_TOPIC_LEN, PUB_SENS_POWERFACTOR_TOPIC, settings.s6fresnel().location(),
                     settings.deviceId());
 
     std::string message = lwtMessage(false);
@@ -164,6 +172,7 @@ enum mgos_app_init_result mgos_app_init(void) {
     dailyKwh = getDailyKwhSensor();
     current = getCurrentSensor();
     frequency = getLineFrequencySensor();
+    powerFactor = getPowerFactorSensor();
 
     ISensorCommand *startDailyKwhCounter = getStartDailyKkhCommand();
     startDailyKwhCounter->exec();
