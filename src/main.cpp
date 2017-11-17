@@ -32,6 +32,7 @@ IScalarSensor<float> *dailyKwh = nullptr;
 IScalarSensor<float> *current = nullptr;
 IScalarSensor<float> *frequency = nullptr;
 IScalarSensor<float> *powerFactor = nullptr;
+IScalarSensor<float> *voltage = nullptr;
 
 MQTTManager *mqttManager = nullptr;
 OutputDevice *rele1 = nullptr;
@@ -82,6 +83,10 @@ void power_read_timed(void *) {
         float powerFactorValue = powerFactor->readValue();
         std::string powerFactorMsg = makeSensorValueMessage(now().c_str(), powerFactorValue, "");
         mqttManager->publish(pubSensPowerFactorTopic, powerFactorMsg);
+
+        float voltageValue = voltage->readValue();
+        std::string voltageMsg = makeSensorValueMessage(now().c_str(), voltageValue, "V");
+        mqttManager->publish(pubSensVoltageTopic, voltageMsg);
     }
 }
 
@@ -134,6 +139,9 @@ enum mgos_app_init_result mgos_app_init(void) {
     makeDeviceTopic(pubSensPowerFactorTopic, MAX_TOPIC_LEN, PUB_SENS_POWERFACTOR_TOPIC, settings.s6fresnel().location(),
                     settings.deviceId());
 
+    makeDeviceTopic(pubSensVoltageTopic, MAX_TOPIC_LEN, PUB_SENS_VOLTAGE_TOPIC, settings.s6fresnel().location(),
+                    settings.deviceId());
+
     std::string message = lwtMessage(false);
     settings.mqtt().lwtMessage(message);
     settings.mqtt().lwtTopic(pubLWTTopic);
@@ -173,6 +181,7 @@ enum mgos_app_init_result mgos_app_init(void) {
     current = getCurrentSensor();
     frequency = getLineFrequencySensor();
     powerFactor = getPowerFactorSensor();
+    voltage = getVoltageSensor();
 
     ISensorCommand *startDailyKwhCounter = getStartDailyKkhCommand();
     startDailyKwhCounter->exec();

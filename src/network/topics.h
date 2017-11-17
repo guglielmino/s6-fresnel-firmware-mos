@@ -13,6 +13,7 @@
 #define PUB_SENS_CURRENT_TOPIC      "building/%s/sensors/%s/current"        // Device publish Current RMS Message on this topic
 #define PUB_SENS_FREQUENCY_TOPIC    "building/%s/sensors/%s/frequency"      // Device publish Line Frequency Message on this topic
 #define PUB_SENS_POWERFACTOR_TOPIC  "building/%s/sensors/%s/powerfactor"    // Device publish Power Factor Message on this topic
+#define PUB_SENS_VOLTAGE_TOPIC      "building/%s/sensors/%s/voltage"        // Device publishVoltage Message on this topic
 
 
 #define PUB_EVENT_POWERFEEDBACK_TOPIC   "building/%s/events/%s/power"    // Device publish power switch feedback consume on this topic
@@ -39,7 +40,7 @@ char pubLWTTopic[MAX_TOPIC_LEN];
 char pubSensCurrentTopic[MAX_TOPIC_LEN];
 char pubSensFreqTopic[MAX_TOPIC_LEN];
 char pubSensPowerFactorTopic[MAX_TOPIC_LEN];
-
+char pubSensVoltageTopic[MAX_TOPIC_LEN];
 
 char subSwitchDevTopic[MAX_TOPIC_LEN];
 char subSwitchRoomTopic[MAX_TOPIC_LEN];
