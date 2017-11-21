@@ -4,6 +4,11 @@
 
 #pragma once
 
+#include "../libs/frozen.h"
+
+#include "mgos.h"
+
+#define MESSAGE_BUFFER_LEN 100
 
 /*
  Information about device and firmware
@@ -11,37 +16,32 @@
  example:
 {
    "appName": "S6 Fresnel Module",
-   "version": "1.0.15"
- */
-char * devInfoMessage(const char *appName, const char *ver, const char *location, const char *name) {
-    return NULL;
-}
-
-
-/*
- Device feedback after power switch request
-
-example:
-{
-  "status": "on" // "on" | "off"
+   "version": "1.0.15",
+   "location": "room1",
+   "name": "lamp1"
 }
  */
-
-char * powerFeedbackMessage(const char *status) {
-    return NULL;
+std::string devInfoMessage(const char *appName, const char *ver, const char *location, const char *name) {
+    char buffer[MESSAGE_BUFFER_LEN] = "";
+    struct json_out out = JSON_OUT_BUF(buffer, MESSAGE_BUFFER_LEN);
+    json_printf(&out, "{ %Q: %Q, %Q: %Q, %Q: %Q, %Q: %Q }", "appName", appName, "version", ver,
+                "location", location, "name", name);
+    return std::string(buffer);
 }
 
 /*
- Immediate power consume message
+ Feedback message after Relay switch
 
- example:
 {
-  "timestamp": "2017-07-08T12:47:36",
-  “power": 23.3
+    "status": "on" // "on" | "off"
 }
+
  */
-char *powerConsumeMessage(const char *timestring, float value) {
-    return NULL;
+std::string powerFeedbackMessage(bool on) {
+    char buffer[MESSAGE_BUFFER_LEN] = "";
+    struct json_out out = JSON_OUT_BUF(buffer, MESSAGE_BUFFER_LEN);
+    json_printf(&out, "{ %Q: %Q }", "status", (on ? "on" : "off"));
+    return std::string(buffer);
 }
 
 /*
@@ -49,11 +49,30 @@ char *powerConsumeMessage(const char *timestring, float value) {
 
  example:
 {
-  "status": "Offline"  // Online
+  "timestamp": "2017-07-08T12:47:36",
+  "status": "Offline" // “Online”
+}
+
+ */
+std::string lwtMessage(bool online) {
+    char buffer[MESSAGE_BUFFER_LEN] = "";
+    struct json_out out = JSON_OUT_BUF(buffer, MESSAGE_BUFFER_LEN);
+    json_printf(&out, "{ %Q: %Q }", "status", (online ? "Online" : "Offline"));
+    return std::string(buffer);
+}
+
+/*
+
+ example:
+{
+  "timestamp": "2017-07-08T12:47:36",
+  “value": 50.3,
+  "unit": "Hz"
 }
  */
-char *lwtMessage(const char *timestring, bool online) {
-    return NULL;
+std::string  makeSensorValueMessage(const char *timestring, float value, const char * unit) {
+    char buffer[MESSAGE_BUFFER_LEN] = "";
+    struct json_out out = JSON_OUT_BUF(buffer, MESSAGE_BUFFER_LEN);
+    json_printf(&out, "{ %Q: %Q, %Q: %.6f, %Q: %Q }", "timestamp", timestring, "value", value, "unit", unit);
+    return std::string(buffer);
 }
-
-

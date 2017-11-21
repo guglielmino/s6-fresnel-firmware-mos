@@ -1,0 +1,32 @@
+image: smartsix/mos-ci
+
+stages:
+  - test
+  - build
+
+job_test:
+  stage: test
+  script:
+    - cmake .
+    - make
+    - ./test/s6test
+  only:
+    - develop
+    - master
+  tags:
+    - docker
+
+
+job_build:
+  stage: build
+  script:
+    - mos build --platform=esp32
+  only:
+    - master
+  artifacts:
+    paths:
+    - build/fw.zip
+    expire_in: 1 week
+  tags:
+    - docker
+

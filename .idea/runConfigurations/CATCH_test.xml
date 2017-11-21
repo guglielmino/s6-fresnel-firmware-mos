@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="CATCH test" type="CMakeCatchTestRunConfigurationType" factoryName="Catch Test" WORKING_DIR="file://$PROJECT_DIR$/test" PASS_PARENT_ENVS_2="true" PROJECT_NAME="s6fresnel" TARGET_NAME="s6test" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="s6fresnel" RUN_TARGET_NAME="s6test" TEST_MODE="SUITE_TEST">
+    <envs />
+    <method>
+      <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="false" />
+    </method>
+  </configuration>
+</component>

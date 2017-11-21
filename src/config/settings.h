@@ -4,6 +4,10 @@
 
 #pragma once
 
+#include <string>
+
+//#define USE_OLD_CFG
+
 #include "mgos.h"
 
 class Settings {
@@ -14,19 +18,49 @@ private:
 
     public:
         int updateInterval() {
+#ifdef USE_OLD_CFG
             return get_cfg()->s6fresnel.update_interval;
+#else
+            return mgos_sys_config_get_s6fresnel_update_interval();
+#endif
         }
 
         const char *location() {
+#ifdef USE_OLD_CFG
             return get_cfg()->s6fresnel.location;
+#else
+            return mgos_sys_config_get_s6fresnel_location();
+#endif
         }
 
         const char *name() {
+#ifdef USE_OLD_CFG
             return get_cfg()->s6fresnel.name;
+#else
+            return mgos_sys_config_get_s6fresnel_name();
+#endif
         }
     };
 
     S6Fresnel s6Fresnel;
+
+    class MQTTSettings {
+    public:
+        void server(std::string serverAddress) {
+            mgos_sys_config_set_mqtt_server(serverAddress.c_str());
+        }
+
+        void lwtTopic(std::string lwtTopic) {
+            mgos_sys_config_set_mqtt_will_topic(lwtTopic.c_str());
+        }
+
+        void lwtMessage(std::string lwtMessage) {
+            mgos_sys_config_set_mqtt_will_message(lwtMessage.c_str());
+        }
+
+    };
+
+    MQTTSettings mqttSettings;
 
 public:
     Settings() {
@@ -34,11 +68,20 @@ public:
     }
 
     const char *deviceId() {
-        return get_cfg()->device.id;
+#ifdef USE_OLD_CFG
+        return get_cfg()->device.id;;
+#else
+        return mgos_sys_config_get_device_id();
+#endif
     }
 
+    // Sub config objects
     S6Fresnel s6fresnel() {
         return s6Fresnel;
+    }
+
+    MQTTSettings mqtt() {
+        return mqttSettings;
     }
 
 

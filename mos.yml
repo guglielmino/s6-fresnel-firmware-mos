@@ -18,42 +18,24 @@ sources:
 filesystem:
   - fs
 
-# Custom configuration entries, settable via "device configuration"
-# Below is a custom firmware configuration example.
-# Uncomment and modify according to your needs:
+platforms: [  esp32, esp8266 ]
 
 config_schema:
-  - ["eth.enable", true]
   - ["mqtt.enable", true]
-  - ["mqtt.server", "s", "192.168.0.6:1883", {title: "MQTT server"}]
-  - ["wifi.sta.enable", false]
+  - ["mqtt.server", "s", "192.168.0.9:1883", {title: "MQTT server"}]
+  - ["wifi.sta.enable", true]
+  - ["wifi.sta.ssid", "gug"]
+  - ["wifi.sta.pass", "marric13"]
   - ["wifi.ap.enable", false]
   - ["s6fresnel", "o", {title: "S6 Fresnel custom settings"}]
-  - ["s6fresnel.update_interval", "i", 1000, {title: "Power reads will be sent every update_interval (ms)"}]
+  - ["s6fresnel.update_interval", "i", 5000, {title: "Power reads will be sent every update_interval (ms)"}]
   - ["s6fresnel.location", "s", "room1", {title: "Device location, used in MQTT topic path (ie. building/room1/...)"}]
   - ["s6fresnel.name", "s", "noname", {title: "Device name (ie. lamp1)"}]
-
-#  - ["my_app", "o", {title: "My app custom settings"}]
-#  - ["my_app.bool_value", "b", false, {title: "Some boolean value"}]
-#  - ["my_app.string_value", "s", "", {title: "Some string value"}]
-#  - ["my_app.int_value", "i", 123, {title: "Some integer value"}]
-
-# These settings get compiled into the C structure, and can be accessed
-# from the C code this way:
-#
-# printf("Hello from %s!\n", get_cfg()->device.id);
-#
-# Settings are cool: can be modified remotely without full firmware upgrade!
-#
-# To see all available compiled settings, buid the firmware and open
-# build/gen/sys_config.c or build/gen/sys_config.h file.
-#
-# Also, in this config_schema section, you can override existing
-# settings that has been created by other libraries. For example, debug log
-# level is 2 by default. For this firmware we can override it to 3:
-#
-# config_schema:
-#  - ["debug.level", 3]
+  # Following setting enables remote debug with mos console --port ws://DEV_IP_ADDR/rpc
+  - ["debug.udp_log_addr",  "192.168.0.13:1993"]
+  - ["debug.level", 4]
+  - ["rpc.ws.enable", true]
+  - ["spi.enable", true]
 
 
 # List of libraries used by this app, in order of initialisation
@@ -63,10 +45,12 @@ libs:
   - origin: https://github.com/mongoose-os-libs/rpc-service-fs
   - origin: https://github.com/mongoose-os-libs/rpc-uart
   - origin: https://github.com/mongoose-os-libs/rpc-mqtt
- # - origin: https://github.com/mongoose-os-libs/rpc-service-ota
-  - origin: https://github.com/mongoose-os-libs/ethernet
+  - origin: https://github.com/mongoose-os-libs/rpc-service-ota
   - origin: https://github.com/mongoose-os-libs/mqtt
   - origin: https://github.com/mongoose-os-libs/wifi
+  - origin: https://github.com/mongoose-os-libs/adc
+  - origin: https://github.com/mongoose-os-libs/spi
+
 
 
 # Used by the mos tool to catch mos binaries incompatible with this file format
