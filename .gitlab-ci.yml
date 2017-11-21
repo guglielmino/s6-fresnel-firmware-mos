@@ -1,5 +1,4 @@
-image: docker pull smartsix/mos-ci
-
+image: smartsix/mos-ci
 
 stages:
   - test
