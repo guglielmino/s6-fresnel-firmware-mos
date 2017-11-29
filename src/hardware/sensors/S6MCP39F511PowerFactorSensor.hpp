@@ -28,7 +28,7 @@ public:
         bool success = readRegister(_uart, MCP_REG_POWER_FACTOR, 2, buffer, S6MCP39F511PowerFactorSensor::BUFFER_SIZE);
 
         if (success) {
-            uint16_t PowerFactor = u16(buffer, 0);
+            uint16_t PowerFactor = dataTypes.u16(buffer, 0);
             ret = (PowerFactor * 0.000030517578125);
         } else {
             LOG(LL_DEBUG, ("*** READ POWER FACTOR FAILED!!!"));

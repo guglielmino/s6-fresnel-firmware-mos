@@ -6,7 +6,7 @@
 
 #include "hardware/devices/MCP39F511/MCP39F511Utils.hpp"
 
-#include "interfaces/ISensorCommand.hpp"
+#include "interfaces/ISensorCommand.h"
 #include "interfaces/IUART.h"
 
 /**

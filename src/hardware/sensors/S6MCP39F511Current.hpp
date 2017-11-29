@@ -26,7 +26,7 @@ public:
         bool success = readRegister(_uart, MCP_REG_CURRENT_RMS, 4, buffer, S6MCP39F511Current::BUFFER_SIZE);
 
         if (success) {
-            uint32_t Current = u32(buffer, 0);
+            uint32_t Current = dataTypes.u32(buffer, 0);
             ret = (Current / 10000.0);
         } else {
             LOG(LL_DEBUG, ("*** READ CURRENT FAILED!!!"));

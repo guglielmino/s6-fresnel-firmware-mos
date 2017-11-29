@@ -27,7 +27,7 @@ public:
         bool success = readRegister(_uart, MCP_REG_FREQUENCY, 2, buffer, S6MCP39F511LineFreq::BUFFER_SIZE);
 
         if (success) {
-            uint16_t Freq = u16(buffer, 0);
+            uint16_t Freq = dataTypes.u16(buffer, 0);
             ret = (Freq / 1000.0);
         } else {
             LOG(LL_DEBUG, ("*** READ FREQUENCY FAILED!!!"));

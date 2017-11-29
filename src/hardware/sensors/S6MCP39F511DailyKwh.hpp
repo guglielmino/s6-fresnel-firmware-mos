@@ -25,7 +25,7 @@ public:
         bool success = readRegister(_uart, MCP_REG_IMP_ACTIVE_CNT, 8, buffer, S6MCP39F511DailyKwh::BUFFER_SIZE);
 
         if (success) {
-            uint64_t Kwh = u64(buffer, 0);
+            uint64_t Kwh = dataTypes.u64(buffer, 0);
             ret = (Kwh / 1000000.0);
         } else {
             LOG(LL_DEBUG, ("*** READ KWH FAILED!!!"));

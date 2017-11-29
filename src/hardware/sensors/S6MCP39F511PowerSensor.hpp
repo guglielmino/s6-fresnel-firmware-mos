@@ -38,7 +38,7 @@ public:
         bool success = readRegister(_uart, _registers[_type], 4, buffer, S6MCP39F511PowerSensor::BUFFER_SIZE);
 
         if(success) {
-            uint32_t power = u32(buffer, 0);
+            uint32_t power = dataTypes.u32(buffer, 0);
             ret = (power / 100.0);
         }else {
             LOG(LL_DEBUG, ("*** READ POWER FAILED!!!"));

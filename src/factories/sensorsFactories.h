@@ -41,7 +41,7 @@
 
 #elif CS_PLATFORM == CS_P_ESP32
     #include "../interfaces/IUART.h"
-    #include "../interfaces/ISensorCommand.hpp"
+    #include "../interfaces/ISensorCommand.h"
     #include "../hardware/io/UARTInterface.hpp"
     #include "../hardware/sensors/S6MCP39F511PowerSensor.hpp"
     #include "../hardware/sensors/S6MCP39F511VoltageSensor.hpp"

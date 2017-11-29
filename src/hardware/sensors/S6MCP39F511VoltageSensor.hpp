@@ -28,7 +28,7 @@ public:
         bool success = readRegister(_uart, MCP_REG_VOLTS, 2, buffer, S6MCP39F511VoltageSensor::BUFFER_SIZE);
 
         if(success) {
-            uint16_t Vrms = u16(buffer, 0);
+            uint16_t Vrms = dataTypes.u16(buffer, 0);
             ret = (Vrms / 10.0);
         } else {
             LOG(LL_DEBUG, ("*** READ VOLTS FAILED!!!"));
