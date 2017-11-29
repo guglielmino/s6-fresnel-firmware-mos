@@ -102,8 +102,6 @@ void publishLWTOnlineMessage(bool online) {
     mqttManager->publish(pubLWTTopic, message);
 }
 
-
-
 enum mgos_app_init_result mgos_app_init(void) {
     cs_log_set_level(LL_DEBUG);
     LOG(LL_DEBUG, ("Device ID %s", settings.deviceId()));

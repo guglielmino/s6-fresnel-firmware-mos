@@ -11,7 +11,9 @@ then
   rm -rf build/
 fi
 
-#mos build --platform=$PLATFORM
+# CALIBRATION FIRMWARE
+#mos build --platform=esp32 --cxxflags-extra -DCALIBRATION=true
+
 mos build --local --platform=$PLATFORM
 
 
