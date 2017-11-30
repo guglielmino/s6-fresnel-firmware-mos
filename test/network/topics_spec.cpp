@@ -1,4 +1,4 @@
-
+#include <cstring>
 #include "../catch.hpp"
 #include "../../src/network/topics.h"
 
