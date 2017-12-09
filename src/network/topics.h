@@ -4,10 +4,6 @@
 
 #pragma once
 
-#include <cstring>
-//#include <memory>
-//#include <iostream>
-
 /* --- MQTT publish topics -- */
 #define PUB_SENS_INFO_TOPIC         "building/%s/sensors/%s/info"           // Device publish info message on this topic
 #define PUB_SENS_POWER_TOPIC        "building/%s/sensors/%s/power"          // Device publish power consume on this topic
@@ -48,18 +44,6 @@ char pubSensVoltageTopic[MAX_TOPIC_LEN];
 
 char subSwitchDevTopic[MAX_TOPIC_LEN];
 char subSwitchRoomTopic[MAX_TOPIC_LEN];
-
-
-/*
-template<typename ... Args>
-std::string string_format( const std::string& format, Args ... args )
-{
-    size_t size = snprintf( nullptr, 0, format.c_str(), args ... ) + 1; // Extra space for '\0'
-    std::unique_ptr<char[]> buf( new char[ size ] );
-    snprintf( buf.get(), size, format.c_str(), args ... );
-    return std::string( buf.get(), buf.get() + size - 1 ); // We don't want the '\0' inside
-}
-*/
 
 void makeDeviceTopic(char *topic, int topicLen, const char *topicPattern, const char *room, const char *deviceId) {
     memset (topic, 0, topicLen);
