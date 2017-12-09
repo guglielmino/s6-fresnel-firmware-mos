@@ -26,13 +26,13 @@ using namespace S6MqttModule;
 
 Settings settings;
 
-IScalarSensor<float> *activePower = nullptr;
-IScalarSensor<float> *reactivePower = nullptr;
-IScalarSensor<float> *dailyKwh = nullptr;
-IScalarSensor<float> *current = nullptr;
-IScalarSensor<float> *frequency = nullptr;
-IScalarSensor<float> *powerFactor = nullptr;
-IScalarSensor<float> *voltage = nullptr;
+IScalarSensor<SensorValue<float>> *activePower = nullptr;
+IScalarSensor<SensorValue<float>> *reactivePower = nullptr;
+IScalarSensor<SensorValue<float>> *dailyKwh = nullptr;
+IScalarSensor<SensorValue<float>> *current = nullptr;
+IScalarSensor<SensorValue<float>> *frequency = nullptr;
+IScalarSensor<SensorValue<float>> *powerFactor = nullptr;
+IScalarSensor<SensorValue<float>> *voltage = nullptr;
 
 MQTTManager *mqttManager = nullptr;
 OutputDevice *rele1 = nullptr;
@@ -60,33 +60,48 @@ auto powerSwitchSubscription = [](const char *topic, size_t topic_len, const cha
 void power_read_timed(void *) {
 
     if (mqttManager != nullptr) {
-        float powerValue = activePower->readValue();
-        std::string powerConsumeMsg = makeSensorValueMessage(now().c_str(), powerValue, "W");
-        mqttManager->publish(pubSensPowerTopic, powerConsumeMsg);
 
-        float reactiveValue = reactivePower->readValue();
-        std::string reactiveMsg = makeSensorValueMessage(now().c_str(), reactiveValue, "VA");
-        mqttManager->publish(pubSensReactivePowerTopic, reactiveMsg);
+        SensorValue<float> powerValue = activePower->readValue();
+        if(powerValue.isValid()) {
+            std::string activePowerMsg = makeSensorValueMessage(now().c_str(), powerValue.value(), "W");
+            mqttManager->publish(pubSensPowerTopic, activePowerMsg);
+        }
 
-        float dailyConsume = dailyKwh->readValue();
-        std::string dailyConsumeMsg = makeSensorValueMessage(now().c_str(), dailyConsume, "KWh");
-        mqttManager->publish(pubSensDailyKwhTopic, dailyConsumeMsg);
+        SensorValue<float> reactiveValue = reactivePower->readValue();
+        if(reactiveValue.isValid()) {
+            std::string reactiveMsg = makeSensorValueMessage(now().c_str(), reactiveValue.value(), "VA");
+            mqttManager->publish(pubSensReactivePowerTopic, reactiveMsg);
+        }
 
-        float currentValue = current->readValue();
-        std::string currentMsg = makeSensorValueMessage(now().c_str(), currentValue, "A");
-        mqttManager->publish(pubSensCurrentTopic, currentMsg);
+        SensorValue<float> dailyConsume = dailyKwh->readValue();
+        if(dailyConsume.isValid()) {
+            std::string dailyConsumeMsg = makeSensorValueMessage(now().c_str(), dailyConsume.value(), "KWh");
+            mqttManager->publish(pubSensDailyKwhTopic, dailyConsumeMsg);
+        }
 
-        float freqValue = frequency->readValue();
-        std::string freqMsg = makeSensorValueMessage(now().c_str(), freqValue, "Hz");
-        mqttManager->publish(pubSensFreqTopic, freqMsg);
+        SensorValue<float> currentValue = current->readValue();
+        if(currentValue.isValid()) {
+            std::string currentMsg = makeSensorValueMessage(now().c_str(), currentValue.value(), "A");
+            mqttManager->publish(pubSensCurrentTopic, currentMsg);
+        }
 
-        float powerFactorValue = powerFactor->readValue();
-        std::string powerFactorMsg = makeSensorValueMessage(now().c_str(), powerFactorValue, "");
-        mqttManager->publish(pubSensPowerFactorTopic, powerFactorMsg);
+        SensorValue<float> freqValue = frequency->readValue();
+        if(freqValue.isValid()) {
+            std::string freqMsg = makeSensorValueMessage(now().c_str(), freqValue.value(), "Hz");
+            mqttManager->publish(pubSensFreqTopic, freqMsg);
+        }
 
-        float voltageValue = voltage->readValue();
-        std::string voltageMsg = makeSensorValueMessage(now().c_str(), voltageValue, "V");
-        mqttManager->publish(pubSensVoltageTopic, voltageMsg);
+        SensorValue<float> powerFactorValue = powerFactor->readValue();
+        if(powerFactorValue.isValid()) {
+            std::string powerFactorMsg = makeSensorValueMessage(now().c_str(), powerFactorValue.value(), "");
+            mqttManager->publish(pubSensPowerFactorTopic, powerFactorMsg);
+        }
+
+        SensorValue<float> voltageValue = voltage->readValue();
+        if(voltageValue.isValid()) {
+            std::string voltageMsg = makeSensorValueMessage(now().c_str(), voltageValue.value(), "V");
+            mqttManager->publish(pubSensVoltageTopic, voltageMsg);
+        }
     }
 }
 

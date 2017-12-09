@@ -8,8 +8,9 @@
 
 #include "interfaces/IADCReader.h"
 #include "interfaces/IScalarSensor.h"
+#include "SensorValue.hpp"
 
-class S6MCP39F511Current : public IScalarSensor<float>, MCP39F511Utils {
+class S6MCP39F511Current : public IScalarSensor<SensorValue<float>>, MCP39F511Utils {
 private:
     IUART *_uart;
     static const int BUFFER_SIZE = 7;
@@ -19,15 +20,15 @@ public:
 
     }
 
-    float readValue() {
-        float ret = 0;
+    SensorValue<float> readValue() {
+        SensorValue<float> ret(0, false);
         char buffer[S6MCP39F511Current::BUFFER_SIZE];
 
         bool success = readRegister(_uart, MCP_REG_CURRENT_RMS, 4, buffer, S6MCP39F511Current::BUFFER_SIZE);
 
         if (success) {
             uint32_t Current = dataTypes.u32(buffer, 0);
-            ret = (Current / 10000.0);
+            ret.setValue((Current / 10000.0));
         } else {
             LOG(LL_DEBUG, ("*** READ CURRENT FAILED!!!"));
         }
