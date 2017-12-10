@@ -5,13 +5,13 @@
 #include "mgos_timers.h"
 #include "mgos_config.h"
 
-
 #include "consts.h"
+
 #include "network/topics.h"
+
 #include "utils/dateutils.h"
 #include "network/messages.h"
 #include "network/mqtt.h"
-#include "config/settings.h"
 #include "hardware/gpio/OutputDevice.h"
 #include "hardware/gpio/InputDevice.h"
 #include "factories/sensorsFactories.h"
@@ -20,11 +20,11 @@
 #include "globals.h"
 #include "devfunctions.h"
 
+#include "setup/cron_sys.hpp"
+
 using namespace S6MqttModule;
 
 #define MAX_MSG_LEN 128
-
-Settings settings;
 
 IScalarSensor<SensorValue<float>> *activePower = nullptr;
 IScalarSensor<SensorValue<float>> *reactivePower = nullptr;
@@ -40,7 +40,6 @@ OutputDevice *statusLed = nullptr;
 
 InputDevice *button = nullptr;
 
-
 OutputDevice::SwitchMode relayState =  OutputDevice::OFF;
 
 auto powerSwitchSubscription = [](const char *topic, size_t topic_len, const char *msg, size_t msg_len) {
@@ -53,57 +52,6 @@ auto powerSwitchSubscription = [](const char *topic, size_t topic_len, const cha
 
     turnRelay(relayState);
 };
-
-/**
- * Read power callback, called on every update_interval milliseconds (setting)
- */
-void power_read_timed(void *) {
-
-    if (mqttManager != nullptr) {
-
-        SensorValue<float> powerValue = activePower->readValue();
-        if(powerValue.isValid()) {
-            std::string activePowerMsg = makeSensorValueMessage(now().c_str(), powerValue.value(), "W");
-            mqttManager->publish(pubSensPowerTopic, activePowerMsg);
-        }
-
-        SensorValue<float> reactiveValue = reactivePower->readValue();
-        if(reactiveValue.isValid()) {
-            std::string reactiveMsg = makeSensorValueMessage(now().c_str(), reactiveValue.value(), "VA");
-            mqttManager->publish(pubSensReactivePowerTopic, reactiveMsg);
-        }
-
-        SensorValue<float> dailyConsume = dailyKwh->readValue();
-        if(dailyConsume.isValid()) {
-            std::string dailyConsumeMsg = makeSensorValueMessage(now().c_str(), dailyConsume.value(), "KWh");
-            mqttManager->publish(pubSensDailyKwhTopic, dailyConsumeMsg);
-        }
-
-        SensorValue<float> currentValue = current->readValue();
-        if(currentValue.isValid()) {
-            std::string currentMsg = makeSensorValueMessage(now().c_str(), currentValue.value(), "A");
-            mqttManager->publish(pubSensCurrentTopic, currentMsg);
-        }
-
-        SensorValue<float> freqValue = frequency->readValue();
-        if(freqValue.isValid()) {
-            std::string freqMsg = makeSensorValueMessage(now().c_str(), freqValue.value(), "Hz");
-            mqttManager->publish(pubSensFreqTopic, freqMsg);
-        }
-
-        SensorValue<float> powerFactorValue = powerFactor->readValue();
-        if(powerFactorValue.isValid()) {
-            std::string powerFactorMsg = makeSensorValueMessage(now().c_str(), powerFactorValue.value(), "");
-            mqttManager->publish(pubSensPowerFactorTopic, powerFactorMsg);
-        }
-
-        SensorValue<float> voltageValue = voltage->readValue();
-        if(voltageValue.isValid()) {
-            std::string voltageMsg = makeSensorValueMessage(now().c_str(), voltageValue.value(), "V");
-            mqttManager->publish(pubSensVoltageTopic, voltageMsg);
-        }
-    }
-}
 
 void publishInfoMessage() {
      std::string infoMessage = devInfoMessage(FIRMWARE_APP_NAME, FIRMWARE_APP_VERSION,
@@ -120,6 +68,7 @@ void publishLWTOnlineMessage(bool online) {
 enum mgos_app_init_result mgos_app_init(void) {
     cs_log_set_level(LL_DEBUG);
     LOG(LL_DEBUG, ("Device ID %s", settings.deviceId()));
+
 
     // ** MQTT Topic (TODO: Move to std::string and optimize topic string creation)
     makeDeviceTopic(pubSensPowerTopic, MAX_TOPIC_LEN, PUB_SENS_POWER_TOPIC, settings.s6fresnel().location(),
@@ -171,9 +120,6 @@ enum mgos_app_init_result mgos_app_init(void) {
 
         publishInfoMessage();
         publishLWTOnlineMessage(true);
-
-        // Start periodic power publishing on MQTT topic
-        mgos_set_timer(settings.s6fresnel().updateInterval(), true, power_read_timed, NULL);
     });
 
     mqttManager->setEventCallback(MQTTManager::Disconnected, []() {
@@ -188,6 +134,7 @@ enum mgos_app_init_result mgos_app_init(void) {
     // SETUP: On board devices
     rele1 = new OutputDevice(REL_PIN);
     statusLed = new OutputDevice(STATUS_LED_PIN);
+    // SETUP: Sensors
     activePower = getActivePowerSensor();
     reactivePower = getReactivePowerSensor();
     dailyKwh = getDailyKwhSensor();
@@ -204,6 +151,8 @@ enum mgos_app_init_result mgos_app_init(void) {
         relayState = (relayState == OutputDevice::ON ? OutputDevice::OFF : OutputDevice::ON);
         turnRelay(relayState);
     }, true);
+
+    cron_sys_init();
 
     return MGOS_APP_INIT_SUCCESS;
 }

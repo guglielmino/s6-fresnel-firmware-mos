@@ -1,10 +1,8 @@
 #include <vector>
 #include <iostream>
 
-#include "../catch.hpp"
-
-#include "../../src/hardware/sensors/SensorValue.hpp"
-
+#include "../../catch.hpp"
+#include "../../../src/hardware/sensors/SensorValue.hpp"
 
 TEST_CASE("sensor value wrapper", "[SensorValue]") {
 

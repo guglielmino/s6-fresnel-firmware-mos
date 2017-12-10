@@ -3,7 +3,7 @@
 
 #include "../../../catch.hpp"
 
-#include "../../src/hardware/devices/MCP39F511/MCP39F511DataTypes.hpp"
+#include "../../../../src/hardware/devices/MCP39F511/MCP39F511DataTypes.hpp"
 
 
 SCENARIO( "Manage uint16 data type", "[MCP39F511DataTypes]" ) {

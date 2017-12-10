@@ -61,7 +61,14 @@ protected:
         uint32_t buffsize = 2 + size + 1; // ACK + Num bytes + bytes + checksum
         size_t read = uart->read(buffer, buffsize);
 
+        // flush remaining bytes
+        if(avail-buffsize > 0) {
+            char tmp[avail - buffsize];
+            uart->read(tmp, avail - buffsize);
+        }
+
         return (read > 0 && checkResp(buffer));
+
     }
 
     void writeRegister(IUART *uart, uint16_t regAddress, std::vector<uint8_t> data) {
@@ -85,6 +92,7 @@ protected:
 
         writeFrame(uart, frame);
     }
+
 
 private:
     unsigned long millis(void) {
