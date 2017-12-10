@@ -6,11 +6,12 @@
 
 #include "hardware/devices/MCP39F511/MCP39F511Utils.hpp"
 
+#include "SensorValue.hpp"
 #include "interfaces/IScalarSensor.h"
 #include "interfaces/IUART.h"
 
 
-class S6MCP39F511PowerSensor : public IScalarSensor<float>, MCP39F511Utils {
+class S6MCP39F511PowerSensor : public IScalarSensor<SensorValue<float>>, MCP39F511Utils {
 public:
     typedef enum {
         ACTIVE,
@@ -32,14 +33,14 @@ public:
         _registers[S6MCP39F511PowerSensor::APPARENT] = MCP_REG_APPARENT_POWER;
     }
 
-    float readValue() {
-        float ret = 0.0;
+    SensorValue<float> readValue() {
+        SensorValue<float> ret(0.0, false);
         char buffer[S6MCP39F511PowerSensor::BUFFER_SIZE];
         bool success = readRegister(_uart, _registers[_type], 4, buffer, S6MCP39F511PowerSensor::BUFFER_SIZE);
 
         if(success) {
-            uint32_t power = u32(buffer, 0);
-            ret = (power / 100.0);
+            uint32_t power = dataTypes.u32(buffer, 0);
+            ret.setValue((power / 100.0));
         }else {
             LOG(LL_DEBUG, ("*** READ POWER FAILED!!!"));
         }

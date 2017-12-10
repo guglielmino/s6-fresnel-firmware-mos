@@ -8,18 +8,18 @@
 #include "interfaces/IADCReader.h"
 #include "interfaces/IScalarSensor.h"
 #include "hardware/devices/xsns_hlw8012.h"
+#include "SensorValue.hpp"
 
-class SONOFFPowerSensor : public IScalarSensor<float> {
+class SONOFFPowerSensor : public IScalarSensor<SensorValue<float>> {
 public:
     SONOFFPowerSensor() {
         hlw_init();
     }
 
     float readValue() {
-        float ped, pi, pc;
-        uint16_t pe, pw, pu;
-        hlw_readEnergy(0, ped, pe, pw, pu, pi, pc);
-        return pw;
+        SensorValue<float> ret(0, false);
+
+        return ret;
     }
 
 };

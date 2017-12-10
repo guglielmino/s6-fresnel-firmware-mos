@@ -2,17 +2,18 @@
 #include <iostream>
 
 #include "../../../catch.hpp"
-#include "../../src/hardware/devices/MCP39F511/MCP39F511Command.hpp"
-#include "../../src/hardware/devices/MCP39F511/AddressPointerCmd.hpp"
-#include "../../src/hardware/devices/MCP39F511/RegisterReadCmd.hpp"
-#include "../../src/hardware/devices/MCP39F511/RegisterWriteCmd.hpp"
-#include "../../src/hardware/devices/MCP39F511/AutoCalibrateGainCmd.hpp"
-#include "../../src/hardware/devices/MCP39F511/AutoCalibrateReactiveGain.hpp"
-#include "../../src/hardware/devices/MCP39F511/AutoCalibrateFrequencyCmd.hpp"
-#include "../../src/hardware/devices/MCP39F511/SaveRegistersToFlashCmd.hpp"
-#include "../../src/hardware/devices/MCP39F511/PageReadEEPROMCmd.hpp"
-#include "../../src/hardware/devices/MCP39F511/PageWriteEEPROMCmd.hpp"
-#include "../../src/hardware/devices/MCP39F511/BulkEraseEEPROMCmd.hpp"
+
+#include "../../../../src/hardware/devices/MCP39F511/MCP39F511Command.hpp"
+#include "../../../../src/hardware/devices/MCP39F511/AddressPointerCmd.hpp"
+#include "../../../../src/hardware/devices/MCP39F511/RegisterReadCmd.hpp"
+#include "../../../../src/hardware/devices/MCP39F511/RegisterWriteCmd.hpp"
+#include "../../../../src/hardware/devices/MCP39F511/AutoCalibrateGainCmd.hpp"
+#include "../../../../src/hardware/devices/MCP39F511/AutoCalibrateReactiveGain.hpp"
+#include "../../../../src/hardware/devices/MCP39F511/AutoCalibrateFrequencyCmd.hpp"
+#include "../../../../src/hardware/devices/MCP39F511/SaveRegistersToFlashCmd.hpp"
+#include "../../../../src/hardware/devices/MCP39F511/PageReadEEPROMCmd.hpp"
+#include "../../../../src/hardware/devices/MCP39F511/PageWriteEEPROMCmd.hpp"
+#include "../../../../src/hardware/devices/MCP39F511/BulkEraseEEPROMCmd.hpp"
 
 SCENARIO( "Set Address Pointer command", "[MCP39F511Commands]" ) {
     GIVEN( "A register address split in high and low byte" ) {

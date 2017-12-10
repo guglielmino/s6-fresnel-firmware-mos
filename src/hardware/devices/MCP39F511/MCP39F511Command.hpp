@@ -41,6 +41,13 @@
 #define MCP_REG_IMP_REACT_CNT   0x002E // Import Reactive Energy Counter
 #define MCP_REG_EXP_REACT_CNT   0x0036 // Export Reactive Energy Counter
 #define MCP_REG_RST_ENERGY_CNT  0x00DC // reset/start Energy accumulation
+#define MCP_REG_CALIB_CURRENT   0x0086 // Target Current to be used during single-point calibration
+#define MCP_REG_CALIB_VOLTAGE   0x008A // Target Voltage to be used during single-point calibration
+#define MCP_REG_CALIB_POW_A     0x008C // Target Active Power to be used during single-point calibration
+#define MCP_REG_CALIB_POW_R     0x0090 // Target Active Power to be used during single-point calibration
+
+
+
 
 
 uint8_t checksum(const uint8_t *buffer, size_t len) {

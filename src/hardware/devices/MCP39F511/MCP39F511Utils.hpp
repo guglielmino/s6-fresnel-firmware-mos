@@ -9,51 +9,15 @@
 #include "AddressPointerCmd.hpp"
 #include "RegisterReadCmd.hpp"
 #include "RegisterWriteCmd.hpp"
+#include "MCP39F511DataTypes.hpp"
+
 
 
 #define READ_AVAIL_TIMEOUT_MS 700 // Timeout for checking read availability (ms)
 
 class MCP39F511Utils {
 protected:
-    int16_t u16(char *msg_buffer, uint8_t addr){
-        uint16_t offset = 2;
-        return ((msg_buffer[addr + offset + 1] << 8) + msg_buffer[addr + offset + 0]);
-    }
-
-    uint32_t u32(char *msg_buffer, uint8_t addr){
-        uint32_t tmp = 0;
-        uint32_t ret = 0;
-        uint16_t offset = 2;
-        tmp += msg_buffer[addr+3 + offset];
-        tmp = tmp << 24;
-        ret += tmp;
-        tmp = msg_buffer[addr+2 + offset];
-        tmp = tmp << 16;
-        ret += tmp;
-        tmp = msg_buffer[addr+1 + offset];
-        tmp = tmp << 8;
-        ret += tmp;
-        ret += msg_buffer[addr+0 + offset];
-        return ret;
-    }
-
-    uint64_t u64(char *msg_buffer, uint8_t addr){
-        uint64_t tmp = 0;
-        uint64_t ret = 0;
-        uint16_t offset = 2;
-        tmp += msg_buffer[addr + 7 + offset];
-        tmp = tmp << (7  * 8);
-        for (uint8_t i = 6; i > 0; --i) {
-
-            tmp = msg_buffer[addr + i + offset];
-            tmp = tmp << (i  * 8);
-            ret += tmp;
-        }
-
-        ret += msg_buffer[addr+0 + offset];
-
-        return ret;
-    }
+    MCP39F511DataTypes dataTypes;
 
     bool checkResp(char *readbuf) {
         bool ret = false;
@@ -97,7 +61,14 @@ protected:
         uint32_t buffsize = 2 + size + 1; // ACK + Num bytes + bytes + checksum
         size_t read = uart->read(buffer, buffsize);
 
+        // flush remaining bytes
+        if(avail-buffsize > 0) {
+            char tmp[avail - buffsize];
+            uart->read(tmp, avail - buffsize);
+        }
+
         return (read > 0 && checkResp(buffer));
+
     }
 
     void writeRegister(IUART *uart, uint16_t regAddress, std::vector<uint8_t> data) {
@@ -112,6 +83,16 @@ protected:
 
         writeFrame(uart, frame);
     }
+
+    void execCommand(IUART *uart, MCP39F511Command& command) {
+        std::vector<MCP39F511Command *> commands;
+        commands.push_back(&command);
+
+        std::vector<uint8_t> frame = makeFrame(commands);
+
+        writeFrame(uart, frame);
+    }
+
 
 private:
     unsigned long millis(void) {

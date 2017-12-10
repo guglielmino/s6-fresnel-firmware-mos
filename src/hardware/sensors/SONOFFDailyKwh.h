@@ -7,17 +7,17 @@
 #include "interfaces/IADCReader.h"
 #include "interfaces/IScalarSensor.h"
 #include "hardware/devices/xsns_hlw8012.h"
+#include "SensorValue.hpp"
 
-class SONOFFDailyKwh : public IScalarSensor<float> {
+class SONOFFDailyKwh : public IScalarSensor<SensorValue<float>> {
 public:
     SONOFFDailyKwh() {
         hlw_init();
     }
 
-    float readValue() {
-        float ped, pi, pc;
-        uint16_t pe, pw, pu;
-        hlw_readEnergy(0, ped, pe, pw, pu, pi, pc);
-        return dynamic_cast<float>(ped);
+    SensorValue<float> readValue() {
+        SensorValue<float> ret(0, false);
+
+        return ret;
     }
 };
