@@ -9,6 +9,7 @@
 #include "globals.h"
 #include "network/messages.h"
 #include "network/mqtt.h"
+#include "network/topics.h"
 #include "hardware/gpio/OutputDevice.h"
 
 void turnRelay(OutputDevice::SwitchMode mode) {

@@ -12,7 +12,7 @@ then
 fi
 
 # CALIBRATION FIRMWARE
-#mos build --platform=esp32 --cxxflags-extra -DCALIBRATION=true
+#mos build --platform=esp32 --cxxflags-extra -DS6TARGET=calibration
 
 mos build --local --platform=$PLATFORM
 

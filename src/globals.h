@@ -7,6 +7,9 @@
 #include "network/mqtt.h"
 #include "hardware/gpio/OutputDevice.h"
 #include "config/settings.h"
+#include "interfaces/IScalarSensor.h"
+#include "hardware/sensors/SensorValue.hpp"
+#include "utils/dateutils.h"
 
 using namespace S6MqttModule;
 
