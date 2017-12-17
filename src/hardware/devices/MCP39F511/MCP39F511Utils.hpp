@@ -22,7 +22,6 @@ protected:
     bool checkResp(char *readbuf) {
         bool ret = false;
         if (readbuf[0] == 0x06) {
-            LOG(LL_DEBUG, ("*** Values Packet - Passed"));
             ret = true;
         }
 

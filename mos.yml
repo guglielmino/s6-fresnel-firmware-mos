@@ -23,17 +23,20 @@ platforms: [  esp32, esp8266 ]
 config_schema:
   - ["mqtt.enable", true]
   - ["mqtt.server", "s", "192.168.0.14:1883", {title: "MQTT server"}]
-  - ["wifi.sta.enable", true]
+  - ["wifi.sta.enable", false]
   - ["wifi.sta.ssid", "gug"]
   - ["wifi.sta.pass", "marric13"]
-  - ["wifi.ap.enable", false]
+  - ["wifi.ap.enable", true]
   - ["s6fresnel", "o", {title: "S6 Fresnel custom settings"}]
   - ["s6fresnel.update_interval", "i", 5000, {title: "Power reads will be sent every update_interval (ms)"}]
   - ["s6fresnel.location", "s", "room1", {title: "Device location, used in MQTT topic path (ie. building/room1/...)"}]
   - ["s6fresnel.name", "s", "noname", {title: "Device name (ie. lamp1)"}]
-  - ["debug.level", 4]
+  - ["debug.level", 3]
 
-
+build_vars:
+  MGOS_ENABLE_HEAP_LOG: 1
+  MGOS_ENABLE_CALL_TRACE: 1
+  
 # List of libraries used by this app, in order of initialisation
 libs:
   - origin: https://github.com/mongoose-os-libs/ca-bundle

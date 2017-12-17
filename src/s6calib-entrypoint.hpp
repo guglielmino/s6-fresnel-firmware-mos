@@ -2,6 +2,9 @@
  * Calibration firmware entry point
  */
 
+#include <string>
+#include <map>
+
 #include "mgos.h"
 
 #include "consts.h"
@@ -12,75 +15,92 @@
 #include "./setup/sensors_sys.hpp"
 
 
+
 void printValues() {
-    LOG(LL_DEBUG, ("VALUES"));
-    // Trash first read
-    reactivePower->readValue();
+    LOG(LL_INFO, ("VALUES"));
+  
+    std::map<std::string, float> values = getValues();
 
-    SensorValue<float> reactiveValue = reactivePower->readValue();
-    if(reactiveValue.isValid()) {
-        LOG(LL_DEBUG, ("Reactive power %.2f VA\n", reactiveValue.value()));
+    if(values["REACTIVE_POWER"]) {
+        LOG(LL_INFO, ("Reactive power %.2f VA", values["REACTIVE_POWER"]));
     }
 
-    SensorValue<float> powerValue = activePower->readValue();
-    if(powerValue.isValid()) {
-        LOG(LL_DEBUG, ("Active power %.2f W\n", powerValue.value()));
+    if(values["ACTIVE_POWER"]) {
+        LOG(LL_INFO, ("Active power %.2f W", values["ACTIVE_POWER"]));
     }
 
-    SensorValue<float> currentValue = current->readValue();
-    if(currentValue.isValid()) {
-        LOG(LL_DEBUG, ("Current %.2f A\n", currentValue.value()));
+    if(values["CURRENT"]) {
+        LOG(LL_INFO, ("Current %.2f A", values["CURRENT"]));
+    }
+    if(values["FREQ"]) {
+        LOG(LL_INFO, ("Frequency %.2f Hz", values["FREQ"]));
     }
 
-    SensorValue<float> freqValue = frequency->readValue();
-    if(freqValue.isValid()) {
-        LOG(LL_DEBUG, ("Frequency %.2f Hz\n", freqValue.value()));
+    if(values["POWER_FACTOR"]) {
+        LOG(LL_INFO, ("Power factor %.2f", values["POWER_FACTOR"]));
     }
 
-    SensorValue<float> powerFactorValue = powerFactor->readValue();
-    if(powerFactorValue.isValid()) {
-        LOG(LL_DEBUG, ("Power factor %.2f \n", powerFactorValue.value()));
-    }
-
-    SensorValue<float> voltageValue = voltage->readValue();
-    if(voltageValue.isValid()) {
-        LOG(LL_DEBUG, ("Voltage  %.2f V\n", voltageValue.value()));
+    if(values["VOLTAGE"]) {
+        LOG(LL_INFO, ("Voltage  %.2f V", values["VOLTAGE"]));
     }
 }
 
-enum mgos_app_init_result mgos_app_init(void) {
-    IScalarSensor<SensorValue<float>> *targetCurrent = getReadU32Register(MCP_REG_CALIB_CURRENT, 10000.0);
-    IScalarSensor<SensorValue<float>> *targetVoltage = getReadU16Register(MCP_REG_CALIB_VOLTAGE, 10.0);
-    IScalarSensor<SensorValue<float>> *targetActivePower = getReadU32Register(MCP_REG_CALIB_POW_A, 100.0);
-    IScalarSensor<SensorValue<float>> *targetReactivePower = getReadU32Register(MCP_REG_CALIB_POW_R, 100.0);
+void configOverride() {
+    mgos_sys_config_set_mqtt_enable(false);
+    mgos_sys_config_set_wifi_sta_enable(false);
+    mgos_sys_config_set_eth_enable(false);
+    mgos_sys_config_set_bt_enable(false);
+}
 
-    LOG(LL_DEBUG, ("CALIBRATION FIRMWARE"));
+enum mgos_app_init_result mgos_app_init(void) {
+    cs_log_set_level(LL_INFO);
+    configOverride();
+
+    IScalarSensor<SensorValue<float>> *targetCurrent = getReadU32Register(REG_CALIB_CURRENT);
+    IScalarSensor<SensorValue<float>> *targetVoltage = getReadU16Register(REG_CALIB_VOLTAGE); 
+    IScalarSensor<SensorValue<float>> *targetActivePower = getReadU32Register(REG_CALIB_POW_A);
+    IScalarSensor<SensorValue<float>> *targetReactivePower = getReadU32Register(REG_CALIB_POW_R);
+    IScalarSensor<SensorValue<float>> *targetFreq = getReadU16Register(REG_REF_FREQUENCY);
+
+    LOG(LL_INFO, ("***** CALIBRATION FIRMWARE ********"));
 
     sensors_sys_init();
-
+  
     printValues();
+    mgos_wdt_feed();
 
-    LOG(LL_DEBUG, ("TARGET VALUES"));
-    SensorValue<float> tCurrent = targetCurrent->readValue();
-    if(tCurrent.isValid()) {
-        LOG(LL_DEBUG, ("Target current %.2f A\n", tCurrent.value()));
+    LOG(LL_INFO, ("TARGET VALUES"));
+    for(int i =0; i < 30; i++) {
+        SensorValue<float> tCurrent = targetCurrent->readValue();
+        mgos_wdt_feed();
+        if(tCurrent.isValid()) {
+            LOG(LL_INFO, ("Target current %.2f A", tCurrent.value()));
+        }
+
+        SensorValue<float> tVoltage = targetVoltage->readValue();
+        mgos_wdt_feed();
+        if(tVoltage.isValid()) {
+            LOG(LL_INFO, ("Target voltage %.2f V", tVoltage.value()));
+        }
+
+        SensorValue<float> tAPower = targetActivePower->readValue();
+        mgos_wdt_feed();
+        if(tAPower.isValid()) {
+            LOG(LL_INFO, ("Target active power %.2f W", tAPower.value()));
+        }
+
+        SensorValue<float> tRPower = targetReactivePower->readValue();
+        mgos_wdt_feed();
+        if(tRPower.isValid()) {
+            LOG(LL_INFO, ("Target reactive power %.2f VA", tRPower.value()));
+        }
+
+        SensorValue<float> tFreq = targetFreq->readValue();
+        mgos_wdt_feed();
+        if(tFreq.isValid()) {
+            LOG(LL_INFO, ("Reference frequency %.2f Hz", tFreq.value()));
+        }
     }
-
-    SensorValue<float> tVoltage = targetVoltage->readValue();
-    if(tVoltage.isValid()) {
-        LOG(LL_DEBUG, ("Target voltage %.2f V\n", tVoltage.value()));
-    }
-
-    SensorValue<float> tAPower = targetActivePower->readValue();
-    if(tAPower.isValid()) {
-        LOG(LL_DEBUG, ("Target active power %.2f W\n", tAPower.value()));
-    }
-
-    SensorValue<float> tRPower = targetReactivePower->readValue();
-    if(tRPower.isValid()) {
-        LOG(LL_DEBUG, ("Target active power %.2f \n", tRPower.value()));
-    }
-
 
     return MGOS_APP_INIT_SUCCESS;
 }

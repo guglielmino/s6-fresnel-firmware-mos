@@ -44,6 +44,7 @@
     #include "../interfaces/IUART.h"
     #include "../interfaces/ISensorCommand.h"
     #include "../hardware/io/UARTInterface.hpp"
+    #include "../hardware/devices/MCP39F511/MCP39F511Consts.h"
     #include "../hardware/sensors/S6MCP39F511PowerSensor.hpp"
     #include "../hardware/sensors/S6MCP39F511VoltageSensor.hpp"
     #include "../hardware/sensors/S6MCP39F511DailyKwh.hpp"
@@ -106,14 +107,14 @@
         return new S6MCP39F511PowerFactorSensor(uart);
     }
 
-    IScalarSensor<SensorValue<float>> *getReadU32Register(uint16_t mcpRegister, float divider) {
+    IScalarSensor<SensorValue<float>> *getReadU32Register(McpRegister<float, uint32_t> regData) {
         IUART *uart = setupUART();
-        return new S6MCP39F511U32Register(uart, mcpRegister, divider);
+        return new S6MCP39F511U32Register(uart, regData);
     }
 
-    IScalarSensor<SensorValue<float>> *getReadU16Register(uint16_t mcpRegister, float divider) {
+    IScalarSensor<SensorValue<float>> *getReadU16Register(McpRegister<float, uint16_t> regData) {
         IUART *uart = setupUART();
-        return new S6MCP39F511U16Register(uart, mcpRegister, divider);
+        return new S6MCP39F511U16Register(uart, regData);
     }
 
     ISensorCommand *getStartDailyKkhCommand() {

@@ -11,7 +11,7 @@ private:
     std::vector<uint8_t> _data;
 
 public:
-    RegisterWriteCmd(std::vector<uint8_t> data) : _data(data) {
+    RegisterWriteCmd(std::vector<uint8_t> &data) : _data(data) {
 
     }
 

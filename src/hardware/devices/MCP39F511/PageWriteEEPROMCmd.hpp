@@ -12,7 +12,7 @@ private:
     uint8_t _pageNum;
 
 public:
-    PageWriteEEPROMCmd(uint8_t pageNum, std::vector<uint8_t> data) : _pageNum(pageNum), _data(data) {
+    PageWriteEEPROMCmd(uint8_t pageNum, std::vector<uint8_t> &data) : _pageNum(pageNum), _data(data) {
 
     }
 
