@@ -21,27 +21,27 @@ void printValues() {
   
     std::map<std::string, float> values = getValues();
 
-    if(values["REACTIVE_POWER"]) {
-        LOG(LL_INFO, ("Reactive power %.2f VA", values["REACTIVE_POWER"]));
+    if(values[REACTIVE_POWER]) {
+        LOG(LL_INFO, ("Reactive power %.2f VA", values[REACTIVE_POWER]));
     }
 
-    if(values["ACTIVE_POWER"]) {
-        LOG(LL_INFO, ("Active power %.2f W", values["ACTIVE_POWER"]));
+    if(values[ACTIVE_POWER]) {
+        LOG(LL_INFO, ("Active power %.2f W", values[ACTIVE_POWER]));
     }
 
-    if(values["CURRENT"]) {
-        LOG(LL_INFO, ("Current %.2f A", values["CURRENT"]));
+    if(values[CURRENT]) {
+        LOG(LL_INFO, ("Current %.2f A", values[CURRENT]));
     }
-    if(values["FREQ"]) {
-        LOG(LL_INFO, ("Frequency %.2f Hz", values["FREQ"]));
-    }
-
-    if(values["POWER_FACTOR"]) {
-        LOG(LL_INFO, ("Power factor %.2f", values["POWER_FACTOR"]));
+    if(values[FREQ]) {
+        LOG(LL_INFO, ("Frequency %.2f Hz", values[FREQ]));
     }
 
-    if(values["VOLTAGE"]) {
-        LOG(LL_INFO, ("Voltage  %.2f V", values["VOLTAGE"]));
+    if(values[POWER_FACTOR]) {
+        LOG(LL_INFO, ("Power factor %.2f", values[POWER_FACTOR]));
+    }
+
+    if(values[VOLTAGE]) {
+        LOG(LL_INFO, ("Voltage  %.2f V", values[VOLTAGE]));
     }
 }
 
