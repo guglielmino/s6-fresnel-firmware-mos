@@ -1,0 +1,4 @@
+{
+    "cppcheck.lintingEnabled": true,
+    "cppcheck.includePaths": ["src"],
+}

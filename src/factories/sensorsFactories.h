@@ -44,14 +44,13 @@
     #include "../interfaces/IUART.h"
     #include "../interfaces/ISensorCommand.h"
     #include "../hardware/io/UARTInterface.hpp"
-    #include "../hardware/sensors/S6MCP39F511PowerSensor.hpp"
-    #include "../hardware/sensors/S6MCP39F511VoltageSensor.hpp"
-    #include "../hardware/sensors/S6MCP39F511DailyKwh.hpp"
+    #include "../hardware/devices/MCP39F511/MCP39F511Consts.h"
+
     #include "../hardware/sensors/S6MCP39F511StartDailyKwh.hpp"
     #include "../hardware/sensors/S6MCP39F511ResetDailyKwh.hpp"
-    #include "../hardware/sensors/S6MCP39F511Current.hpp"
-    #include "../hardware/sensors/S6MCP39F511LineFreq.hpp"
-    #include "../hardware/sensors/S6MCP39F511PowerFactorSensor.hpp"
+    #include "../hardware/sensors/S6MCP39F511U32Register.hpp"
+    #include "../hardware/sensors/S6MCP39F511U16Register.hpp"
+    #include "../hardware/sensors/S6MCP39F511U64Register.hpp"
 
     IUART *_uart = nullptr;
 
@@ -71,37 +70,47 @@
 
     IScalarSensor<SensorValue<float>> *getActivePowerSensor() {
         IUART *uart = setupUART();
-        return new S6MCP39F511PowerSensor(uart, S6MCP39F511PowerSensor::ACTIVE);
+        return new S6MCP39F511U32Register(uart, REG_ACTIVE_POWER);
     }
 
     IScalarSensor<SensorValue<float>> *getReactivePowerSensor() {
         IUART *uart = setupUART();
-        return new S6MCP39F511PowerSensor(uart, S6MCP39F511PowerSensor::REACTIVE);
+        return new S6MCP39F511U32Register(uart, REG_REACTIVE_POWER);
     }
 
     IScalarSensor<SensorValue<float>> *getVoltageSensor() {
         IUART *uart = setupUART();
-        return new S6MCP39F511VoltageSensor(uart);
+        return new S6MCP39F511U16Register(uart, REG_VOLTAGE);
     }
 
     IScalarSensor<SensorValue<float>> *getDailyKwhSensor() {
         IUART *uart = setupUART();
-        return new S6MCP39F511DailyKwh(uart);
+        return new S6MCP39F511U64Register(uart, REG_IMP_ACTIVE_CNT);
     }
 
     IScalarSensor<SensorValue<float>> *getCurrentSensor() {
         IUART *uart = setupUART();
-        return new S6MCP39F511Current(uart);
+        return new S6MCP39F511U32Register(uart, REG_CURRENT);
     }
 
     IScalarSensor<SensorValue<float>> *getLineFrequencySensor() {
         IUART *uart = setupUART();
-        return new S6MCP39F511LineFreq(uart);
+        return new S6MCP39F511U16Register(uart, REG_FREQUENCY);
     }
 
     IScalarSensor<SensorValue<float>> *getPowerFactorSensor() {
         IUART *uart = setupUART();
-        return new S6MCP39F511PowerFactorSensor(uart);
+        return new S6MCP39F511U16Register(uart, REG_POWER_FACTOR);
+    }
+
+    IScalarSensor<SensorValue<float>> *getReadU32Register(McpRegister<float, uint32_t> regData) {
+        IUART *uart = setupUART();
+        return new S6MCP39F511U32Register(uart, regData);
+    }
+
+    IScalarSensor<SensorValue<float>> *getReadU16Register(McpRegister<float, uint16_t> regData) {
+        IUART *uart = setupUART();
+        return new S6MCP39F511U16Register(uart, regData);
     }
 
     ISensorCommand *getStartDailyKkhCommand() {
