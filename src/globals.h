@@ -11,8 +11,6 @@
 #include "hardware/sensors/SensorValue.hpp"
 #include "utils/dateutils.h"
 
-using namespace S6MqttModule;
-
 extern Settings settings;
 
 extern MQTTManager *mqttManager;
@@ -26,3 +24,5 @@ extern IScalarSensor<SensorValue<float>> *current;
 extern IScalarSensor<SensorValue<float>> *frequency;
 extern IScalarSensor<SensorValue<float>> *powerFactor;
 extern IScalarSensor<SensorValue<float>> *voltage;
+
+static OutputDevice::SwitchMode relayState = OutputDevice::OFF;
