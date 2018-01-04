@@ -33,6 +33,8 @@ void cron_sys_init() {
     mgos_crontab_register_handler(mg_mk_str("readSensors"), readSensors, NULL);
 
     // Add the first item by default (read sensor data)
+    // TODO: Check is it can be done by embedding the JSON file in the fs folder
+
     struct mg_str action = MG_NULL_STR;
     char *error;
     mgos_crontab_job_id_t pid;
@@ -43,10 +45,10 @@ void cron_sys_init() {
         LOG(LL_DEBUG, ("cron_sys_init: READ CRON TAB ITEM 1 error %s", error));
         char cronexpr[20] = "";
         snprintf(cronexpr, 20, "*/%d * * * * *", settings.s6fresnel().updateInterval() / 1000);
-        if (mgos_crontab_job_add(mg_mk_str(cronexpr), true, mg_mk_str("readSensors"), MG_NULL_STR, &pid,
-                                 &error)) {
+        if (mgos_crontab_job_add(mg_mk_str(cronexpr), true, mg_mk_str("readSensors"), MG_NULL_STR, &pid, &error)) {
             LOG(LL_DEBUG, ("cron_sys_init: JOB ADDED"));
         }
     }
+
 }
 

@@ -20,9 +20,9 @@
 
 ## References
 
-Mongoose OS repo    : https://github.com/cesanta/mongoose-os
-Libs                : https://github.com/mongoose-os-libs
-Example apps        : https://github.com/mongoose-os-apps
+- Mongoose OS repo    : https://github.com/cesanta/mongoose-os
+- Libs                : https://github.com/mongoose-os-libs
+- Example apps        : https://github.com/mongoose-os-apps
 
 ## Refactoring notes
 

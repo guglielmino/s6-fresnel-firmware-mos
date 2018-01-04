@@ -1,0 +1,12 @@
+{
+  "items": [
+      [
+          "1",
+          {
+              "at": "*/30 * * * * *",
+              "enable": true,
+              "action": "readSensors"
+          }
+      ]
+  ]
+}
