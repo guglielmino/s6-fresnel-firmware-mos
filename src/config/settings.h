@@ -17,14 +17,7 @@ private:
     class S6Fresnel {
 
     public:
-        int updateInterval() {
-#ifdef USE_OLD_CFG
-            return get_cfg()->s6fresnel.update_interval;
-#else
-            return mgos_sys_config_get_s6fresnel_update_interval();
-#endif
-        }
-
+       
         const char *location() {
 #ifdef USE_OLD_CFG
             return get_cfg()->s6fresnel.location;

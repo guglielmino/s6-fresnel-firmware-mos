@@ -7,8 +7,9 @@
 #include "network/mqtt.h"
 #include "hardware/gpio/OutputDevice.h"
 #include "config/settings.h"
-
-using namespace S6MqttModule;
+#include "interfaces/IScalarSensor.h"
+#include "hardware/sensors/SensorValue.hpp"
+#include "utils/dateutils.h"
 
 extern Settings settings;
 
@@ -23,3 +24,5 @@ extern IScalarSensor<SensorValue<float>> *current;
 extern IScalarSensor<SensorValue<float>> *frequency;
 extern IScalarSensor<SensorValue<float>> *powerFactor;
 extern IScalarSensor<SensorValue<float>> *voltage;
+
+static OutputDevice::SwitchMode relayState = OutputDevice::OFF;
