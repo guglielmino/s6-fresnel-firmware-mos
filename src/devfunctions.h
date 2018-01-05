@@ -18,6 +18,8 @@
 #define FREQ "FREQ"
 #define POWER_FACTOR "POWER_FACTOR"
 #define VOLTAGE "VOLTAGE"
+#define CONSUMPTION "CONSUMPTION"
+
 
 void turnRelay(OutputDevice::SwitchMode mode) {
     rele1->turn(mode);
@@ -25,63 +27,6 @@ void turnRelay(OutputDevice::SwitchMode mode) {
 
     std::string powerMessage = powerFeedbackMessage((mode == OutputDevice::ON ));
     mqttManager->publish(pubPowerFeedbackTopic, powerMessage);
-}
-
-void read_sensors() {
-
-    if (mqttManager != nullptr) {
-        // HACK: Lettuta "fake" per scartare il primo caso con dati "spuri"
-        reactivePower->readValue();
-
-        SensorValue<float> reactiveValue = reactivePower->readValue();
-        mgos_wdt_feed();
-        if(reactiveValue.isValid()) {
-            std::string reactiveMsg = makeSensorValueMessage(now().c_str(), reactiveValue.value(), "VA");
-            mqttManager->publish(pubSensReactivePowerTopic, reactiveMsg);
-        }
-
-        SensorValue<float> powerValue = activePower->readValue();
-        mgos_wdt_feed();
-        if(powerValue.isValid()) {
-            std::string activePowerMsg = makeSensorValueMessage(now().c_str(), powerValue.value(), "W");
-            mqttManager->publish(pubSensPowerTopic, activePowerMsg);
-        }
-
-        SensorValue<float> dailyConsume = dailyKwh->readValue();
-        mgos_wdt_feed();
-        if(dailyConsume.isValid()) {
-            std::string dailyConsumeMsg = makeSensorValueMessage(now().c_str(), dailyConsume.value(), "KWh");
-            mqttManager->publish(pubSensDailyKwhTopic, dailyConsumeMsg);
-        }
-
-        SensorValue<float> currentValue = current->readValue();
-        mgos_wdt_feed();
-        if(currentValue.isValid()) {
-            std::string currentMsg = makeSensorValueMessage(now().c_str(), currentValue.value(), "A");
-            mqttManager->publish(pubSensCurrentTopic, currentMsg);
-        }
-
-        SensorValue<float> freqValue = frequency->readValue();
-        mgos_wdt_feed();
-        if(freqValue.isValid()) {
-            std::string freqMsg = makeSensorValueMessage(now().c_str(), freqValue.value(), "Hz");
-            mqttManager->publish(pubSensFreqTopic, freqMsg);
-        }
-
-        SensorValue<float> powerFactorValue = powerFactor->readValue();
-        mgos_wdt_feed();
-        if(powerFactorValue.isValid()) {
-            std::string powerFactorMsg = makeSensorValueMessage(now().c_str(), powerFactorValue.value(), "");
-            mqttManager->publish(pubSensPowerFactorTopic, powerFactorMsg);
-        }
-
-        SensorValue<float> voltageValue = voltage->readValue();
-        mgos_wdt_feed();
-        if(voltageValue.isValid()) {
-            std::string voltageMsg = makeSensorValueMessage(now().c_str(), voltageValue.value(), "V");
-            mqttManager->publish(pubSensVoltageTopic, voltageMsg);
-        }
-    }
 }
 
 std::map<std::string, float> getValues() {
@@ -94,7 +39,7 @@ std::map<std::string, float> getValues() {
     SensorValue<float> reactiveValue = reactivePower->readValue();
     mgos_wdt_feed();
     if(reactiveValue.isValid()) {
-       ret.insert(std::pair<std::string,float>(REACTIVE_POWER, reactiveValue.value()));
+        ret.insert(std::pair<std::string,float>(REACTIVE_POWER, reactiveValue.value()));
     }
 
     SensorValue<float> powerValue = activePower->readValue();
@@ -127,9 +72,56 @@ std::map<std::string, float> getValues() {
         ret.insert(std::pair<std::string,float>(VOLTAGE, voltageValue.value()));
     }
 
+    SensorValue<float> consumptionValue = dailyKwh->readValue();
+    mgos_wdt_feed();
+    if(consumptionValue.isValid()) {
+        ret.insert(std::pair<std::string,float>(CONSUMPTION, consumptionValue.value()));
+    }
+
     return ret;
 }
 
+void read_sensors() {
+
+    if (mqttManager != nullptr) {
+
+        std::map<std::string, float> values = getValues();
+
+        if(values[REACTIVE_POWER]) {
+            std::string reactiveMsg = makeSensorValueMessage(now().c_str(), values[REACTIVE_POWER], "VA");
+            mqttManager->publish(pubSensReactivePowerTopic, reactiveMsg);
+        }
+
+        if(values[ACTIVE_POWER]) {
+            std::string activePowerMsg = makeSensorValueMessage(now().c_str(), values[ACTIVE_POWER], "W");
+            mqttManager->publish(pubSensPowerTopic, activePowerMsg);
+        }
+
+        if(values[CURRENT]) {
+            std::string currentMsg = makeSensorValueMessage(now().c_str(), values[CURRENT], "A");
+            mqttManager->publish(pubSensCurrentTopic, currentMsg);
+        }
+        if(values[FREQ]) {
+            std::string freqMsg = makeSensorValueMessage(now().c_str(), values[FREQ], "Hz");
+            mqttManager->publish(pubSensFreqTopic, freqMsg);
+        }
+
+        if(values[POWER_FACTOR]) {
+            std::string powerFactorMsg = makeSensorValueMessage(now().c_str(),values[POWER_FACTOR], "");
+            mqttManager->publish(pubSensPowerFactorTopic, powerFactorMsg);
+        }
+
+        if(values[VOLTAGE]) {
+            std::string voltageMsg = makeSensorValueMessage(now().c_str(), values[VOLTAGE], "V");
+            mqttManager->publish(pubSensVoltageTopic, voltageMsg);
+        }
+
+        if(values[CONSUMPTION]) {
+            std::string dailyConsumeMsg = makeSensorValueMessage(now().c_str(), values[CONSUMPTION], "KWh");
+            mqttManager->publish(pubSensDailyKwhTopic, dailyConsumeMsg);
+        }
+    }
+}
 
 void resetKWhCounter() {
     ISensorCommand *startDailyKwhCounter = getResetDailyKkhCommand();
