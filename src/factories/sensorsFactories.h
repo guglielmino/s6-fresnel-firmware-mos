@@ -48,6 +48,7 @@
 
     #include "../hardware/sensors/S6MCP39F511StartDailyKwh.hpp"
     #include "../hardware/sensors/S6MCP39F511ResetDailyKwh.hpp"
+
     #include "../hardware/sensors/S6MCP39F511U32Register.hpp"
     #include "../hardware/sensors/S6MCP39F511U16Register.hpp"
     #include "../hardware/sensors/S6MCP39F511U64Register.hpp"

@@ -26,10 +26,16 @@ void readSensors(struct mg_str action, struct mg_str payload, void *userdata) {
     LOG(LL_DEBUG, ("CRON: readSensors"));
 }
 
+void resetKWh(struct mg_str action, struct mg_str payload, void *userdata) {
+    resetKWhCounter();
+    LOG(LL_DEBUG, ("CRON: reset KWh counter"));
+}
+
 
 void cron_sys_init() {
     mgos_crontab_register_handler(mg_mk_str("relayOn"), relayOn, NULL);
     mgos_crontab_register_handler(mg_mk_str("relayOff"), relayOff, NULL);
     mgos_crontab_register_handler(mg_mk_str("readSensors"), readSensors, NULL);
+    mgos_crontab_register_handler(mg_mk_str("resetKWh"), resetKWh, NULL);
 }
 

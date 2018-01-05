@@ -129,3 +129,14 @@ std::map<std::string, float> getValues() {
 
     return ret;
 }
+
+
+void resetKWhCounter() {
+    ISensorCommand *startDailyKwhCounter = getResetDailyKkhCommand();
+    startDailyKwhCounter->exec();
+}
+
+void startKWhCounter() {
+    ISensorCommand *startDailyKwhCounter = getStartDailyKkhCommand();
+    startDailyKwhCounter->exec();
+}

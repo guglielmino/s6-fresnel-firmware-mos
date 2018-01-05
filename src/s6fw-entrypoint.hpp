@@ -24,8 +24,9 @@ enum mgos_app_init_result mgos_app_init(void) {
     sensors_sys_init();
 
     // Start Kw/h accumulation on MCP39F511
-    ISensorCommand *startDailyKwhCounter = getStartDailyKkhCommand();
-    startDailyKwhCounter->exec();
+    //ISensorCommand *startDailyKwhCounter = getStartDailyKkhCommand();
+    //startDailyKwhCounter->exec();
+    startKWhCounter();
 
     devices_sys_init();
 
