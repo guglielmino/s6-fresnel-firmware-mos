@@ -28,7 +28,7 @@ job_build:
   artifacts:
     paths:
     - build/*.zip
-    expire_in: 1 week
+
   tags:
     - docker
 
