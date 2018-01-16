@@ -5,7 +5,7 @@
 #pragma once
 
 #include "network/mqtt.h"
-#include "hardware/gpio/OutputDevice.h"
+#include "interfaces/IOutputDevice.h"
 #include "config/settings.h"
 #include "interfaces/IScalarSensor.h"
 #include "hardware/sensors/SensorValue.hpp"
@@ -14,8 +14,9 @@
 extern Settings settings;
 
 extern MQTTManager *mqttManager;
-extern OutputDevice *rele1;
-extern OutputDevice *statusLed;
+extern IOutputDevice *rele1;
+extern IOutputDevice *greenLed;
+extern IOutputDevice *redLed;
 
 extern IScalarSensor<SensorValue<float>> *activePower;
 extern IScalarSensor<SensorValue<float>> *reactivePower;
@@ -25,4 +26,4 @@ extern IScalarSensor<SensorValue<float>> *frequency;
 extern IScalarSensor<SensorValue<float>> *powerFactor;
 extern IScalarSensor<SensorValue<float>> *voltage;
 
-static OutputDevice::SwitchMode relayState = OutputDevice::OFF;
+static SwitchMode relayState = SwitchMode::OFF;

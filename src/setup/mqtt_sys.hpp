@@ -20,7 +20,7 @@ auto powerSwitchSubscription = [](const char *topic, size_t topic_len, const cha
     (void)topic;
     (void)topic_len;
 
-    relayState = (strcmp(localMsg, "on") == 0 ? OutputDevice::ON : OutputDevice::OFF);
+    relayState = (strcmp(localMsg, "on") == 0 ? SwitchMode::ON : SwitchMode::OFF);
 
     turnRelay(relayState);
 };

@@ -5,21 +5,25 @@
 #pragma once
 
 #include "../globals.h"
+#include "../interfaces/IOutputDevice.h"
 #include "../hardware/gpio/OutputDevice.h"
+#include "../hardware/gpio/S6Relay.hpp"
 #include "../hardware/gpio/InputDevice.h"
 #include "../devfunctions.h"
 
-OutputDevice *rele1 = nullptr;
-OutputDevice *statusLed = nullptr;
+IOutputDevice *rele1 = nullptr;
+IOutputDevice *redLed = nullptr;
+IOutputDevice *greenLed = nullptr;
 InputDevice *button = nullptr;
 
 void devices_sys_init() {
-    rele1 = new OutputDevice(REL_PIN);
-    statusLed = new OutputDevice(STATUS_LED_PIN);
+    rele1 = new S6Relay(REL_PIN_SET, REL_PIN_RESET);
+    redLed = new OutputDevice(LED_RED_PIN);
+    greenLed = new OutputDevice(LED_GREEN_PIN);
 
     button = new InputDevice(BUTTON_PIN, [] (bool newPinSate) {
         (void) newPinSate;
-        relayState = (relayState == OutputDevice::ON ? OutputDevice::OFF : OutputDevice::ON);
+        relayState = (relayState == SwitchMode::ON ? SwitchMode::OFF : SwitchMode::ON);
         turnRelay(relayState);
     }, true);
 }

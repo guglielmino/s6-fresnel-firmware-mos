@@ -10,7 +10,7 @@
 #include "network/messages.h"
 #include "network/mqtt.h"
 #include "network/topics.h"
-#include "hardware/gpio/OutputDevice.h"
+#include "interfaces/IOutputDevice.h"
 
 #define REACTIVE_POWER "REACTIVE_POWER"
 #define ACTIVE_POWER "ACTIVE_POWER"
@@ -21,11 +21,12 @@
 #define CONSUMPTION "CONSUMPTION"
 
 
-void turnRelay(OutputDevice::SwitchMode mode) {
-    rele1->turn(mode);
-    statusLed->turn(mode);
 
-    std::string powerMessage = powerFeedbackMessage((mode == OutputDevice::ON ));
+void turnRelay(SwitchMode mode) {
+    rele1->turn(mode);
+    greenLed->turn(mode);
+
+    std::string powerMessage = powerFeedbackMessage((mode == SwitchMode::ON ));
     mqttManager->publish(pubPowerFeedbackTopic, powerMessage);
 }
 
@@ -121,6 +122,7 @@ void read_sensors() {
             mqttManager->publish(pubSensDailyKwhTopic, dailyConsumeMsg);
         }
     }
+
 }
 
 void resetKWhCounter() {

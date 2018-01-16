@@ -7,17 +7,18 @@
 #pragma once
 
 #include "mgos_crontab.h"
+#include "../interfaces/IOutputDevice.h"
 #include "../devfunctions.h"
 #include "../config/settings.h"
 
 // CRON FUNCTIONS
 void relayOn(struct mg_str action, struct mg_str payload, void *userdata) {
-    turnRelay(OutputDevice::ON);
+    turnRelay(SwitchMode::ON);
     LOG(LL_DEBUG, ("CRON: relayOn"));
 }
 
 void relayOff(struct mg_str action, struct mg_str payload, void *userdata) {
-    turnRelay(OutputDevice::OFF);
+    turnRelay(SwitchMode::OFF);
     LOG(LL_DEBUG, ("CRON: relayOff"));
 }
 

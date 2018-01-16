@@ -61,10 +61,15 @@ enum mgos_app_init_result mgos_app_init(void) {
     IScalarSensor<SensorValue<float>> *targetActivePower = getReadU32Register(REG_CALIB_POW_A);
     IScalarSensor<SensorValue<float>> *targetReactivePower = getReadU32Register(REG_CALIB_POW_R);
     IScalarSensor<SensorValue<float>> *targetFreq = getReadU16Register(REG_REF_FREQUENCY);
+    sensors_sys_init();
 
     LOG(LL_INFO, ("***** CALIBRATION FIRMWARE ********"));
+    // Wait 80ms to
+    mgos_usleep(8000);
+    LOG(LL_INFO, ("Use SmartSix.SetOffsets to set offset registers (Current, Active and Reactive power)"));
 
-    sensors_sys_init();
+
+
   
     printValues();
     mgos_wdt_feed();
