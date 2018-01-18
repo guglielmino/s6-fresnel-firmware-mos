@@ -24,7 +24,6 @@
 
 void turnRelay(SwitchMode mode) {
     rele1->turn(mode);
-    greenLed->turn(mode);
 
     std::string powerMessage = powerFeedbackMessage((mode == SwitchMode::ON ));
     mqttManager->publish(pubPowerFeedbackTopic, powerMessage);
@@ -133,4 +132,16 @@ void resetKWhCounter() {
 void startKWhCounter() {
     ISensorCommand *startDailyKwhCounter = getStartDailyKkhCommand();
     startDailyKwhCounter->exec();
+}
+
+void redLED() {
+    redLed->turn(SwitchMode::ON);
+    mgos_usleep(1000000);
+    redLed->turn(SwitchMode::OFF);
+}
+
+void greenLED() {
+    greenLed->turn(SwitchMode::ON);
+    mgos_usleep(1000000);
+    greenLed->turn(SwitchMode::OFF);
 }
