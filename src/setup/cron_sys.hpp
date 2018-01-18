@@ -39,7 +39,7 @@ void redLED(struct mg_str action, struct mg_str payload, void *userdata) {
 
 void greenLED(struct mg_str action, struct mg_str payload, void *userdata) {
     redLED();
-    LOG(LL_DEBUG, ("CRON: red led"));
+    LOG(LL_DEBUG, ("CRON: green led"));
 }
 
 
