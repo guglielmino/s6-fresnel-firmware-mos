@@ -42,9 +42,9 @@ public:
 private:
 
     void pulse(int pin) {
-        mgos_gpio_write(_setpin, true);
+        mgos_gpio_write(pin, true);
         mgos_usleep(250000);
-        mgos_gpio_write(_setpin, false);
+        mgos_gpio_write(pin, false);
     }
 
 };
