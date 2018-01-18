@@ -32,11 +32,23 @@ void resetKWh(struct mg_str action, struct mg_str payload, void *userdata) {
     LOG(LL_DEBUG, ("CRON: reset KWh counter"));
 }
 
+void redLED(struct mg_str action, struct mg_str payload, void *userdata) {
+    redLED();
+    LOG(LL_DEBUG, ("CRON: red led"));
+}
+
+void greenLED(struct mg_str action, struct mg_str payload, void *userdata) {
+    redLED();
+    LOG(LL_DEBUG, ("CRON: red led"));
+}
+
 
 void cron_sys_init() {
     mgos_crontab_register_handler(mg_mk_str("relayOn"), relayOn, NULL);
     mgos_crontab_register_handler(mg_mk_str("relayOff"), relayOff, NULL);
     mgos_crontab_register_handler(mg_mk_str("readSensors"), readSensors, NULL);
     mgos_crontab_register_handler(mg_mk_str("resetKWh"), resetKWh, NULL);
+    mgos_crontab_register_handler(mg_mk_str("redLED"), redLED, NULL);
+    mgos_crontab_register_handler(mg_mk_str("greenLED"), greenLED, NULL);
 }
 
