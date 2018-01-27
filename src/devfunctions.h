@@ -32,7 +32,7 @@ void turnRelay(SwitchMode mode) {
 std::map<std::string, float> getValues() {
     std::map<std::string, float> ret = std::map<std::string, float>();
 
-    // Trash first read
+    // Throw away first reading because is always wrong
     reactivePower->readValue();
     mgos_wdt_feed();
 
