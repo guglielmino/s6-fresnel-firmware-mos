@@ -28,7 +28,7 @@ config_schema:
   - ["wifi.sta.pass", "tNMSaa1ep55hZZ6eTMvaZfUv"]
   - ["wifi.ap.enable", true]
   - ["s6fresnel", "o", {title: "S6 Fresnel custom settings"}]
-  - ["s6fresnel.location", "s", "room1", {title: "Device location, used in MQTT topic path (ie. building/room1/...)"}]
+  - ["s6fresnel.group", "s", "room1", {title: "Device location, used in MQTT topic path (ie. building/room1/...)"}]
   - ["s6fresnel.name", "s", "noname", {title: "Device name (ie. lamp1)"}]
   - ["debug.level", 3]
 

@@ -5,7 +5,7 @@
 #pragma once
 
 /* --- MQTT publish topics -- */
-#define PUB_SENS_INFO_TOPIC         "building/%s/sensors/%s/info"           // Device publish info message on this topic
+#define PUB_SENS_INFO_TOPIC         "building/%s/events/%s/info"            // Device publish info message on this topic
 #define PUB_SENS_POWER_TOPIC        "building/%s/sensors/%s/power"          // Device publish power consume on this topic
 #define PUB_SENS_RPOWER_TOPIC       "building/%s/sensors/%s/reactivepower"  // Device publish Ractive Power Message on this topic
 
