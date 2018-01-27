@@ -18,11 +18,11 @@ private:
 
     public:
        
-        const char *location() {
+        const char *group() {
 #ifdef USE_OLD_CFG
-            return get_cfg()->s6fresnel.location;
+            return get_cfg()->s6fresnel.group;
 #else
-            return mgos_sys_config_get_s6fresnel_location();
+            return mgos_sys_config_get_s6fresnel_group();
 #endif
         }
 
