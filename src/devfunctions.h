@@ -10,7 +10,7 @@
 #include "network/messages.h"
 #include "network/mqtt.h"
 #include "network/topics.h"
-#include "hardware/gpio/OutputDevice.h"
+#include "interfaces/IOutputDevice.h"
 
 #define REACTIVE_POWER "REACTIVE_POWER"
 #define ACTIVE_POWER "ACTIVE_POWER"
@@ -21,18 +21,18 @@
 #define CONSUMPTION "CONSUMPTION"
 
 
-void turnRelay(OutputDevice::SwitchMode mode) {
-    rele1->turn(mode);
-    statusLed->turn(mode);
 
-    std::string powerMessage = powerFeedbackMessage((mode == OutputDevice::ON ));
+void turnRelay(SwitchMode mode) {
+    rele1->turn(mode);
+
+    std::string powerMessage = powerFeedbackMessage((mode == SwitchMode::ON ));
     mqttManager->publish(pubPowerFeedbackTopic, powerMessage);
 }
 
 std::map<std::string, float> getValues() {
     std::map<std::string, float> ret = std::map<std::string, float>();
 
-    // Trash first read
+    // Throw away first reading because is always wrong
     reactivePower->readValue();
     mgos_wdt_feed();
 
@@ -121,6 +121,7 @@ void read_sensors() {
             mqttManager->publish(pubSensDailyKwhTopic, dailyConsumeMsg);
         }
     }
+
 }
 
 void resetKWhCounter() {
@@ -131,4 +132,16 @@ void resetKWhCounter() {
 void startKWhCounter() {
     ISensorCommand *startDailyKwhCounter = getStartDailyKkhCommand();
     startDailyKwhCounter->exec();
+}
+
+void redLED() {
+    redLed->turn(SwitchMode::ON);
+    mgos_usleep(1000000);
+    redLed->turn(SwitchMode::OFF);
+}
+
+void greenLED() {
+    greenLed->turn(SwitchMode::ON);
+    mgos_usleep(1000000);
+    greenLed->turn(SwitchMode::OFF);
 }

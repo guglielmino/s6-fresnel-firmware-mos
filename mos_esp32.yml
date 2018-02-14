@@ -1,6 +1,6 @@
 config_schema:
   - ["eth.enable", false]
-  - ["bt.enable", true]
+  - ["bt.enable", false]
   - ["bt.adv_enable", true]
   - ["bt.keep_enabled", true]
   - ["bt.config_svc_enable", true]

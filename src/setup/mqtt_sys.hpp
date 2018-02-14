@@ -20,7 +20,7 @@ auto powerSwitchSubscription = [](const char *topic, size_t topic_len, const cha
     (void)topic;
     (void)topic_len;
 
-    relayState = (strcmp(localMsg, "on") == 0 ? OutputDevice::ON : OutputDevice::OFF);
+    relayState = (strcmp(localMsg, "on") == 0 ? SwitchMode::ON : SwitchMode::OFF);
 
     turnRelay(relayState);
 };
@@ -28,7 +28,7 @@ auto powerSwitchSubscription = [](const char *topic, size_t topic_len, const cha
 
 void publishInfoMessage() {
     std::string infoMessage = devInfoMessage(FIRMWARE_APP_NAME, FIRMWARE_APP_VERSION,
-                                             settings.s6fresnel().location(),
+                                             settings.s6fresnel().group(),
                                              settings.s6fresnel().name());
     mqttManager->publish(pubInfoTopic, infoMessage);
 }
@@ -40,37 +40,37 @@ void publishLWTOnlineMessage(bool online) {
 
 void mqtt_sys_init() {
     // ** MQTT Topic (TODO: Move to std::string and optimize topic string creation)
-    makeDeviceTopic(pubSensPowerTopic, MAX_TOPIC_LEN, PUB_SENS_POWER_TOPIC, settings.s6fresnel().location(),
+    makeDeviceTopic(pubSensPowerTopic, MAX_TOPIC_LEN, PUB_SENS_POWER_TOPIC, settings.s6fresnel().group(),
                     settings.deviceId());
-    makeDeviceTopic(subSwitchDevTopic, MAX_TOPIC_LEN, SUB_SWITCH_DEV, settings.s6fresnel().location(),
+    makeDeviceTopic(subSwitchDevTopic, MAX_TOPIC_LEN, SUB_SWITCH_DEV, settings.s6fresnel().group(),
                     settings.deviceId());
-    makeRoomTopic(subSwitchRoomTopic, MAX_TOPIC_LEN, SUB_SWITCH_ROOM, settings.s6fresnel().location());
+    makeRoomTopic(subSwitchRoomTopic, MAX_TOPIC_LEN, SUB_SWITCH_ROOM, settings.s6fresnel().group());
 
-    makeDeviceTopic(pubInfoTopic, MAX_TOPIC_LEN, PUB_SENS_INFO_TOPIC, settings.s6fresnel().location(),
-                    settings.deviceId());
-
-    makeDeviceTopic(pubSensDailyKwhTopic, MAX_TOPIC_LEN, PUB_SENS_DAILYKWH_TOPIC, settings.s6fresnel().location(),
+    makeDeviceTopic(pubInfoTopic, MAX_TOPIC_LEN, PUB_SENS_INFO_TOPIC, settings.s6fresnel().group(),
                     settings.deviceId());
 
-    makeDeviceTopic(pubPowerFeedbackTopic, MAX_TOPIC_LEN, PUB_EVENT_POWERFEEDBACK_TOPIC, settings.s6fresnel().location(),
+    makeDeviceTopic(pubSensDailyKwhTopic, MAX_TOPIC_LEN, PUB_SENS_DAILYKWH_TOPIC, settings.s6fresnel().group(),
                     settings.deviceId());
 
-    makeDeviceTopic(pubLWTTopic, MAX_TOPIC_LEN, PUB_EVENT_LWT_TOPIC, settings.s6fresnel().location(),
+    makeDeviceTopic(pubPowerFeedbackTopic, MAX_TOPIC_LEN, PUB_EVENT_POWERFEEDBACK_TOPIC, settings.s6fresnel().group(),
                     settings.deviceId());
 
-    makeDeviceTopic(pubSensCurrentTopic, MAX_TOPIC_LEN, PUB_SENS_CURRENT_TOPIC, settings.s6fresnel().location(),
+    makeDeviceTopic(pubLWTTopic, MAX_TOPIC_LEN, PUB_EVENT_LWT_TOPIC, settings.s6fresnel().group(),
                     settings.deviceId());
 
-    makeDeviceTopic(pubSensFreqTopic, MAX_TOPIC_LEN, PUB_SENS_FREQUENCY_TOPIC, settings.s6fresnel().location(),
+    makeDeviceTopic(pubSensCurrentTopic, MAX_TOPIC_LEN, PUB_SENS_CURRENT_TOPIC, settings.s6fresnel().group(),
                     settings.deviceId());
 
-    makeDeviceTopic(pubSensReactivePowerTopic, MAX_TOPIC_LEN, PUB_SENS_RPOWER_TOPIC, settings.s6fresnel().location(),
+    makeDeviceTopic(pubSensFreqTopic, MAX_TOPIC_LEN, PUB_SENS_FREQUENCY_TOPIC, settings.s6fresnel().group(),
                     settings.deviceId());
 
-    makeDeviceTopic(pubSensPowerFactorTopic, MAX_TOPIC_LEN, PUB_SENS_POWERFACTOR_TOPIC, settings.s6fresnel().location(),
+    makeDeviceTopic(pubSensReactivePowerTopic, MAX_TOPIC_LEN, PUB_SENS_RPOWER_TOPIC, settings.s6fresnel().group(),
                     settings.deviceId());
 
-    makeDeviceTopic(pubSensVoltageTopic, MAX_TOPIC_LEN, PUB_SENS_VOLTAGE_TOPIC, settings.s6fresnel().location(),
+    makeDeviceTopic(pubSensPowerFactorTopic, MAX_TOPIC_LEN, PUB_SENS_POWERFACTOR_TOPIC, settings.s6fresnel().group(),
+                    settings.deviceId());
+
+    makeDeviceTopic(pubSensVoltageTopic, MAX_TOPIC_LEN, PUB_SENS_VOLTAGE_TOPIC, settings.s6fresnel().group(),
                     settings.deviceId());
 
     std::string message = lwtMessage(false);

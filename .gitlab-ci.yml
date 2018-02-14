@@ -21,14 +21,14 @@ job_build:
   stage: build
   script:
     - export FW_VERSION=`cat src/consts.h |grep FIRMWARE_APP_VERSION| awk '{ print $3 }'| sed 's/"//g'`
-    - mos build --platform=esp32
+    - mos build --local --platform=esp32
     - cp build/fw.zip build/fw_$FW_VERSION.zip
   only:
     - master
   artifacts:
     paths:
     - build/*.zip
-    expire_in: 1 week
+
   tags:
     - docker
 

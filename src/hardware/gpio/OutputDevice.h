@@ -5,13 +5,9 @@
 #pragma once
 
 #include "mgos_gpio.h"
+#include "../../interfaces/IOutputDevice.h"
 
-class OutputDevice {
-public:
-    typedef enum {
-        ON,
-        OFF
-    } SwitchMode;
+class OutputDevice : public IOutputDevice {
 
 private:
     int _pin;
@@ -23,7 +19,7 @@ public:
     }
 
     void turn(SwitchMode mode) {
-        mgos_gpio_write(_pin, mode == ON);
+        mgos_gpio_write(_pin, mode == SwitchMode::ON);
     }
 
     void toggle() {

@@ -17,15 +17,15 @@
 {
    "appName": "S6 Fresnel Module",
    "version": "1.0.15",
-   "location": "room1",
+   "group": "room1",
    "name": "lamp1"
 }
  */
-std::string devInfoMessage(const char *appName, const char *ver, const char *location, const char *name) {
+std::string devInfoMessage(const char *appName, const char *ver, const char *group, const char *name) {
     char buffer[MESSAGE_BUFFER_LEN] = "";
     struct json_out out = JSON_OUT_BUF(buffer, MESSAGE_BUFFER_LEN);
     json_printf(&out, "{ %Q: %Q, %Q: %Q, %Q: %Q, %Q: %Q }", "appName", appName, "version", ver,
-                "location", location, "name", name);
+                "group", group, "name", name);
     return std::string(buffer);
 }
 

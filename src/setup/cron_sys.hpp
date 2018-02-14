@@ -7,17 +7,18 @@
 #pragma once
 
 #include "mgos_crontab.h"
+#include "../interfaces/IOutputDevice.h"
 #include "../devfunctions.h"
 #include "../config/settings.h"
 
 // CRON FUNCTIONS
 void relayOn(struct mg_str action, struct mg_str payload, void *userdata) {
-    turnRelay(OutputDevice::ON);
+    turnRelay(SwitchMode::ON);
     LOG(LL_DEBUG, ("CRON: relayOn"));
 }
 
 void relayOff(struct mg_str action, struct mg_str payload, void *userdata) {
-    turnRelay(OutputDevice::OFF);
+    turnRelay(SwitchMode::OFF);
     LOG(LL_DEBUG, ("CRON: relayOff"));
 }
 
@@ -31,11 +32,23 @@ void resetKWh(struct mg_str action, struct mg_str payload, void *userdata) {
     LOG(LL_DEBUG, ("CRON: reset KWh counter"));
 }
 
+void redLED(struct mg_str action, struct mg_str payload, void *userdata) {
+    redLED();
+    LOG(LL_DEBUG, ("CRON: red led"));
+}
+
+void greenLED(struct mg_str action, struct mg_str payload, void *userdata) {
+    redLED();
+    LOG(LL_DEBUG, ("CRON: green led"));
+}
+
 
 void cron_sys_init() {
     mgos_crontab_register_handler(mg_mk_str("relayOn"), relayOn, NULL);
     mgos_crontab_register_handler(mg_mk_str("relayOff"), relayOff, NULL);
     mgos_crontab_register_handler(mg_mk_str("readSensors"), readSensors, NULL);
     mgos_crontab_register_handler(mg_mk_str("resetKWh"), resetKWh, NULL);
+    mgos_crontab_register_handler(mg_mk_str("redLED"), redLED, NULL);
+    mgos_crontab_register_handler(mg_mk_str("greenLED"), greenLED, NULL);
 }
 
