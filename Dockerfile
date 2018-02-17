@@ -2,7 +2,7 @@ FROM phusion/baseimage:0.9.22
 
 RUN add-apt-repository ppa:mongoose-os/mos && \
     apt-get update  -qq  && \
-    apt-get install -y sudo dmsetup && \
+    apt-get install -y sudo dmsetup git && \
     apt-get install -y mos && \
     apt-get install -y wget clang-3.9 make && \
     apt-get install -qqy apt-transport-https ca-certificates
