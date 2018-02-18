@@ -4,6 +4,10 @@ stages:
   - test
   - build
 
+variables:
+  GITHUB_USERNAME: SECURE
+  GITHUB_PASSWORD: SECURE
+
 job_test:
   stage: test
   script:
