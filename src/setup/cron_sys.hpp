@@ -29,6 +29,7 @@ void readSensors(struct mg_str action, struct mg_str payload, void *userdata) {
 
 void resetKWh(struct mg_str action, struct mg_str payload, void *userdata) {
     resetKWhCounter();
+    startKWhCounter();
     LOG(LL_DEBUG, ("CRON: reset KWh counter"));
 }
 
