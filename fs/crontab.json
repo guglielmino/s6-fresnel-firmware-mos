@@ -3,7 +3,7 @@
     [
       "1",
       {
-        "at": "*/30 * * * * *",
+        "at": "*/60 * * * * *",
         "enable": true,
         "action": "readSensors"
       }
@@ -14,22 +14,6 @@
         "at": "0 59 23 * * *",
         "enable": true,
         "action": "resetKWh"
-      }
-    ],
-    [
-      "3",
-      {
-        "at": "*/10 * * * * *",
-        "enable": true,
-        "action": "greenLED"
-      }
-    ],
-    [
-      "4",
-      {
-        "at": "*/12 * * * * *",
-        "enable": true,
-        "action": "redLED"
       }
     ]
   ]

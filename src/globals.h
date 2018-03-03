@@ -14,6 +14,8 @@
 extern Settings settings;
 
 extern MQTTManager *mqttManager;
+
+extern IOutputDevice *rele0;
 extern IOutputDevice *rele1;
 extern IOutputDevice *greenLed;
 extern IOutputDevice *redLed;
@@ -27,3 +29,4 @@ extern IScalarSensor<SensorValue<float>> *powerFactor;
 extern IScalarSensor<SensorValue<float>> *voltage;
 
 static SwitchMode relayState = SwitchMode::OFF;
+std::vector<IOutputDevice*> relays;

@@ -26,11 +26,14 @@ config_schema:
   - ["wifi.sta.enable", true]
   - ["wifi.sta.ssid", "TIM-85970373"]
   - ["wifi.sta.pass", "tNMSaa1ep55hZZ6eTMvaZfUv"]
-  - ["wifi.ap.enable", true]
+  - ["wifi.ap.enable", false]
   - ["s6fresnel", "o", {title: "S6 Fresnel custom settings"}]
   - ["s6fresnel.group", "s", "room1", {title: "Device location, used in MQTT topic path (ie. building/room1/...)"}]
   - ["s6fresnel.name", "s", "noname", {title: "Device name (ie. lamp1)"}]
   - ["debug.level", 3]
+  - ["sntp.server", "216.239.35.8"]
+
+
 
 build_vars:
   MGOS_ENABLE_HEAP_LOG: 1
