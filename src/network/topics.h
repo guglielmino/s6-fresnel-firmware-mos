@@ -23,6 +23,8 @@
 /* --- MQTT subsribe topics ---*/
 #define SUB_SWITCH_DEV         "building/%s/devices/%s/power"    // Device subscribe to this topic to handle power switch command (by device)
 #define SUB_SWITCH_ROOM        "building/%s/commands/power"      // Device subscribe to this topic to handle power switch command (by room)
+#define SUB_SWITCH_DEV_IDX     "building/%s/devices/%s/power/+"  // Device subscribe to this topic to handle power switch command on indexed relay (by device)
+#define SUB_SWITCH_ROOM_IDX    "building/%s/commands/power/+"    // Device subscribe to this topic to handle power switch command on indexed relay (by room)
 #define SUB_UPGRADE_DEV        "building/%s/devices/%s/upgrade"  // Device subscribe to this topic to handle firmware upgrade command (by device)
 #define SUB_UPGRADE_ROOM       "building/%s/commands/upgrade"    // Device subscribe to this topic to handle firmware upgrade command (by room)
 
@@ -44,6 +46,8 @@ char pubSensVoltageTopic[MAX_TOPIC_LEN];
 
 char subSwitchDevTopic[MAX_TOPIC_LEN];
 char subSwitchRoomTopic[MAX_TOPIC_LEN];
+char subSwitchIdxDevTopic[MAX_TOPIC_LEN];
+char subSwitchIdxRoomTopic[MAX_TOPIC_LEN];
 
 void makeDeviceTopic(char *topic, int topicLen, const char *topicPattern, const char *room, const char *deviceId) {
     memset (topic, 0, topicLen);

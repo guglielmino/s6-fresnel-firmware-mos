@@ -20,6 +20,8 @@ auto powerSwitchSubscription = [](const char *topic, size_t topic_len, const cha
     (void)topic;
     (void)topic_len;
 
+
+    //LOG(LL_DEBUG, ("S6 Fresnel:: powerSwitchSub with TOPIC %s", topic));
     relayState = (strcmp(localMsg, "on") == 0 ? SwitchMode::ON : SwitchMode::OFF);
 
     turnRelay(relayState);
@@ -42,9 +44,14 @@ void mqtt_sys_init() {
     // ** MQTT Topic (TODO: Move to std::string and optimize topic string creation)
     makeDeviceTopic(pubSensPowerTopic, MAX_TOPIC_LEN, PUB_SENS_POWER_TOPIC, settings.s6fresnel().group(),
                     settings.deviceId());
+
     makeDeviceTopic(subSwitchDevTopic, MAX_TOPIC_LEN, SUB_SWITCH_DEV, settings.s6fresnel().group(),
                     settings.deviceId());
     makeRoomTopic(subSwitchRoomTopic, MAX_TOPIC_LEN, SUB_SWITCH_ROOM, settings.s6fresnel().group());
+
+    makeDeviceTopic(subSwitchIdxDevTopic, MAX_TOPIC_LEN, SUB_SWITCH_DEV_IDX, settings.s6fresnel().group(),
+                    settings.deviceId());
+    makeRoomTopic(subSwitchIdxRoomTopic, MAX_TOPIC_LEN, SUB_SWITCH_ROOM_IDX, settings.s6fresnel().group());
 
     makeDeviceTopic(pubInfoTopic, MAX_TOPIC_LEN, PUB_SENS_INFO_TOPIC, settings.s6fresnel().group(),
                     settings.deviceId());
@@ -87,16 +94,11 @@ void mqtt_sys_init() {
         mqttManager->subcribe(subSwitchDevTopic, powerSwitchSubscription);
         mqttManager->subcribe(subSwitchRoomTopic, powerSwitchSubscription);
 
+        mqttManager->subcribe(subSwitchIdxDevTopic, powerSwitchSubscription);
+        mqttManager->subcribe(subSwitchIdxRoomTopic, powerSwitchSubscription);
+
         publishInfoMessage();
         publishLWTOnlineMessage(true);
     });
 
-    mqttManager->setEventCallback(MQTTManager::Disconnected, []() {
-        LOG(LL_DEBUG, ("S6 Fresnel:: MQTT Disconnected"));
-    });
-
-
-    mqttManager->setEventCallback(MQTTManager::Subscribe, []() {
-        LOG(LL_DEBUG, ("S6 Fresnel:: MQTT Subscribe"));
-    });
 }
