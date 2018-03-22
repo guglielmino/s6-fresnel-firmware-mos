@@ -22,11 +22,13 @@
 
 
 
-void turnRelay(SwitchMode mode) {
-    rele1->turn(mode);
+void turnRelay(int relayIdx, SwitchMode mode) {
+    if(relayIdx < relays.size()) {
+        relays[relayIdx]->turn(mode);
 
-    std::string powerMessage = powerFeedbackMessage((mode == SwitchMode::ON ));
-    mqttManager->publish(pubPowerFeedbackTopic, powerMessage);
+        std::string powerMessage = powerFeedbackMessage((mode == SwitchMode::ON));
+        mqttManager->publish(pubPowerFeedbackTopic, powerMessage);
+    }
 }
 
 std::map<std::string, float> getValues() {

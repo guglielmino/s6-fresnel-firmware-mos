@@ -20,16 +20,25 @@ auto powerSwitchSubscription = [](const char *topic, size_t topic_len, const cha
     (void)topic;
     (void)topic_len;
 
-    relayState = (strcmp(localMsg, "on") == 0 ? SwitchMode::ON : SwitchMode::OFF);
+    SwitchMode relayState =  SwitchMode::OFF;
+    int relay_idx = -1;
+    if(msg_len > 8) {
+        char *operation;
+        json_scanf(localMsg, strlen(localMsg), "{ relay_idx:%d, op:%Q }", &relay_idx, &operation);
+        relayState = (strcmp(operation, "on") == 0 ? SwitchMode::ON : SwitchMode::OFF);
+    } else {
+        relay_idx = 0;
+        relayState = (strcmp(localMsg, "on") == 0 ? SwitchMode::ON : SwitchMode::OFF);
+    }
 
-    turnRelay(relayState);
+    turnRelay(relay_idx, relayState);
 };
 
 
 void publishInfoMessage() {
     std::string infoMessage = devInfoMessage(FIRMWARE_APP_NAME, FIRMWARE_APP_VERSION,
                                              settings.s6fresnel().group(),
-                                             settings.s6fresnel().name());
+                                             settings.s6fresnel().name(), settings.s6fresnel().features());
     mqttManager->publish(pubInfoTopic, infoMessage);
 }
 

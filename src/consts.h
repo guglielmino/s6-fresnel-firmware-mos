@@ -4,7 +4,7 @@
 
 #pragma once
 
-#define FIRMWARE_APP_VERSION "0.1.0"
+#define FIRMWARE_APP_VERSION "0.3.0"
 
 #define MQTT_MESSAGE_SIZE       60
 
@@ -15,8 +15,9 @@
     #define BUTTON_PIN       0
 #elif CS_PLATFORM == CS_P_ESP32
     #define FIRMWARE_APP_NAME "S6 Fresnel Module"
-    #define REL_PIN_SET     32
-    #define REL_PIN_RESET   33
+    #define REL0_PIN_SET    32
+    #define REL0_PIN_RESET  33
+    #define REL1_PIN        12
     #define LED_RED_PIN     15
     #define LED_GREEN_PIN   13
     #define BUTTON_PIN      34

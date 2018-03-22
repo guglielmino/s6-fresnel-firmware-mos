@@ -13,12 +13,12 @@
 
 // CRON FUNCTIONS
 void relayOn(struct mg_str action, struct mg_str payload, void *userdata) {
-    turnRelay(SwitchMode::ON);
+    turnRelay(0, SwitchMode::ON);
     LOG(LL_DEBUG, ("CRON: relayOn"));
 }
 
 void relayOff(struct mg_str action, struct mg_str payload, void *userdata) {
-    turnRelay(SwitchMode::OFF);
+    turnRelay(0, SwitchMode::OFF);
     LOG(LL_DEBUG, ("CRON: relayOff"));
 }
 
