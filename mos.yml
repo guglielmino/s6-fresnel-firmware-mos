@@ -30,8 +30,10 @@ config_schema:
   - ["s6fresnel", "o", {title: "S6 Fresnel custom settings"}]
   - ["s6fresnel.group", "s", "room1", {title: "Device location, used in MQTT topic path (ie. building/room1/...)"}]
   - ["s6fresnel.name", "s", "noname", {title: "Device name (ie. lamp1)"}]
+  - ["s6fresnel.features", "s", "POWERMETER,RELAY1,RELAY2", {title: "Comma separated list of device features"}]
   - ["debug.level", 3]
-  - ["sntp.server", "216.239.35.8"]
+
+
 
 
 

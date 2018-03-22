@@ -5,6 +5,8 @@
 #pragma once
 
 #include <string>
+#include <vector>
+#include <stdio.h>
 
 //#define USE_OLD_CFG
 
@@ -32,6 +34,24 @@ private:
 #else
             return mgos_sys_config_get_s6fresnel_name();
 #endif
+        }
+
+        std::vector<const char *> features() {
+            char *featuresString;
+#ifdef USE_OLD_CFG
+            featuresString = get_cfg()->s6fresnel.features;
+#else
+            featuresString = (char *)mgos_sys_config_get_s6fresnel_features();
+#endif
+            char * pch;
+            std::vector<const char *> feats;
+            pch = strtok (featuresString, ",");
+            while (pch != NULL)
+            {
+                feats.push_back(pch);
+                pch = strtok (NULL, ",");
+            }
+            return feats;
         }
     };
 

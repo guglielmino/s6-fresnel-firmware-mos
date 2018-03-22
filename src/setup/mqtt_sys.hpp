@@ -38,7 +38,7 @@ auto powerSwitchSubscription = [](const char *topic, size_t topic_len, const cha
 void publishInfoMessage() {
     std::string infoMessage = devInfoMessage(FIRMWARE_APP_NAME, FIRMWARE_APP_VERSION,
                                              settings.s6fresnel().group(),
-                                             settings.s6fresnel().name());
+                                             settings.s6fresnel().name(), settings.s6fresnel().features());
     mqttManager->publish(pubInfoTopic, infoMessage);
 }
 
