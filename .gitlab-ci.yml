@@ -13,7 +13,7 @@ job_test:
   script:
     - cmake .
     - make
-    - ./test/s6test
+    - ./test/s6test -s
   only:
     - develop
     - master

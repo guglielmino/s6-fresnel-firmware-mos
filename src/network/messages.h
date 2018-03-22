@@ -39,14 +39,15 @@ std::string devInfoMessage(const char *appName, const char *ver, const char *gro
  Feedback message after Relay switch
 
 {
-    "status": "on" // "on" | "off"
+    "status": "on" // "on" | "off",
+    "relay_idx": 0
 }
 
  */
-std::string powerFeedbackMessage(bool on) {
+std::string powerFeedbackMessage(bool on, int relayIdx) {
     char buffer[MESSAGE_BUFFER_LEN] = "";
     struct json_out out = JSON_OUT_BUF(buffer, MESSAGE_BUFFER_LEN);
-    json_printf(&out, "{ %Q: %Q }", "status", (on ? "on" : "off"));
+    json_printf(&out, "{ status: %Q, relay_idx: %d }",  (on ? "on" : "off"), relayIdx);
     return std::string(buffer);
 }
 
@@ -63,7 +64,7 @@ std::string powerFeedbackMessage(bool on) {
 std::string lwtMessage(bool online) {
     char buffer[MESSAGE_BUFFER_LEN] = "";
     struct json_out out = JSON_OUT_BUF(buffer, MESSAGE_BUFFER_LEN);
-    json_printf(&out, "{ %Q: %Q }", "status", (online ? "Online" : "Offline"));
+    json_printf(&out, "{ status: %Q }", (online ? "Online" : "Offline"));
     return std::string(buffer);
 }
 
@@ -79,6 +80,6 @@ std::string lwtMessage(bool online) {
 std::string  makeSensorValueMessage(const char *timestring, float value, const char * unit) {
     char buffer[MESSAGE_BUFFER_LEN] = "";
     struct json_out out = JSON_OUT_BUF(buffer, MESSAGE_BUFFER_LEN);
-    json_printf(&out, "{ %Q: %Q, %Q: %.6f, %Q: %Q }", "timestamp", timestring, "value", value, "unit", unit);
+    json_printf(&out, "{ timestamp: %Q, value: %.6f, unit: %Q }", timestring, value, unit);
     return std::string(buffer);
 }

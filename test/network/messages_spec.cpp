@@ -16,11 +16,11 @@ static void scan_array(const char *str, int len, void *user_data) {
 
 TEST_CASE("messages ", "[messages]") {
 
-    SECTION("create a device info message") {
+    SECTION("device info message") {
         std::vector<const char *> arr = { "POWERMETER", "RELAY1", "RELAY2"};
 
         std::string res = devInfoMessage("Sample", "1.0.0", "a group", "a name", arr);
-        std::cout << res << "\n\n";
+       // std::cout << res << "\n\n";
 
         char *appName, *version, *group, *name;
         json_scanf(res.c_str(), res.length(), "{ appName: %Q, version: %Q, group: %Q, name: %Q, features: %M }",
@@ -33,6 +33,47 @@ TEST_CASE("messages ", "[messages]") {
         REQUIRE(strcmp(name, "a name") == 0);
     }
 
+    SECTION("power feedback message") {
+        std::string res = powerFeedbackMessage(true, 1);
+
+        char *status;
+        int idx;
+        json_scanf(res.c_str(), res.length(), "{ status: %Q, relay_idx: %d }",
+                   &status, &idx);
+
+        REQUIRE(res.length() > 0);
+        REQUIRE(strcmp(status, "on") == 0);
+        REQUIRE(idx == 1);
+    }
+
+
+
+
+    SECTION("sensor value message") {
+        std::string res = makeSensorValueMessage("2017-07-08T12:47:36", 43.00f, "W");
+
+        char *timestamp, *unit;
+        float value = 0.0;
+        int result = json_scanf(res.c_str(), res.length(), "{ timestamp: %Q, value: %f, unit: %Q }",
+                   &timestamp, &value, &unit);
+
+        REQUIRE(result == 3);
+        REQUIRE(strcmp(timestamp, "2017-07-08T12:47:36") == 0);
+        REQUIRE(strcmp(unit, "W") == 0);
+        REQUIRE(value == 43.000000f);
+    }
+
+
+    SECTION("LWT message") {
+        std::string res = lwtMessage(true);
+
+        char *status;
+        int result = json_scanf(res.c_str(), res.length(), "{ status: %Q }",
+                                &status);
+
+        REQUIRE(result == 1);
+        REQUIRE(strcmp(status, "Online") == 0);
+    }
 }
 
 
