@@ -26,7 +26,7 @@ void turnRelay(int relayIdx, SwitchMode mode) {
     if(relayIdx < relays.size()) {
         relays[relayIdx]->turn(mode);
 
-        std::string powerMessage = powerFeedbackMessage((mode == SwitchMode::ON));
+        std::string powerMessage = powerFeedbackMessage((mode == SwitchMode::ON), relayIdx);
         mqttManager->publish(pubPowerFeedbackTopic, powerMessage);
     }
 }
