@@ -6,11 +6,10 @@
 #include "mgos_config.h"
 
 #include "consts.h"
-#include "factories/sensorsFactories.h"
+#include "factories/uartFactories.h"
 #include "globals.h"
 
 #include "setup/cron_sys.hpp"
-#include "setup/sensors_sys.hpp"
 #include "setup/mqtt_sys.hpp"
 #include "setup/devices_sys.hpp"
 
@@ -21,12 +20,10 @@ enum mgos_app_init_result mgos_app_init(void) {
 
     mqtt_sys_init();
 
-    sensors_sys_init();
+    devices_sys_init();
 
     // Start Kw/h accumulation on MCP39F511
     startKWhCounter();
-
-    devices_sys_init();
 
     cron_sys_init();
 

@@ -4,14 +4,16 @@
 
 #pragma once
 
+#include <functional>
+
 class IUART {
 public:
-    typedef void (*async_data_available_callback_t)();
+    std::function<void ()> _handler_func;
 
     virtual size_t write(const void* buffer, size_t len) = 0;
     virtual void flush() = 0;
     virtual size_t read(void *buf, size_t len)  = 0;
-    virtual void readAsync(async_data_available_callback_t cb)  = 0;
+    virtual void readAsync(std::function<void ()> cb)  = 0;
     virtual size_t readAvail()  = 0;
     virtual size_t writeAvail() = 0;
 };

@@ -7,9 +7,9 @@
 #include "network/mqtt.h"
 #include "interfaces/IOutputDevice.h"
 #include "config/settings.h"
-#include "interfaces/IScalarSensor.h"
-#include "hardware/sensors/SensorValue.hpp"
 #include "utils/dateutils.h"
+#include "hardware/devices/MCP39F511/uart/IMCP39F511UARTProto.h"
+
 
 extern Settings settings;
 
@@ -20,13 +20,7 @@ extern IOutputDevice *rele1;
 extern IOutputDevice *greenLed;
 extern IOutputDevice *redLed;
 
-extern IScalarSensor<SensorValue<float>> *activePower;
-extern IScalarSensor<SensorValue<float>> *reactivePower;
-extern IScalarSensor<SensorValue<float>> *dailyKwh;
-extern IScalarSensor<SensorValue<float>> *current;
-extern IScalarSensor<SensorValue<float>> *frequency;
-extern IScalarSensor<SensorValue<float>> *powerFactor;
-extern IScalarSensor<SensorValue<float>> *voltage;
+extern IMCP39F511UARTProto *mcp39F511UARTProto;
 
 static SwitchMode relayState = SwitchMode::OFF;
 std::vector<IOutputDevice*> relays;
