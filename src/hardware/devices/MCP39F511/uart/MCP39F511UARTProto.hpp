@@ -11,8 +11,9 @@
  * MCP39F511 UART protocol. Manage UART communication with MCP39F511 chip
  */
 class MCP39F511UARTProto : public IMCP39F511UARTProto {
+
 private:
-    std::function<void(RespType respType, const uint8_t *buffer, size_t size)> _finish_cb;
+    readCallback_t _finish_cb;
 
     enum FillState {
         Idle = 0,
@@ -113,8 +114,9 @@ public:
         writeFrame(frame);
     }
 
-    void readAsync(std::function<void(MCP39F511UARTProto::RespType respType, const uint8_t *buffer,
-                               size_t size)> cb) {
+
+
+    void readAsync(readCallback_t cb) {
         if(fillState != Idle) {
             LOG(LL_DEBUG, ("UART operation in progress"));
             return;
@@ -128,7 +130,6 @@ public:
                 memset(locbuffer, 0, rx_av);
 
                 _uart->read(locbuffer, rx_av);
-
                 this->process(locbuffer, rx_av);
             }
         });

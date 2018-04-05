@@ -4,14 +4,17 @@
 #include <functional>
 #include "../commands/ICommandFrame.hpp"
 
+enum RespType {
+    Ack,
+    Nack,
+    ChecksumErr
+};
+typedef std::function<void(RespType respType, const uint8_t *buffer, size_t size)> readCallback_t;
+
 class IMCP39F511UARTProto {
 public:
-    enum RespType {
-        Ack,
-        Nack,
-        ChecksumErr
-    };
+
 
     virtual void sendCommand(ICommandFrame& command) = 0;
-    virtual void readAsync(std::function<void(RespType respType, const uint8_t *buffer, size_t size)> cb) = 0;
+    virtual void readAsync(readCallback_t cb) = 0;
 };

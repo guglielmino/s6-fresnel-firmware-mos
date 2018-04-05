@@ -27,9 +27,8 @@
 #define OFF_CONSUMPTION 24
 
 
-
 void turnRelay(int relayIdx, SwitchMode mode) {
-    if(relayIdx < relays.size()) {
+    if (relayIdx < relays.size()) {
         relays[relayIdx]->turn(mode);
 
         std::string powerMessage = powerFeedbackMessage((mode == SwitchMode::ON), relayIdx);
@@ -38,52 +37,56 @@ void turnRelay(int relayIdx, SwitchMode mode) {
 }
 
 void sendValues(const uint8_t *buffer, int buffer_len) {
-    if(buffer_len == METERING_BUFFER_SIZE) {
-        if (mqttManager != nullptr) {
-            MCP39F511DataTypes dataTypes;
-            int16_t raw16;
-            uint32_t raw32;
-            uint64_t raw64;
+    if (buffer_len == METERING_BUFFER_SIZE && mqttManager != nullptr) {
 
-            raw32 = dataTypes.u32(buffer, OFF_REACTIVE_POWER);
-            std::string reactiveMsg = makeSensorValueMessage(now().c_str(), REG_REACTIVE_POWER.rawToValue(raw32), "VA");
-            mqttManager->publish(pubSensReactivePowerTopic, reactiveMsg);
+        MCP39F511DataTypes dataTypes;
+        int16_t raw16;
+        uint32_t raw32;
+        uint64_t raw64;
 
-
-            raw32 = dataTypes.u32(buffer, OFF_ACTIVE_POWER);
-            std::string activePowerMsg = makeSensorValueMessage(now().c_str(), REG_ACTIVE_POWER.rawToValue(raw32), "W");
-            mqttManager->publish(pubSensPowerTopic, activePowerMsg);
+        raw32 = dataTypes.u32(buffer, OFF_REACTIVE_POWER);
+        std::string reactiveMsg = makeSensorValueMessage(now().c_str(), REG_REACTIVE_POWER.rawToValue(raw32), "VA");
+        mqttManager->publish(pubSensReactivePowerTopic, reactiveMsg);
 
 
-            raw32 = dataTypes.u32(buffer, OFF_CURRENT);
-            std::string currentMsg = makeSensorValueMessage(now().c_str(), REG_CURRENT.rawToValue(raw32), "A");
-            mqttManager->publish(pubSensCurrentTopic, currentMsg);
+        raw32 = dataTypes.u32(buffer, OFF_ACTIVE_POWER);
+        std::string activePowerMsg = makeSensorValueMessage(now().c_str(), REG_ACTIVE_POWER.rawToValue(raw32), "W");
+        mqttManager->publish(pubSensPowerTopic, activePowerMsg);
 
 
-            raw16 = dataTypes.u16(buffer, OFF_FREQ);
-            std::string freqMsg = makeSensorValueMessage(now().c_str(), REG_FREQUENCY.rawToValue(raw16), "Hz");
-            mqttManager->publish(pubSensFreqTopic, freqMsg);
+        raw32 = dataTypes.u32(buffer, OFF_CURRENT);
+        std::string currentMsg = makeSensorValueMessage(now().c_str(), REG_CURRENT.rawToValue(raw32), "A");
+        mqttManager->publish(pubSensCurrentTopic, currentMsg);
 
 
-            raw16 = dataTypes.u16(buffer, OFF_POWER_FACTOR);
-            std::string powerFactorMsg = makeSensorValueMessage(now().c_str(), REG_POWER_FACTOR.rawToValue(raw16), "");
-            mqttManager->publish(pubSensPowerFactorTopic, powerFactorMsg);
+        raw16 = dataTypes.u16(buffer, OFF_FREQ);
+        std::string freqMsg = makeSensorValueMessage(now().c_str(), REG_FREQUENCY.rawToValue(raw16), "Hz");
+        mqttManager->publish(pubSensFreqTopic, freqMsg);
 
 
-            raw16 = dataTypes.u16(buffer, OFF_VOLTAGE);
-            std::string voltageMsg = makeSensorValueMessage(now().c_str(), REG_VOLTAGE.rawToValue(raw16), "V");
-            mqttManager->publish(pubSensVoltageTopic, voltageMsg);
+        raw16 = dataTypes.u16(buffer, OFF_POWER_FACTOR);
+        std::string powerFactorMsg = makeSensorValueMessage(now().c_str(), REG_POWER_FACTOR.rawToValue(raw16), "");
+        mqttManager->publish(pubSensPowerFactorTopic, powerFactorMsg);
 
 
-            raw64 = dataTypes.u64(buffer, OFF_CONSUMPTION);
-            std::string dailyConsumeMsg = makeSensorValueMessage(now().c_str(), REG_IMP_ACTIVE_CNT.rawToValue(raw64), "KWh");
-            mqttManager->publish(pubSensDailyKwhTopic, dailyConsumeMsg);
-        }
+        raw16 = dataTypes.u16(buffer, OFF_VOLTAGE);
+        std::string voltageMsg = makeSensorValueMessage(now().c_str(), REG_VOLTAGE.rawToValue(raw16), "V");
+        mqttManager->publish(pubSensVoltageTopic, voltageMsg);
+
+
+        raw64 = dataTypes.u64(buffer, OFF_CONSUMPTION);
+        std::string dailyConsumeMsg = makeSensorValueMessage(now().c_str(), REG_IMP_ACTIVE_CNT.rawToValue(raw64),
+                                                             "KWh");
+        mqttManager->publish(pubSensDailyKwhTopic, dailyConsumeMsg);
+    } else {
+        char dbg[50];
+        scanf(dbg, "buffer len= %d", buffer_len);
+        mqttManager->publish("building/debug", dbg);
     }
 }
 
-const auto readAsyncLambda = [&](MCP39F511UARTProto::RespType respType, const uint8_t *buffer, size_t size) {
-    if (respType == MCP39F511UARTProto::RespType::Ack) {
+const auto readAsyncLambda = [&](RespType respType, const uint8_t *buffer, size_t size) {
+    if (respType == RespType::Ack) {
         sendValues(static_cast<const uint8_t *>(buffer), (int) size);
     }
 };
@@ -95,13 +98,14 @@ void read_sensors() {
 }
 
 void resetKWhCounter() {
-    StartKWhAccumulator startKwh;
-    mcp39F511UARTProto->sendCommand(startKwh);
+    ResetKWhAccumulator resetKwh;
+    mcp39F511UARTProto->sendCommand(resetKwh);
+
 }
 
 void startKWhCounter() {
-    ResetKWhAccumulator resetKwh;
-    mcp39F511UARTProto->sendCommand(resetKwh);
+    StartKWhAccumulator startKwh;
+    mcp39F511UARTProto->sendCommand(startKwh);
 }
 
 void redLED() {
