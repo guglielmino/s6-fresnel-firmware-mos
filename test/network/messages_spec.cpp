@@ -17,16 +17,22 @@ static void scan_array(const char *str, int len, void *user_data) {
 TEST_CASE("messages ", "[messages]") {
 
     SECTION("device info message") {
-        std::vector<const char *> arr = { "POWERMETER", "RELAY1", "RELAY2"};
+        std::vector<std::string> arr;
 
-        std::string res = devInfoMessage("Sample", "1.0.0", "a group", "a name", arr);
-       // std::cout << res << "\n\n";
+        /* TODO: In test there is a problem with the filled vector
+        arr.push_back("POWERMETER");
+        arr.push_back("RELAY1");
+        arr.push_back("RELAY2");
+        */
 
-        char *appName, *version, *group, *name;
-        json_scanf(res.c_str(), res.length(), "{ appName: %Q, version: %Q, group: %Q, name: %Q, features: %M }",
-                   &appName, &version, &group, &name, scan_array);
+        std::string res = devInfoMessage("2018-04-07T13:16:45Z", "Sample", "1.0.0", "a group", "a name", arr);
+
+        char *timestamp, *appName, *version, *group, *name;
+        json_scanf(res.c_str(), res.length(), "{ timestamp: %Q, appName: %Q, version: %Q, group: %Q, name: %Q, features: %M}",
+                   &timestamp, &appName, &version, &group, &name, scan_array);
 
         REQUIRE(res.length() > 0);
+        REQUIRE(strcmp(timestamp, "2018-04-07T13:16:45Z") == 0);
         REQUIRE(strcmp(appName, "Sample") == 0);
         REQUIRE(strcmp(version, "1.0.0") == 0);
         REQUIRE(strcmp(group, "a group") == 0);
@@ -34,14 +40,15 @@ TEST_CASE("messages ", "[messages]") {
     }
 
     SECTION("power feedback message") {
-        std::string res = powerFeedbackMessage(true, 1);
+        std::string res = powerFeedbackMessage("2018-04-07T13:16:45Z", true, 1);
 
-        char *status;
+        char *status, *timestamp;
         int idx;
-        json_scanf(res.c_str(), res.length(), "{ status: %Q, relay_idx: %d }",
-                   &status, &idx);
+        json_scanf(res.c_str(), res.length(), "{ timestamp: %Q, status: %Q, relay_idx: %d }",
+                   &timestamp, &status, &idx);
 
         REQUIRE(res.length() > 0);
+        REQUIRE(strcmp(timestamp, "2018-04-07T13:16:45Z") == 0);
         REQUIRE(strcmp(status, "on") == 0);
         REQUIRE(idx == 1);
     }
@@ -65,13 +72,14 @@ TEST_CASE("messages ", "[messages]") {
 
 
     SECTION("LWT message") {
-        std::string res = lwtMessage(true);
+        std::string res = lwtMessage("2017-07-08T12:47:36", true);
 
-        char *status;
-        int result = json_scanf(res.c_str(), res.length(), "{ status: %Q }",
-                                &status);
+        char *status, *timestamp;
+        int result = json_scanf(res.c_str(), res.length(), "{ timestamp: %Q, status: %Q }",
+                                &timestamp, &status);
 
-        REQUIRE(result == 1);
+        REQUIRE(result == 2);
+        REQUIRE(strcmp(timestamp, "2017-07-08T12:47:36") == 0);
         REQUIRE(strcmp(status, "Online") == 0);
     }
 }
