@@ -34,9 +34,6 @@ config_schema:
   - ["debug.level", 3]
 
 
-
-
-
 build_vars:
   MGOS_ENABLE_HEAP_LOG: 1
   MGOS_ENABLE_CALL_TRACE: 1
@@ -52,6 +49,7 @@ libs:
   - origin: https://github.com/mongoose-os-libs/mqtt
   - origin: https://github.com/mongoose-os-libs/wifi
   - origin: https://github.com/mongoose-os-libs/rpc-service-cron
+  - origin: https://github.com/mongoose-os-libs/sntp
 
 # Used by the mos tool to catch mos binaries incompatible with this file format
 manifest_version: 2017-05-18
