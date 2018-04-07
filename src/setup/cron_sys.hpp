@@ -13,12 +13,17 @@
 
 // CRON FUNCTIONS
 void relayOn(struct mg_str action, struct mg_str payload, void *userdata) {
-    turnRelay(0, SwitchMode::ON);
-    LOG(LL_DEBUG, ("CRON: relayOn"));
+    int relay_idx = 0;
+    json_scanf(payload.p, payload.len, "{ relay_idx: %d }", &relay_idx);
+    turnRelay(relay_idx, SwitchMode::ON);
+    LOG(LL_DEBUG, ("CRON: relay %d on", relay_idx));
 }
 
 void relayOff(struct mg_str action, struct mg_str payload, void *userdata) {
-    turnRelay(0, SwitchMode::OFF);
+    int relay_idx = 0;
+    json_scanf(payload.p, payload.len, "{ relay_idx: %d }", &relay_idx);
+
+    turnRelay(relay_idx, SwitchMode::OFF);
     LOG(LL_DEBUG, ("CRON: relayOff"));
 }
 
