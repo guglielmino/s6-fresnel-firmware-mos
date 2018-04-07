@@ -5,6 +5,7 @@
 #pragma once
 
 #include "../globals.h"
+#include "../utils/dateutils.h"
 #include "../network/mqtt.h"
 #include "../network/topics.h"
 
@@ -36,14 +37,14 @@ auto powerSwitchSubscription = [](const char *topic, size_t topic_len, const cha
 
 
 void publishInfoMessage() {
-    std::string infoMessage = devInfoMessage(FIRMWARE_APP_NAME, FIRMWARE_APP_VERSION,
+    std::string infoMessage = devInfoMessage(now().c_str(), FIRMWARE_APP_NAME, FIRMWARE_APP_VERSION,
                                              settings.s6fresnel().group(),
                                              settings.s6fresnel().name(), settings.s6fresnel().features());
     mqttManager->publish(pubInfoTopic, infoMessage);
 }
 
 void publishLWTOnlineMessage(bool online) {
-    std::string message = lwtMessage(online);
+    std::string message = lwtMessage(now().c_str(), online);
     mqttManager->publish(pubLWTTopic, message);
 }
 
@@ -82,7 +83,7 @@ void mqtt_sys_init() {
     makeDeviceTopic(pubSensVoltageTopic, MAX_TOPIC_LEN, PUB_SENS_VOLTAGE_TOPIC, settings.s6fresnel().group(),
                     settings.deviceId());
 
-    std::string message = lwtMessage(false);
+    std::string message = lwtMessage(now().c_str(), false);
     settings.mqtt().lwtMessage(message);
     settings.mqtt().lwtTopic(pubLWTTopic);
 

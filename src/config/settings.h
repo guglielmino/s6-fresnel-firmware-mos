@@ -19,7 +19,7 @@ private:
     class S6Fresnel {
 
     public:
-       
+
         const char *group() {
 #ifdef USE_OLD_CFG
             return get_cfg()->s6fresnel.group;
@@ -36,21 +36,41 @@ private:
 #endif
         }
 
-        std::vector<const char *> features() {
-            char *featuresString;
+        std::vector<std::string> features() {
 #ifdef USE_OLD_CFG
-            featuresString = get_cfg()->s6fresnel.features;
+            const char *featuresString = get_cfg()->s6fresnel.features;
 #else
-            featuresString = (char *)mgos_sys_config_get_s6fresnel_features();
+            const char *featuresString = mgos_sys_config_get_s6fresnel_features();
 #endif
-            char * pch;
-            std::vector<const char *> feats;
-            pch = strtok (featuresString, ",");
-            while (pch != NULL)
-            {
-                feats.push_back(pch);
-                pch = strtok (NULL, ",");
+            std::vector<std::string> feats;
+
+/*
+            const static int featMaxSixe = 40;
+            char feature[featMaxSixe] = {0};
+            int fidx = 0;
+            int len = strlen(featuresString);
+            for (int j = 0; j < len ; ++j) {
+                if(featuresString[j] != ',' && j < len - 1) {
+                    feature[fidx] = featuresString[j];
+                    fidx++;
+                } else {
+                    feats.push_back(feature);
+                    fidx = 0;
+                    memset(feature, 0, featMaxSixe);
+                }
+
             }
+            */
+
+            char *feature = NULL;
+            char *tofree = NULL, *featstr = NULL;
+
+            tofree = featstr = strdup(featuresString);
+            while ((feature = strsep(&featstr, ",")) != NULL)
+                feats.push_back(feature);
+
+            free(tofree);
+
             return feats;
         }
     };

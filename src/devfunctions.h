@@ -7,6 +7,7 @@
 
 #include <string>
 #include "globals.h"
+#include "utils/dateutils.h"
 #include "network/messages.h"
 #include "network/mqtt.h"
 #include "network/topics.h"
@@ -26,7 +27,7 @@ void turnRelay(int relayIdx, SwitchMode mode) {
     if(relayIdx < relays.size()) {
         relays[relayIdx]->turn(mode);
 
-        std::string powerMessage = powerFeedbackMessage((mode == SwitchMode::ON), relayIdx);
+        std::string powerMessage = powerFeedbackMessage(now().c_str(), (mode == SwitchMode::ON), relayIdx);
         mqttManager->publish(pubPowerFeedbackTopic, powerMessage);
     }
 }
