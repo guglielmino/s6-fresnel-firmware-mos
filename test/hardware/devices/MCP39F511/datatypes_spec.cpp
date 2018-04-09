@@ -10,7 +10,7 @@ SCENARIO( "Manage uint16 data type", "[MCP39F511DataTypes]" ) {
     MCP39F511DataTypes dt;
 
     GIVEN( "A buffer containing a uint16 value" ) {
-        char buffer[] = { 000, 0x00, 0x01, 0x02};
+        uint8_t buffer[] = { 000, 0x00, 0x01, 0x02};
 
         WHEN("Decode with u16 method") {
 
@@ -26,7 +26,7 @@ SCENARIO( "Manage uint16 data type", "[MCP39F511DataTypes]" ) {
         uint16_t value = 513;
 
         WHEN("Encode with w_u16 method") {
-            char buffer[2];
+            uint8_t buffer[2];
             dt.w_u16(value, buffer);
 
             THEN("it should return 0x01 0x02"){
@@ -41,7 +41,7 @@ SCENARIO( "Manage uint32 data type", "[MCP39F511DataTypes]" ) {
     MCP39F511DataTypes dt;
 
     GIVEN( "A buffer containing a uint32 value" ) {
-        char buffer[] = { 000, 0x00, 0x01, 0x02, 0x03, 0x04};
+        uint8_t buffer[] = { 000, 0x00, 0x01, 0x02, 0x03, 0x04};
 
         WHEN("Decode with u16 method") {
 
@@ -57,7 +57,7 @@ SCENARIO( "Manage uint32 data type", "[MCP39F511DataTypes]" ) {
         uint32_t value = 67305985;
 
         WHEN("Encode with w_u32 method") {
-            char buffer[4];
+            uint8_t buffer[4];
             dt.w_u32(value, buffer);
 
             THEN("it should return 0x01 0x02 0x03 0x04"){
