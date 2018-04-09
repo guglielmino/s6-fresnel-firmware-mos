@@ -49,7 +49,7 @@ libs:
   - origin: https://github.com/mongoose-os-libs/mqtt
   - origin: https://github.com/mongoose-os-libs/wifi
   - origin: https://github.com/mongoose-os-libs/rpc-service-cron
-  - origin: https://github.com/mongoose-os-libs/sntpui
+  - origin: https://github.com/mongoose-os-libs/sntp
 
 # Used by the mos tool to catch mos binaries incompatible with this file format
 manifest_version: 2017-05-18

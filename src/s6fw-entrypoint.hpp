@@ -13,6 +13,13 @@
 #include "setup/mqtt_sys.hpp"
 #include "setup/devices_sys.hpp"
 
+void sntpTimeChangeCB(int ev, void *evd, void *arg)
+{
+    (void) ev;
+    (void)arg;
+
+    publishInfoMessage();
+}
 
 enum mgos_app_init_result mgos_app_init(void) {
     cs_log_set_level(LL_DEBUG);
@@ -26,6 +33,9 @@ enum mgos_app_init_result mgos_app_init(void) {
     startKWhCounter();
 
     cron_sys_init();
+
+
+    mgos_event_add_handler(MGOS_EVENT_TIME_CHANGED, sntpTimeChangeCB, NULL);
 
     return MGOS_APP_INIT_SUCCESS;
 }
