@@ -46,15 +46,15 @@ public:
         uint64_t ret = 0;
         uint16_t offset = 2;
         tmp += msg_buffer[addr + 7 + offset];
-        tmp = tmp << (7  * 8);
-        for (uint8_t i = 6; i > 0; --i) {
+        tmp = tmp << (7 * 8);
+        for (uint8_t i = 7; i > 0; --i) {
 
             tmp = msg_buffer[addr + i + offset];
-            tmp = tmp << (i  * 8);
+            tmp = tmp << (i * 8);
             ret += tmp;
         }
 
-        ret += msg_buffer[addr+0 + offset];
+        ret += msg_buffer[addr + 0 + offset];
 
         return ret;
     }
