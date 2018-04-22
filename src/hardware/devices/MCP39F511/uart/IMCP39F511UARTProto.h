@@ -15,6 +15,6 @@ class IMCP39F511UARTProto {
 public:
 
 
-    virtual void sendCommand(ICommandFrame& command) = 0;
+    virtual bool sendCommand(ICommandFrame& command) = 0;
     virtual void readAsync(readCallback_t cb) = 0;
 };

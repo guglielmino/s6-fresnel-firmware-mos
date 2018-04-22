@@ -27,16 +27,6 @@
 #define OFF_VOLTAGE 0
 #define OFF_CONSUMPTION 24
 
-
-void turnRelay(int relayIdx, SwitchMode mode) {
-    if (relayIdx < relays.size()) {
-        relays[relayIdx]->turn(mode);
-
-        std::string powerMessage = powerFeedbackMessage(now().c_str(), (mode == SwitchMode::ON), relayIdx);
-        mqttManager->publish(pubPowerFeedbackTopic, powerMessage);
-    }
-}
-
 void sendValues(const uint8_t *buffer, int buffer_len) {
     if (buffer_len == METERING_BUFFER_SIZE && mqttManager != nullptr) {
 
@@ -81,19 +71,37 @@ void sendValues(const uint8_t *buffer, int buffer_len) {
         mqttManager->publish(pubSensDailyKwhTopic, dailyConsumeMsg);
     } else {
         char dbg[50];
-        scanf(dbg, "buffer len= %d", buffer_len);
+        sprintf(dbg, "buffer len= %d", buffer_len);
         mqttManager->publish("building/debug", dbg);
+        LOG(LL_DEBUG, (dbg));
     }
 }
 
 const auto readAsyncLambda = [&](RespType respType, const uint8_t *buffer, size_t size) {
+    LOG(LL_DEBUG, ("readAsyncLambda RespType = %d, size = %d ", (int) respType, size));
     if (respType == RespType::Ack) {
         sendValues(static_cast<const uint8_t *>(buffer), (int) size);
     }
 };
 
-void read_sensors() {
+void dev_functions_init() {
     mcp39F511UARTProto->readAsync(readAsyncLambda);
+}
+
+void turnRelay(int relayIdx, SwitchMode mode) {
+    if (relayIdx < relays.size()) {
+        relays[relayIdx]->turn(mode);
+
+        std::string powerMessage = powerFeedbackMessage(now().c_str(), (mode == SwitchMode::ON), relayIdx);
+        mqttManager->publish(pubPowerFeedbackTopic, powerMessage);
+    }
+}
+
+
+
+
+void read_sensors() {
+
     ReadMeteringValues meteringCommand;
     mcp39F511UARTProto->sendCommand(meteringCommand);
 }

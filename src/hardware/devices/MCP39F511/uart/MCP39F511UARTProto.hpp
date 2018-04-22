@@ -50,7 +50,9 @@ private:
                     if(waitFor == ICommandFrame::WaitForType::ACK_DATA_CHECKSUM) {
                         bytesLeft = buffer[1];
                         LOG(LL_DEBUG, ("ACK (%d - %d)", bytesLeft, size));
-                        fillInternalAccumulator(buffer, size);
+                        // Sometime size > byteLeft (it's due to serial communications, more data than the declared size
+                        // at protocol level). In that case the byteLeft is the total number of bytes to get
+                        fillInternalAccumulator(buffer, MIN(size,  bytesLeft));
                         LOG(LL_DEBUG, ("ACK LEFT (%d)", bytesLeft));
                     }
                     else {
@@ -78,12 +80,10 @@ private:
         }
 
         if (bytesLeft == 0 && fillState == Reading) {
-            _finish_cb(RespType::Ack, reinterpret_cast<uint8_t *>(accumulator.data()), accumulator.size());
-
             _uart->flush();
-            accumulator.clear();
             fillState = Idle;
-            bytesLeft = 0;
+            _finish_cb(RespType::Ack, reinterpret_cast<uint8_t *>(accumulator.data()), accumulator.size());
+            accumulator.clear();
         }
 
 
@@ -108,20 +108,21 @@ public:
     }
 
 
-    void sendCommand(ICommandFrame& command) {
+    bool sendCommand(ICommandFrame& command) {
+        if(fillState != Idle) {
+            LOG(LL_DEBUG, ("UART operation in progress"));
+            return false;
+        }
         std::vector <uint8_t> frame = command.frame();
+        // Set the waitFot type for the processing command
         waitFor = command.waitFor();
         writeFrame(frame);
+        return true;
     }
 
 
 
     void readAsync(readCallback_t cb) {
-        if(fillState != Idle) {
-            LOG(LL_DEBUG, ("UART operation in progress"));
-            return;
-        }
-
         _finish_cb = cb;
         _uart->readAsync([&, this]() {
             size_t rx_av = _uart->readAvail();
