@@ -25,11 +25,13 @@ TEST_CASE("messages ", "[messages]") {
         arr.push_back("RELAY2");
         */
 
-        std::string res = devInfoMessage("2018-04-07T13:16:45Z", "Sample", "1.0.0", "a group", "a name", arr);
+        std::string res = devInfoMessage("2018-04-07T13:16:45Z", "Sample", "1.0.0", "a group", "a name",
+                                         "1.0.0.0", "2.0.0.0", arr);
 
-        char *timestamp, *appName, *version, *group, *name;
-        json_scanf(res.c_str(), res.length(), "{ timestamp: %Q, appName: %Q, version: %Q, group: %Q, name: %Q, features: %M}",
-                   &timestamp, &appName, &version, &group, &name, scan_array);
+        char *timestamp, *appName, *version, *group, *name, *wifiIp, *ethIp;
+        json_scanf(res.c_str(), res.length(),
+                   "{ timestamp: %Q, appName: %Q, version: %Q, group: %Q, name: %Q, wifi: {ip: %Q}, eth: {ip: %Q}, features: %M }",
+                   &timestamp, &appName, &version, &group, &name, &wifiIp, &ethIp, scan_array);
 
         REQUIRE(res.length() > 0);
         REQUIRE(strcmp(timestamp, "2018-04-07T13:16:45Z") == 0);
@@ -37,6 +39,8 @@ TEST_CASE("messages ", "[messages]") {
         REQUIRE(strcmp(version, "1.0.0") == 0);
         REQUIRE(strcmp(group, "a group") == 0);
         REQUIRE(strcmp(name, "a name") == 0);
+        REQUIRE(strcmp(wifiIp, "1.0.0.0") == 0);
+        REQUIRE(strcmp(ethIp, "2.0.0.0") == 0);
     }
 
     SECTION("power feedback message") {
@@ -54,15 +58,13 @@ TEST_CASE("messages ", "[messages]") {
     }
 
 
-
-
     SECTION("sensor value message") {
         std::string res = makeSensorValueMessage("2017-07-08T12:47:36", 43.00f, "W");
 
         char *timestamp, *unit;
         float value = 0.0;
         int result = json_scanf(res.c_str(), res.length(), "{ timestamp: %Q, value: %f, unit: %Q }",
-                   &timestamp, &value, &unit);
+                                &timestamp, &value, &unit);
 
         REQUIRE(result == 3);
         REQUIRE(strcmp(timestamp, "2017-07-08T12:47:36") == 0);

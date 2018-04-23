@@ -9,16 +9,19 @@
 #include "../hardware/gpio/OutputDevice.h"
 #include "../hardware/gpio/S6Relay.hpp"
 #include "../hardware/gpio/InputDevice.h"
+#include "../hardware/devices/MCP39F511/uart/IMCP39F511UARTProto.h"
+#include "../factories/uartFactories.h"
 #include "../devfunctions.h"
-
 
 IOutputDevice *rele0 = nullptr;
 IOutputDevice *rele1 = nullptr;
 IOutputDevice *redLed = nullptr;
 IOutputDevice *greenLed = nullptr;
 InputDevice *button = nullptr;
+IMCP39F511UARTProto *mcp39F511UARTProto = nullptr;
 
 void devices_sys_init() {
+    mcp39F511UARTProto = setupMCPProto();
     rele0 = new S6Relay(REL0_PIN_SET, REL0_PIN_RESET);
     rele1 = new OutputDevice(REL1_PIN);
     relays.reserve(2);

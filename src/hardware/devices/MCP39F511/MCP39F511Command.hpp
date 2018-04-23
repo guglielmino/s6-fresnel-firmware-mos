@@ -21,9 +21,6 @@ public:
     virtual std::vector<uint8_t> make() = 0;
 };
 
-
-
-
 std::vector<uint8_t> makeFrame(std::vector<MCP39F511Command *> commands) {
     std::vector <uint8_t> frame;
 

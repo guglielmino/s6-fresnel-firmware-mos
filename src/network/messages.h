@@ -10,6 +10,7 @@
 #include "../libs/frozen.h"
 
 
+
 #define MESSAGE_BUFFER_LEN 400
 
 /*
@@ -22,15 +23,18 @@
    "version": "1.0.15",
    "group": "room1",
    "name": "lamp1",
+   "wifi": {ip: "192.168.0.1"},
+   "eth": {ip: ""},
    "features: ["POWERMETER", "RELAY1", "RELAY2"]
 }
  */
 std::string devInfoMessage(const char *timestring, const char *appName, const char *ver, const char *group, const char *name,
-                           std::vector<std::string> features) {
+                           std::string wifiIp, std::string ethIp, std::vector<std::string> features) {
     char buffer[MESSAGE_BUFFER_LEN] = "";
 
     struct json_out out = JSON_OUT_BUF(buffer, MESSAGE_BUFFER_LEN);
-    json_printf(&out, "{ timestamp: %Q, appName: %Q, version: %Q, group: %Q, name: %Q, features: %M }", timestring, appName, ver, group, name,
+    json_printf(&out, "{ timestamp: %Q, appName: %Q, version: %Q, group: %Q, name: %Q, wifi: {ip: %Q}, eth: {ip: %Q}, features: %M }",
+                timestring, appName, ver, group, name, wifiIp.c_str(), ethIp.c_str(),
                 json_printf_array, features.data(), features.size() * sizeof(features[0]), sizeof(features[0]), "%Q");
     return std::string(buffer);
 }
