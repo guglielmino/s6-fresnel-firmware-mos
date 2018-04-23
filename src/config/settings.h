@@ -44,24 +44,6 @@ private:
 #endif
             std::vector<std::string> feats;
 
-/*
-            const static int featMaxSixe = 40;
-            char feature[featMaxSixe] = {0};
-            int fidx = 0;
-            int len = strlen(featuresString);
-            for (int j = 0; j < len ; ++j) {
-                if(featuresString[j] != ',' && j < len - 1) {
-                    feature[fidx] = featuresString[j];
-                    fidx++;
-                } else {
-                    feats.push_back(feature);
-                    fidx = 0;
-                    memset(feature, 0, featMaxSixe);
-                }
-
-            }
-            */
-
             char *feature = NULL;
             char *tofree = NULL, *featstr = NULL;
 

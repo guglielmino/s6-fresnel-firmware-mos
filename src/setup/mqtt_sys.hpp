@@ -10,6 +10,7 @@
 #include "../network/topics.h"
 
 #include "../devfunctions.h"
+#include "../hardware/net/ifaces.hpp"
 
 MQTTManager *mqttManager = nullptr;
 
@@ -18,12 +19,12 @@ MQTTManager *mqttManager = nullptr;
 auto powerSwitchSubscription = [](const char *topic, size_t topic_len, const char *msg, size_t msg_len) {
     char localMsg[MAX_MSG_LEN] = "";
     memcpy(localMsg, msg, MIN(msg_len, MAX_MSG_LEN));
-    (void)topic;
-    (void)topic_len;
+    (void) topic;
+    (void) topic_len;
 
-    SwitchMode relayState =  SwitchMode::OFF;
+    SwitchMode relayState = SwitchMode::OFF;
     int relay_idx = -1;
-    if(msg_len > 8) {
+    if (msg_len > 8) {
         char *operation;
         json_scanf(localMsg, strlen(localMsg), "{ relay_idx:%d, op:%Q }", &relay_idx, &operation);
         relayState = (strcmp(operation, "on") == 0 ? SwitchMode::ON : SwitchMode::OFF);
@@ -39,7 +40,8 @@ auto powerSwitchSubscription = [](const char *topic, size_t topic_len, const cha
 void publishInfoMessage() {
     std::string infoMessage = devInfoMessage(now().c_str(), FIRMWARE_APP_NAME, FIRMWARE_APP_VERSION,
                                              settings.s6fresnel().group(),
-                                             settings.s6fresnel().name(), settings.s6fresnel().features());
+                                             settings.s6fresnel().name(),
+                                             getWiFiStaIp(), getEthIp(), settings.s6fresnel().features());
     mqttManager->publish(pubInfoTopic, infoMessage);
 }
 

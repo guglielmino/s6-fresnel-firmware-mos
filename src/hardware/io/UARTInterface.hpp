@@ -4,9 +4,10 @@
 
 #pragma once
 
+#include <functional>
 #include "mgos.h"
 #include "mgos_uart.h"
-#include "../../interfaces/IUART.h"
+#include "IUART.h"
 
 enum UARTParity {
     UART_PARITY_NONE = 0,
@@ -62,11 +63,13 @@ enum mgos_uart_stop_bits toMosStopBits(enum UARTStopBits stopbits) {
 class UARTInterface : public IUART {
 private:
     uint8_t _uartNum;
-    async_data_available_callback_t _async__data_avail_callback;
+    uint8_t state = 0;
+    std::function<void ()> _async__data_avail_callback;
 
     static void _internal_async_data_avail(int uart_no, void *arg) {
         (void)uart_no;
-        UARTInterface *me = (UARTInterface *) arg;
+        UARTInterface *me = static_cast<UARTInterface *>(arg);
+
         me->_async__data_avail_callback();
     }
 
@@ -106,8 +109,8 @@ public:
         return mgos_uart_read(_uartNum, buf, len);
     }
 
-    void readAsync(async_data_available_callback_t cb)  {
-        _async__data_avail_callback = cb;
+    void readAsync(std::function<void ()> cb) {
+        this->_async__data_avail_callback = cb;
         mgos_uart_set_dispatcher(_uartNum, _internal_async_data_avail, this);
     }
 

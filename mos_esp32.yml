@@ -1,5 +1,5 @@
 config_schema:
-  - ["eth.enable", false]
+  - ["eth.enable", true]
 #  - ["bt.enable", false]
 #  - ["bt.adv_enable", true]
 #  - ["bt.keep_enabled", true]
