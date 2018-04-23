@@ -24,6 +24,7 @@ job_test:
 job_build:
   stage: build
   script:
+    - mos update
     - export FW_VERSION=`cat src/consts.h |grep FIRMWARE_APP_VERSION| awk '{ print $3 }'| sed 's/"//g'`
     - git clone https://$GITHUB_USERNAME:$GITHUB_PASSWORD@github.com/cesanta/mos-libs.git
     - mos build --local --verbose --no-libs-update --libs-dir ./mos-libs/  --platform esp32
