@@ -3,7 +3,7 @@ include_directories (${TEST_SOURCE_DIR}/src)
 
 add_executable (s6test
         test_base.cpp
-        ../src/libs/frozen.c
+        libs/frozen.c
         ../src/hardware/io/UARTInterface.hpp
         ../src/hardware/io/IUART.h
         hardware/devices/MCP39F511/commands_spec.cpp
