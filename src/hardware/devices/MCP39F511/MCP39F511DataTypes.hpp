@@ -2,7 +2,9 @@
 // Created by Fabrizio Guglielmino on 29/11/17.
 //
 
-#pragma once
+
+#ifndef __MCP39F511DATATYPES_H
+#define __MCP39F511DATATYPES_H
 
 class MCP39F511DataTypes {
 public:
@@ -60,3 +62,5 @@ public:
     }
 
 };
+
+#endif

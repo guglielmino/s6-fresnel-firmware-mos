@@ -2,7 +2,8 @@
 // Created by Fabrizio Guglielmino on 13/12/17.
 //
 
-#pragma once
+#ifndef __MCP39F511CONSTS_H
+#define __MCP39F511CONSTS_H
 
 #include <functional> 
 
@@ -70,3 +71,5 @@ const static McpRegister<float, uint32_t> REG_CALIB_CURRENT = { .reg = MCP_REG_C
 const static McpRegister<float, uint32_t> REG_CALIB_POW_A = { .reg = MCP_REG_CALIB_POW_A, .bufferSize = 7, .rawToValue = [](uint32_t value) { return (value / 100.0); }};
 const static McpRegister<float, uint32_t> REG_CALIB_POW_R = { .reg = MCP_REG_CALIB_POW_R, .bufferSize = 7, .rawToValue = [](uint32_t value) { return (value / 100.0); }};
 const static McpRegister<float, uint16_t> REG_REF_FREQUENCY = { .reg = MCP_REG_REF_FREQ, .bufferSize = 5, .rawToValue = [](uint16_t value) { return (value / 1000.0); }};
+
+#endif

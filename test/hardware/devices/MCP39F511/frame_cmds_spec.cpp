@@ -15,6 +15,9 @@
 #include "../../../../src/hardware/devices/MCP39F511/PageWriteEEPROMCmd.hpp"
 #include "../../../../src/hardware/devices/MCP39F511/BulkEraseEEPROMCmd.hpp"
 
+#include "../../../../src/hardware/devices/MCP39F511/commands/ResetKWhAccumulator.hpp"
+#include "../../../../src/hardware/devices/MCP39F511/commands/StartKWhAccumulator.hpp"
+
 SCENARIO( "Set Address Pointer command", "[MCP39F511Commands]" ) {
     GIVEN( "A register address split in high and low byte" ) {
         uint8_t high = 00;
@@ -257,6 +260,35 @@ SCENARIO( "Auto Calibrate Frequency Gain command", "[MCP39F511Commands]" ) {
                 REQUIRE(res[2] == 0x76);
 
                 REQUIRE(res.size() == 4);
+            }
+        }
+    }
+}
+
+SCENARIO( "Application commands", "[StartKWhAccumulator]" ) {
+
+    GIVEN("StartKWhAccumulator") {
+        StartKWhAccumulator subject;
+
+        WHEN("Getting the buffer") {
+            std::vector<uint8_t> buffer = subject.frame();
+
+            THEN("it should return start command buffer") {
+                std::vector<uint8_t> expected = {0xa5, 0x0a, 0x41, 0x00, 0xdc, 0x4d, 0x02, 0x00, 0x80, 0x9b};
+                REQUIRE(buffer == expected);
+            }
+        }
+    }
+
+    GIVEN("ResetKWhAccumulator") {
+        ResetKWhAccumulator subject;
+
+        WHEN("Getting the buffer") {
+            std::vector<uint8_t> buffer = subject.frame();
+
+            THEN("it should return reset command buffer") {
+                std::vector<uint8_t> expected = {0xa5, 0x0a, 0x41, 0x00, 0xdc, 0x4d, 0x02, 0x00, 0x00, 0x1b};
+                REQUIRE(buffer == expected);
             }
         }
     }

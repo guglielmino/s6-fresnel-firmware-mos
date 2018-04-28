@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __READMETERINGVALUE_H
+#define __READMETERINGVALUE_H
 
 #include <vector>
 #include "ICommandFrame.hpp"
@@ -14,3 +15,5 @@ public:
         return WaitForType::ACK_DATA_CHECKSUM;
     }
 };
+
+#endif

@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 #include "../catch.hpp"
-#include "../../src/libs/frozen.h"
+#include "../libs/frozen.h"
 #include "../../src/network/messages.h"
 
 static void scan_array(const char *str, int len, void *user_data) {

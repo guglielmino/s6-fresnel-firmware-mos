@@ -2,7 +2,8 @@
 // Created by Fabrizio Guglielmino on 29/10/17.
 //
 
-#pragma once
+#ifndef __PAGEWRITEEEPROM_H
+#define __PAGEWRITEEEPROM_H
 
 #include "MCP39F511Command.hpp"
 
@@ -24,3 +25,5 @@ public:
         return cmd;
     }
 };
+
+#endif

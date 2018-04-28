@@ -1,7 +1,9 @@
 //
 // Created by Fabrizio Guglielmino on 29/10/17.
 //
-#pragma once
+
+#ifndef __PAGEREADEEPROM_H
+#define __PAGEREADEEPROM_H
 
 #include "MCP39F511Command.hpp"
 
@@ -21,3 +23,5 @@ public:
         return cmd;
     }
 };
+
+#endif

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __MCP39F511PUARTPROTO_H
+#define __MCP39F511PUARTPROTO_H
 
 #include <vector>
 #include <functional>
@@ -136,3 +137,5 @@ public:
         });
     }
 };
+
+#endif

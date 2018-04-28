@@ -2,7 +2,8 @@
 // Created by Fabrizio Guglielmino on 29/10/17.
 //
 
-#pragma once
+#ifndef __MCP39F511UTILS_H
+#define __MCP39F511UTILS_H
 
 #include <vector>
 #include "MCP39F511Command.hpp"
@@ -32,3 +33,5 @@ std::vector<uint8_t>  prepareWriteFrame(uint16_t regAddress, std::vector<uint8_t
 
     return makeFrame(commands);
 }
+
+#endif

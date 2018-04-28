@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __IMCP39F511PUARTPROTO_H
+#define __IMCP39F511PUARTPROTO_H
 
 #include <vector>
 #include <functional>
@@ -18,3 +19,5 @@ public:
     virtual bool sendCommand(ICommandFrame& command) = 0;
     virtual void readAsync(readCallback_t cb) = 0;
 };
+
+#endif
