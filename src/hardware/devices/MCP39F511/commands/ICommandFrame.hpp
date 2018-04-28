@@ -2,7 +2,8 @@
 // Created by Fabrizio Guglielmino on 25/03/18.
 //
 
-#pragma once
+#ifndef __COMMANDFRAME_H
+#define __COMMANDFRAME_H
 
 #include <vector>
 
@@ -17,3 +18,5 @@ public:
     virtual WaitForType waitFor() = 0;
 
 };
+
+#endif

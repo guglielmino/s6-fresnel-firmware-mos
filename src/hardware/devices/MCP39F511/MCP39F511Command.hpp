@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __MCP39F511COMMAND_H
+#define __MCP39F511COMMAND_H
 
 #include <vector>
 #include "MCP39F511Consts.h"
@@ -46,3 +47,5 @@ std::vector<uint8_t> makeFrame(std::vector<MCP39F511Command *> commands) {
 
     return frame;
 }
+
+#endif

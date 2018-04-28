@@ -3,7 +3,8 @@
 //
 
 
-#pragma once
+#ifndef __BULKERASE_H
+#define __BULKERASE_H
 
 #include "MCP39F511Command.hpp"
 
@@ -20,4 +21,6 @@ public:
         return cmd;
     }
 };
+
+#endif
 
