@@ -22,15 +22,15 @@ platforms: [  esp32, esp8266 ]
 
 config_schema:
   - ["mqtt.enable", true]
-  - ["mqtt.server", "s", "192.168.100.190:1883", {title: "MQTT server"}]
+  - ["mqtt.server", "s", "192.168.0.21:1883", {title: "MQTT server"}]
   - ["wifi.sta.enable", true]
-  - ["wifi.sta.ssid", "TP-LINK_5B8A"]
-  - ["wifi.sta.pass", "93490894"]
+  - ["wifi.sta.ssid", "gug"]
+  - ["wifi.sta.pass", "marric13"]
   - ["wifi.ap.enable", false]
   - ["s6fresnel", "o", {title: "S6 Fresnel custom settings"}]
-  - ["s6fresnel.group", "s", "room1", {title: "Device location, used in MQTT topic path (ie. building/room1/...)"}]
-  - ["s6fresnel.name", "s", "noname", {title: "Device name (ie. lamp1)"}]
-  - ["s6fresnel.features", "s", "POWERMETER,RELAY1,RELAY2", {title: "Comma separated list of device features"}]
+  - ["s6fresnel.group", "s", "studio", {title: "Device location, used in MQTT topic path (ie. building/room1/...)"}]
+  - ["s6fresnel.name", "s", "studio", {title: "Device name (ie. lamp1)"}]
+  - ["s6fresnel.features", "s", "POWERMETER,RELAY1", {title: "Comma separated list of device features"}]
   - ["debug.level", 3]
 
 

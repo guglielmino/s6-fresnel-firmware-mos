@@ -2,7 +2,8 @@
 // Created by Fabrizio Guglielmino on 29/10/17.
 //
 
-#pragma once
+#ifndef __AUTOCALIBRATEFREQ_H
+#define __AUTOCALIBRATEFREQ_H
 
 #include "MCP39F511Command.hpp"
 
@@ -19,3 +20,5 @@ public:
         return cmd;
     }
 };
+
+#endif

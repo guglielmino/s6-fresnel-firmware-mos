@@ -6,7 +6,7 @@ add_executable (s6test
         libs/frozen.c
         ../src/hardware/io/UARTInterface.hpp
         ../src/hardware/io/IUART.h
-        hardware/devices/MCP39F511/commands_spec.cpp
+        hardware/devices/MCP39F511/frame_cmds_spec.cpp
         hardware/devices/MCP39F511/datatypes_spec.cpp
         hardware/devices/MCP39F511/consts_spec.cpp
         network/topics_spec.cpp

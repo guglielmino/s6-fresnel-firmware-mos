@@ -2,7 +2,8 @@
 // Created by Fabrizio Guglielmino on 29/10/17.
 //
 
-#pragma once
+#ifndef __REGISTERWRITE_H
+#define __REGISTERWRITE_H
 
 #include "MCP39F511Command.hpp"
 
@@ -23,3 +24,5 @@ public:
         return cmd;
     }
 };
+
+#endif

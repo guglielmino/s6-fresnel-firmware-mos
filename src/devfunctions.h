@@ -26,6 +26,8 @@
 #define OFF_POWER_FACTOR 6
 #define OFF_VOLTAGE 0
 #define OFF_CONSUMPTION 24
+#define CMD_RETRY_CNT 4
+
 
 void sendValues(const uint8_t *buffer, int buffer_len) {
     if (buffer_len == METERING_BUFFER_SIZE && mqttManager != nullptr) {
@@ -69,11 +71,6 @@ void sendValues(const uint8_t *buffer, int buffer_len) {
         std::string dailyConsumeMsg = makeSensorValueMessage(now().c_str(), REG_IMP_ACTIVE_CNT.rawToValue(raw64),
                                                              "KWh");
         mqttManager->publish(pubSensDailyKwhTopic, dailyConsumeMsg);
-    } else {
-        char dbg[50];
-        sprintf(dbg, "buffer len= %d", buffer_len);
-        mqttManager->publish("building/debug", dbg);
-        LOG(LL_DEBUG, (dbg));
     }
 }
 
@@ -97,24 +94,28 @@ void turnRelay(int relayIdx, SwitchMode mode) {
     }
 }
 
-
-
-
 void read_sensors() {
-
     ReadMeteringValues meteringCommand;
     mcp39F511UARTProto->sendCommand(meteringCommand);
 }
 
 void resetKWhCounter() {
     ResetKWhAccumulator resetKwh;
-    mcp39F511UARTProto->sendCommand(resetKwh);
+    bool done = false;
+    for(int i=0; i < CMD_RETRY_CNT && !done; i++) {
+        done = mcp39F511UARTProto->sendCommand(resetKwh);
+        mgos_usleep(1000);
+    }
 
 }
 
 void startKWhCounter() {
     StartKWhAccumulator startKwh;
-    mcp39F511UARTProto->sendCommand(startKwh);
+    bool done = false;
+    for(int i=0; i < CMD_RETRY_CNT && !done; i++) {
+        done = mcp39F511UARTProto->sendCommand(startKwh);
+        mgos_usleep(1000);
+    }
 }
 
 void redLED() {
