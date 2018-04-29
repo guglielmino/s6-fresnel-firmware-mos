@@ -50,6 +50,10 @@ void publishLWTOnlineMessage(bool online) {
     mqttManager->publish(pubLWTTopic, message);
 }
 
+void publishCrontab() {
+    readCrontab();
+}
+
 void mqtt_sys_init() {
     // ** MQTT Topic (TODO: Move to std::string and optimize topic string creation)
     makeDeviceTopic(pubSensPowerTopic, MAX_TOPIC_LEN, PUB_SENS_POWER_TOPIC, settings.s6fresnel().group(),
@@ -85,10 +89,12 @@ void mqtt_sys_init() {
     makeDeviceTopic(pubSensVoltageTopic, MAX_TOPIC_LEN, PUB_SENS_VOLTAGE_TOPIC, settings.s6fresnel().group(),
                     settings.deviceId());
 
+    makeDeviceTopic(pubEventCrontabTopic, MAX_TOPIC_LEN, PUB_EVENT_CRONTAB_TOPIC, settings.s6fresnel().group(),
+            settings.deviceId());
+
     std::string message = lwtMessage(now().c_str(), false);
     settings.mqtt().lwtMessage(message);
     settings.mqtt().lwtTopic(pubLWTTopic);
-
 
     mqttManager = new MQTTManager();
 
@@ -101,6 +107,7 @@ void mqtt_sys_init() {
 
         publishInfoMessage();
         publishLWTOnlineMessage(true);
+        publishCrontab();
     });
 
     mqttManager->setEventCallback(MQTTManager::Disconnected, []() {
