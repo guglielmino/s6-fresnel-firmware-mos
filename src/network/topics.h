@@ -18,6 +18,7 @@
 
 #define PUB_EVENT_POWERFEEDBACK_TOPIC   "building/%s/events/%s/power"    // Device publish power switch feedback consume on this topic
 #define PUB_EVENT_LWT_TOPIC         "building/%s/events/%s/lwt"          // Device publish Last Willing Message on this topic
+#define PUB_EVENT_CRONTAB_TOPIC     "building/%s/events/%s/crontab"      // Device publish current crontab on this topic
 
 
 /* --- MQTT subsribe topics ---*/
@@ -41,6 +42,7 @@ char pubSensCurrentTopic[MAX_TOPIC_LEN];
 char pubSensFreqTopic[MAX_TOPIC_LEN];
 char pubSensPowerFactorTopic[MAX_TOPIC_LEN];
 char pubSensVoltageTopic[MAX_TOPIC_LEN];
+char pubEventCrontabTopic[MAX_TOPIC_LEN];
 
 char subSwitchDevTopic[MAX_TOPIC_LEN];
 char subSwitchRoomTopic[MAX_TOPIC_LEN];

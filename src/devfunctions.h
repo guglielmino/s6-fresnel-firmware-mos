@@ -6,6 +6,10 @@
 #pragma once
 
 #include <string>
+
+#include "mgos_rpc.h"
+#include "mg_rpc_channel_loopback.h"
+
 #include "globals.h"
 #include "utils/dateutils.h"
 #include "network/messages.h"
@@ -128,4 +132,27 @@ void greenLED() {
     greenLed->turn(SwitchMode::ON);
     mgos_usleep(1000000);
     greenLed->turn(SwitchMode::OFF);
+}
+
+void result_cb_t(struct mg_rpc *c, void *cb_arg,
+                 struct mg_rpc_frame_info *fi,
+                 struct mg_str result, int error_code,
+                 struct mg_str error_msg) {
+
+    if(error_code == 0 && mqttManager != nullptr) {
+        char l_result[result.len + 1] = {0};
+        memcpy(l_result, result.p, result.len);
+        std::string jsonCrontab = std::string(l_result);
+        mqttManager->publish(pubEventCrontabTopic, jsonCrontab);
+    } else {
+        LOG(LL_DEBUG, ("readCrontab::result_cb_t error_code = %d", error_code));
+    }
+}
+
+void readCrontab() {
+    struct mg_rpc_call_opts opts = {};
+    opts.dst = mg_mk_str(MGOS_RPC_LOOPBACK_ADDR);
+
+    mg_rpc_callf(mgos_rpc_get_global(), mg_mk_str("Cron.List"),
+                 result_cb_t, NULL, &opts, NULL);
 }
