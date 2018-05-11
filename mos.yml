@@ -22,10 +22,10 @@ platforms: [  esp32, esp8266 ]
 
 config_schema:
   - ["mqtt.enable", true]
-  - ["mqtt.server", "s", "192.168.100.190:1883", {title: "MQTT server"}]
+  - ["mqtt.server", "s", "192.168.1.15:1883", {title: "MQTT server"}]
   - ["wifi.sta.enable", true]
-  - ["wifi.sta.ssid", "TP-LINK_5B8A"]
-  - ["wifi.sta.pass", "93490894"]
+  - ["wifi.sta.ssid", "TIM-85970373"]
+  - ["wifi.sta.pass", "tNMSaa1ep55hZZ6eTMvaZfUv"]
   - ["wifi.ap.enable", false]
   - ["s6fresnel", "o", {title: "S6 Fresnel custom settings"}]
   - ["s6fresnel.group", "s", "room1", {title: "Device location, used in MQTT topic path (ie. building/room1/...)"}]
