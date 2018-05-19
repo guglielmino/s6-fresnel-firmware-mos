@@ -5,27 +5,27 @@
 #pragma once
 
 /* --- MQTT publish topics -- */
-#define PUB_SENS_INFO_TOPIC         "building/%s/events/%s/info"            // Device publish info message on this topic
-#define PUB_SENS_POWER_TOPIC        "building/%s/sensors/%s/power"          // Device publish power consume on this topic
-#define PUB_SENS_RPOWER_TOPIC       "building/%s/sensors/%s/reactivepower"  // Device publish Ractive Power Message on this topic
+#define PUB_SENS_INFO_TOPIC         "%s/%s/events/%s/info"            // Device publish info message on this topic
+#define PUB_SENS_POWER_TOPIC        "%s/%s/sensors/%s/power"          // Device publish power consume on this topic
+#define PUB_SENS_RPOWER_TOPIC       "%s/%s/sensors/%s/reactivepower"  // Device publish Ractive Power Message on this topic
 
-#define PUB_SENS_DAILYKWH_TOPIC     "building/%s/sensors/%s/dailyKwh"       // Device publish daily Kw/h accumulated consume on this topic
-#define PUB_SENS_CURRENT_TOPIC      "building/%s/sensors/%s/current"        // Device publish Current RMS Message on this topic
-#define PUB_SENS_FREQUENCY_TOPIC    "building/%s/sensors/%s/frequency"      // Device publish Line Frequency Message on this topic
-#define PUB_SENS_POWERFACTOR_TOPIC  "building/%s/sensors/%s/powerfactor"    // Device publish Power Factor Message on this topic
-#define PUB_SENS_VOLTAGE_TOPIC      "building/%s/sensors/%s/voltage"        // Device publishVoltage Message on this topic
+#define PUB_SENS_DAILYKWH_TOPIC     "%s/%s/sensors/%s/dailyKwh"       // Device publish daily Kw/h accumulated consume on this topic
+#define PUB_SENS_CURRENT_TOPIC      "%s/%s/sensors/%s/current"        // Device publish Current RMS Message on this topic
+#define PUB_SENS_FREQUENCY_TOPIC    "%s/%s/sensors/%s/frequency"      // Device publish Line Frequency Message on this topic
+#define PUB_SENS_POWERFACTOR_TOPIC  "%s/%s/sensors/%s/powerfactor"    // Device publish Power Factor Message on this topic
+#define PUB_SENS_VOLTAGE_TOPIC      "%s/%s/sensors/%s/voltage"        // Device publishVoltage Message on this topic
 
 
-#define PUB_EVENT_POWERFEEDBACK_TOPIC   "building/%s/events/%s/power"    // Device publish power switch feedback consume on this topic
-#define PUB_EVENT_LWT_TOPIC         "building/%s/events/%s/lwt"          // Device publish Last Willing Message on this topic
-#define PUB_EVENT_CRONTAB_TOPIC     "building/%s/events/%s/crontab"      // Device publish current crontab on this topic
+#define PUB_EVENT_POWERFEEDBACK_TOPIC   "%s/%s/events/%s/power"    // Device publish power switch feedback consume on this topic
+#define PUB_EVENT_LWT_TOPIC         "%s/%s/events/%s/lwt"          // Device publish Last Willing Message on this topic
+#define PUB_EVENT_CRONTAB_TOPIC     "%s/%s/events/%s/crontab"      // Device publish current crontab on this topic
 
 
 /* --- MQTT subsribe topics ---*/
-#define SUB_SWITCH_DEV         "building/%s/devices/%s/power"    // Device subscribe to this topic to handle power switch command (by device)
-#define SUB_SWITCH_ROOM        "building/%s/commands/power"      // Device subscribe to this topic to handle power switch command (by room)
-#define SUB_UPGRADE_DEV        "building/%s/devices/%s/upgrade"  // Device subscribe to this topic to handle firmware upgrade command (by device)
-#define SUB_UPGRADE_ROOM       "building/%s/commands/upgrade"    // Device subscribe to this topic to handle firmware upgrade command (by room)
+#define SUB_SWITCH_DEV         "%s/%s/devices/%s/power"    // Device subscribe to this topic to handle power switch command (by device)
+#define SUB_SWITCH_ROOM        "%s/%s/commands/power"      // Device subscribe to this topic to handle power switch command (by room)
+#define SUB_UPGRADE_DEV        "%s/%s/devices/%s/upgrade"  // Device subscribe to this topic to handle firmware upgrade command (by device)
+#define SUB_UPGRADE_ROOM       "%s/%s/commands/upgrade"    // Device subscribe to this topic to handle firmware upgrade command (by room)
 
 
 // Composed topics
@@ -47,12 +47,12 @@ char pubEventCrontabTopic[MAX_TOPIC_LEN];
 char subSwitchDevTopic[MAX_TOPIC_LEN];
 char subSwitchRoomTopic[MAX_TOPIC_LEN];
 
-void makeDeviceTopic(char *topic, int topicLen, const char *topicPattern, const char *room, const char *deviceId) {
+void makeDeviceTopic(char *topic, int topicLen, const char *topicPattern, const char *gateway, const char *room, const char *deviceId) {
     memset (topic, 0, topicLen);
-    snprintf(topic, topicLen, topicPattern, room, deviceId);
+    snprintf(topic, topicLen, topicPattern, gateway, room, deviceId);
 }
 
-void makeRoomTopic(char * topic, int topicLen, const char *topicPattern, const char *room) {
+void makeRoomTopic(char * topic, int topicLen, const char *topicPattern, const char *gateway, const char *room) {
     memset (topic, 0, topicLen);
-    snprintf(topic, topicLen, topicPattern, room);
+    snprintf(topic, topicLen, topicPattern, gateway, room);
 }

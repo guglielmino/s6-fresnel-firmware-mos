@@ -55,6 +55,14 @@ private:
 
             return feats;
         }
+
+        const char *gateway() {
+#ifdef USE_OLD_CFG
+            return get_cfg()->s6fresnel.gateway;
+#else
+            return mgos_sys_config_get_s6fresnel_gateway();
+#endif
+        }
     };
 
     S6Fresnel s6Fresnel;
