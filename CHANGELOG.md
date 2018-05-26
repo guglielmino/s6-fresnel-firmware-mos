@@ -1,3 +1,11 @@
+<a name="1.0.4"></a>
+# [1.0.3](https://gitlab.com/SmartSix/s6-fresnel-firmware-mos/compare/v1.0.3...v1.0.4) (2018-05-26)
+
+
+### Features
+
+* Add autocommit after firmware update
+
 <a name="1.0.3"></a>
 # [1.0.3](https://gitlab.com/SmartSix/s6-fresnel-firmware-mos/compare/v1.0.3...v1.0.2) (2018-05-19)
 
