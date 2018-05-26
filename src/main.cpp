@@ -28,6 +28,15 @@ enum mgos_app_init_result mgos_app_init(void) {
     cs_log_set_level(LL_DEBUG);
     LOG(LL_DEBUG, ("Device ID %s", settings.deviceId()));
 
+    // Firmware autocommit, dangerous for rollback handling
+    if(!mgos_upd_is_committed()) {
+        LOG(LL_DEBUG, ("UNCOMMITTED Firmware"));
+        mgos_upd_commit();
+    } else {
+        LOG(LL_DEBUG, ("COMMITTED Firmware"));
+    }
+
+
     mqtt_sys_init();
 
     devices_sys_init();

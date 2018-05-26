@@ -4,7 +4,7 @@
 
 #pragma once
 
-#define FIRMWARE_APP_VERSION "1.0.3"
+#define FIRMWARE_APP_VERSION "1.0.4"
 
 #define MQTT_MESSAGE_SIZE       60
 
