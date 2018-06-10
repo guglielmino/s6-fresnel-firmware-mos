@@ -27,7 +27,7 @@ private:
     static const uint8_t CSFAIL = 0x51;
 
     void fillInternalAccumulator(const uint8_t *buffer, size_t size) {
-        for (int i = 0; i < size; ++i) {
+        for (size_t i = 0; i < size; ++i) {
             accumulator.push_back(buffer[i]);
             bytesLeft--;
         }
@@ -93,7 +93,7 @@ private:
     void writeFrame(std::vector <uint8_t> frame) {
         int frameSize = frame.size();
 
-        for (unsigned int i = 0; i < frameSize; ++i) {
+        for (int i = 0; i < frameSize; ++i) {
             _uart->write(&frame[i], 1);
             _uart->flush();
             mgos_usleep(1000);

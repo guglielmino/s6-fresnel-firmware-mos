@@ -83,7 +83,8 @@ public:
         cfg.num_data_bits = config.num_data_bits;
         cfg.parity = toMosParity(config.parity);
         cfg.stop_bits = toMosStopBits(config.stop_bits);
-#if CS_PLATFORM == CS_P_ESP32
+
+#ifdef DEV_FRESNEL
         cfg.dev.tx_gpio = rxgpio; // 4
         cfg.dev.rx_gpio = txgpio; // 36
 #else

@@ -6,12 +6,12 @@
 
 #include "network/mqtt.h"
 #include "interfaces/IOutputDevice.h"
-#include "config/settings.h"
+#include "config/settings.hpp"
 #include "utils/dateutils.h"
 #include "hardware/devices/MCP39F511/uart/IMCP39F511UARTProto.h"
 
 
-extern Settings settings;
+static Settings settings;
 
 extern MQTTManager *mqttManager;
 
@@ -19,6 +19,7 @@ extern IOutputDevice *rele0;
 extern IOutputDevice *rele1;
 extern IOutputDevice *greenLed;
 extern IOutputDevice *redLed;
+
 
 extern IMCP39F511UARTProto *mcp39F511UARTProto;
 

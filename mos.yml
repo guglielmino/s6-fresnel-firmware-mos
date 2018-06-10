@@ -22,7 +22,7 @@ platforms: [  esp32, esp8266 ]
 
 config_schema:
   - ["mqtt.enable", true]
-  - ["mqtt.server", "s", "192.168.0.7:8883", {title: "MQTT server"}]
+  - ["mqtt.server", "s", "192.168.0.7:1883", {title: "MQTT server"}]
   #- ["mqtt.ssl_cert", "client.crt"]
   #- ["mqtt.ssl_key", "client.key"]
   #- ["mqtt.ssl_ca_cert", "ca.crt"]

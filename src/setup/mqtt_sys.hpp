@@ -4,12 +4,14 @@
 
 #pragma once
 
+#include "../consts.h"
 #include "../globals.h"
+
 #include "../utils/dateutils.h"
 #include "../network/mqtt.h"
 #include "../network/topics.h"
 
-#include "../devfunctions.h"
+#include "../core/devfunctions.h"
 #include "../hardware/net/ifaces.hpp"
 
 MQTTManager *mqttManager = nullptr;

@@ -106,6 +106,4 @@ public:
     MQTTSettings mqtt() {
         return mqttSettings;
     }
-
-
 };

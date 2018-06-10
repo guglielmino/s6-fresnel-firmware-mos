@@ -8,11 +8,14 @@
 
 #include "mgos_crontab.h"
 #include "../interfaces/IOutputDevice.h"
-#include "../devfunctions.h"
-#include "../config/settings.h"
+#include "../core/devfunctions.h"
+#include "../config/settings.hpp"
 
 // CRON FUNCTIONS
 void relayOn(struct mg_str action, struct mg_str payload, void *userdata) {
+    (void)action;
+    (void)userdata;
+
     int relay_idx = 0;
     json_scanf(payload.p, payload.len, "{ relay_idx: %d }", &relay_idx);
     turnRelay(relay_idx, SwitchMode::ON);
@@ -20,6 +23,9 @@ void relayOn(struct mg_str action, struct mg_str payload, void *userdata) {
 }
 
 void relayOff(struct mg_str action, struct mg_str payload, void *userdata) {
+    (void)action;
+    (void)userdata;
+
     int relay_idx = 0;
     json_scanf(payload.p, payload.len, "{ relay_idx: %d }", &relay_idx);
 
@@ -28,22 +34,34 @@ void relayOff(struct mg_str action, struct mg_str payload, void *userdata) {
 }
 
 void readSensors(struct mg_str action, struct mg_str payload, void *userdata) {
+    (void)action;
+    (void)payload;
+    (void)userdata;
     read_sensors();
     LOG(LL_DEBUG, ("CRON: readSensors"));
 }
 
 void resetKWh(struct mg_str action, struct mg_str payload, void *userdata) {
+    (void)action;
+    (void)payload;
+    (void)userdata;
     resetKWhCounter();
     startKWhCounter();
     LOG(LL_DEBUG, ("CRON: reset KWh counter"));
 }
 
 void redLED(struct mg_str action, struct mg_str payload, void *userdata) {
+    (void)action;
+    (void)payload;
+    (void)userdata;
     redLED();
     LOG(LL_DEBUG, ("CRON: red led"));
 }
 
 void greenLED(struct mg_str action, struct mg_str payload, void *userdata) {
+    (void)action;
+    (void)payload;
+    (void)userdata;
     redLED();
     LOG(LL_DEBUG, ("CRON: green led"));
 }

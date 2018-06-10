@@ -9,16 +9,18 @@
 #include "factories/uartFactories.h"
 #include "globals.h"
 
-#include "devfunctions.h"
+#include "core/devfunctions.h"
 
 #include "setup/cron_sys.hpp"
 #include "setup/mqtt_sys.hpp"
 #include "setup/devices_sys.hpp"
 
+
 void event_sntp_timechange_cb(int ev, void *evd, void *arg)
 {
     (void) ev;
-    (void)arg;
+    (void) evd;
+    (void) arg;
 
     publishInfoMessage();
 }
@@ -49,5 +51,6 @@ enum mgos_app_init_result mgos_app_init(void) {
     cron_sys_init();
 
     mgos_event_add_handler(MGOS_EVENT_TIME_CHANGED, event_sntp_timechange_cb, NULL);
+
     return MGOS_APP_INIT_SUCCESS;
 }

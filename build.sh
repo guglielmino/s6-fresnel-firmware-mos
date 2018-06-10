@@ -2,7 +2,7 @@
 
 if [ -z "$1" ]
 then
-    echo "Use $0 PLATFORM (esp32 or esp8266)"
+    echo "Use $0 PLATFORM (esp32 or esp8266) DEVICE (DEV_FRESNEL or DEV_POWR2)"
     exit 1
 fi
 
@@ -13,9 +13,7 @@ then
   rm -rf build/
 fi
 
-mos build --local --verbose --no-libs-update --libs-dir ../mos-libs/  --platform=$PLATFORM
-
-
+mos build --local --verbose --no-libs-update --libs-dir ../mos-libs/  --platform=$PLATFORM --cxxflags-extra -D$DEVICE
 
 if [ $? -eq 0 ]
 then

@@ -27,8 +27,11 @@ job_build:
     - mos update
     - export FW_VERSION=`cat src/consts.h |grep FIRMWARE_APP_VERSION| awk '{ print $3 }'| sed 's/"//g'`
     - git clone https://$GITHUB_USERNAME:$GITHUB_PASSWORD@github.com/cesanta/mos-libs.git
-    - mos build --local --verbose --no-libs-update --libs-dir ./mos-libs/  --platform esp32
-    - cp build/fw.zip build/fw_$FW_VERSION.zip
+    - mos build --local --verbose --no-libs-update --libs-dir ./mos-libs/  --platform esp32 --cxxflags-extra -DDEV_FRESNEL
+    - cp build/fw.zip build/fw_fresnel_$FW_VERSION.zip
+    - mos build --local --verbose --no-libs-update --libs-dir ./mos-libs/  --platform esp8266 --cxxflags-extra -DDEV_POWR2
+    - cp build/fw.zip build/fw_powr2_$FW_VERSION.zip
+
   only:
     - master
   artifacts:

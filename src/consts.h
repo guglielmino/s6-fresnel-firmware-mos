@@ -8,11 +8,11 @@
 
 #define MQTT_MESSAGE_SIZE       60
 
-#define FIRMWARE_APP_NAME "S6 Fresnel Module"
-#define REL0_PIN_SET    32
-#define REL0_PIN_RESET  33
-#define REL1_PIN        12
-#define LED_RED_PIN     15
-#define LED_GREEN_PIN   13
-#define BUTTON_PIN      34
 
+#ifdef DEV_FRESNEL
+    #include "consts.fresnel.h"
+#endif
+
+#ifdef DEV_POWR2
+    #include "consts.powr2.h"
+#endif
